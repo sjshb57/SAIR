@@ -8,7 +8,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.preference.PreferenceManager;
 
 import com.aefyr.sai.R;
 import com.aefyr.sai.backup2.impl.DefaultBackupManager;
@@ -20,9 +19,7 @@ import com.aefyr.sai.ui.fragments.InstallerFragment;
 import com.aefyr.sai.ui.fragments.LegacyInstallerFragment;
 import com.aefyr.sai.ui.fragments.PreferencesFragment;
 import com.aefyr.sai.utils.FragmentNavigator;
-import com.aefyr.sai.utils.MiuiUtils;
 import com.aefyr.sai.utils.PreferencesHelper;
-import com.aefyr.sai.utils.PreferencesKeys;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends ThemedActivity implements BottomNavigationView.OnNavigationItemSelectedListener, FragmentNavigator.FragmentFactory {
@@ -46,8 +43,6 @@ public class MainActivity extends ThemedActivity implements BottomNavigationView
 
         //TODO is this ok?
         DefaultBackupManager.getInstance(this);
-
-        showMiuiWarning();
 
 
         mBottomNavigationView = findViewById(R.id.bottomnav_main);
@@ -81,13 +76,6 @@ public class MainActivity extends ThemedActivity implements BottomNavigationView
         mBottomNavigationView.getMenu().getItem(0).setChecked(true);
         mFragmentNavigator.switchTo("installer");
         getInstallerFragment().handleActionView(uri);
-    }
-
-    private void showMiuiWarning() {
-        if (MiuiUtils.isMiui() && !PreferenceManager.getDefaultSharedPreferences(this).getBoolean(PreferencesKeys.MIUI_WARNING_SHOWN, false)) {
-            startActivity(new Intent(this, MiActivity.class));
-            finish();
-        }
     }
 
     public void setNavigationEnabled(boolean enabled) {
