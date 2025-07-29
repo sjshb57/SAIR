@@ -1,2 +1,0 @@
-SAI is an app for installing and exporting split APKs - apps that consist of multiple APKs.
-SAI can install apps using standard Android API, using root access or using Shizuku.

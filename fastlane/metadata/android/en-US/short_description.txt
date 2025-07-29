@@ -1,1 +1,0 @@
-SAI lets you install and export split APKs
