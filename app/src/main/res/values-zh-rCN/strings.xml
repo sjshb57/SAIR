@@ -314,13 +314,13 @@
     <string name="installerx_notice_huge_app">This app is huge (&gt;150MB). With huge apps there\'s a chance (the bigger the app size, the higher) that installation will hang but app will still take up storage space that you won\'t be able to reclaim without using root or doing factory reset</string>
     <string name="installerx_android_uri_host_file_too_big">文件过大，无法复制，你的系统不支持在不复制的情况下读取 SAF 文件</string>
     <string name="installerx_thank_you_scoped_storage_very_cool">在Android 11和更高版本上，由于毫无意义的分区存存储实现， SAI 需要存储权限来直接读取通过系统文件选择器选择的文件。你可以拒绝存储权限，但是 SAI 将不得不复制所选文件来解析它们，SAI 不会复制和解析大文件。</string>
-    <string name="theme_sai">默认 SAI</string>
+    <string name="theme_sai">SAI</string>
     <string name="theme_ruby">Ruby</string>
     <string name="theme_rena">Rena</string>
     <string name="theme_ukrrooter">Ukrrooter</string>
     <string name="theme_amoled">Amoled</string>
     <string name="theme_pixel">Pixel</string>
-    <string name="theme_sai_fdroid">F-Droid默认 SAI (F-Droid)</string>
+    <string name="theme_sai_fdroid">SAI (F-Droid)</string>
     <string name="theme_dark">暗黑 Dark</string>
     <string name="theme_gold">金色</string>
     <string name="theme_rena_light">Rena Light主题</string>
