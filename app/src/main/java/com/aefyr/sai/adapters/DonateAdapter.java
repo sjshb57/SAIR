@@ -129,7 +129,6 @@ public class DonateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     public interface OnProductInteractionListener {
-        void onProductClicked(BillingProduct product);
     }
 
     private class ProductViewHolder extends RecyclerView.ViewHolder {
@@ -153,14 +152,6 @@ public class DonateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             mContainer = itemView.findViewById(R.id.container_donate_product);
 
-            mContainer.setOnClickListener(v -> {
-                int adapterPosition = getAdapterPosition();
-                if (adapterPosition == RecyclerView.NO_POSITION)
-                    return;
-
-                if (mProductInteractionListener != null)
-                    mProductInteractionListener.onProductClicked(getBillingProductAt(adapterPosition));
-            });
         }
 
         private void bindTo(BillingProduct product) {

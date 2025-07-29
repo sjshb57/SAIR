@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.aefyr.sai.R;
 import com.aefyr.sai.adapters.DonateAdapter;
 import com.aefyr.sai.billing.BillingManager;
-import com.aefyr.sai.billing.BillingProduct;
 import com.aefyr.sai.billing.DefaultBillingManager;
 
 public class DonateFragment extends SaiBaseFragment implements DonateAdapter.OnProductInteractionListener {
@@ -45,8 +44,4 @@ public class DonateFragment extends SaiBaseFragment implements DonateAdapter.OnP
         return R.layout.fragment_donate;
     }
 
-    @Override
-    public void onProductClicked(BillingProduct product) {
-        mBillingManager.launchBillingFlow(requireActivity(), product);
-    }
 }

@@ -18,8 +18,6 @@ import androidx.preference.SwitchPreference;
 
 import com.aefyr.sai.BuildConfig;
 import com.aefyr.sai.R;
-import com.aefyr.sai.analytics.AnalyticsProvider;
-import com.aefyr.sai.analytics.DefaultAnalyticsProvider;
 import com.aefyr.sai.shell.SuShell;
 import com.aefyr.sai.ui.activities.AboutActivity;
 import com.aefyr.sai.ui.activities.ApkActionViewProxyActivity;
@@ -50,22 +48,18 @@ import rikka.shizuku.Shizuku;
 public class PreferencesFragment extends PreferenceFragmentCompat implements FilePickerDialogFragment.OnFilesSelectedListener, SingleChoiceListDialogFragment.OnItemSelectedListener, BaseBottomSheetDialogFragment.OnDismissListener, SharedPreferences.OnSharedPreferenceChangeListener, DarkLightThemeSelectionDialogFragment.OnDarkLightThemesChosenListener, Shizuku.OnRequestPermissionResultListener {
 
     private PreferencesHelper mHelper;
-    private AnalyticsProvider mAnalyticsProvider;
     private PackageManager mPm;
-
     private Preference mHomeDirPref;
     private Preference mFilePickerSortPref;
     private Preference mInstallerPref;
     private Preference mThemePref;
     private SwitchPreference mAutoThemeSwitch;
     private Preference mAutoThemePicker;
-
     private FilePickerDialogFragment mPendingFilePicker;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         mHelper = PreferencesHelper.getInstance(requireContext());
-        mAnalyticsProvider = DefaultAnalyticsProvider.getInstance(requireContext());
         mPm = requireContext().getPackageManager();
 
         //Inject some prefs
@@ -183,14 +177,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Fil
         if (Theme.getInstance(requireContext()).getThemeMode() != Theme.Mode.AUTO_LIGHT_DARK) {
             mAutoThemePicker.setVisible(false);
         }
-
-        SwitchPreference analyticsPref = findPreference(PreferencesKeys.ENABLE_ANALYTICS);
-        analyticsPref.setOnPreferenceChangeListener((preference, newValue) -> {
-            mAnalyticsProvider.setDataCollectionEnabled((boolean) newValue);
-            return true;
-        });
-        if (!mAnalyticsProvider.supportsDataCollection())
-            analyticsPref.setVisible(false);
 
         SwitchPreference enableApkActionViewPref = findPreference(PreferencesKeys.ENABLE_APK_ACTION_VIEW);
         enableApkActionViewPref.setOnPreferenceChangeListener((preference, newValue) -> {
