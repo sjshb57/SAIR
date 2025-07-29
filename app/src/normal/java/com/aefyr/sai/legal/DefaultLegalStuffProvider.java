@@ -20,12 +20,12 @@ public class DefaultLegalStuffProvider implements LegalStuffProvider {
 
     @Override
     public boolean hasPrivacyPolicy() {
-        return true;
+        return false;
     }
 
     @Override
     public String getPrivacyPolicyUrl() {
-        return "https://aefyr.github.io/sai/privacy_en.html";
+        return null;
     }
 
     @Override

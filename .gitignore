@@ -7,3 +7,5 @@
 /captures
 .externalNativeBuild
 crowdin.properties
+/app/normal
+/app/fdroid

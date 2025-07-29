@@ -1,0 +1,158 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "5b2326ee590504edad6dd1f621bddf81",
+    "entities": [
+      {
+        "tableName": "BackupEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uri` TEXT NOT NULL, `package` TEXT, `label` TEXT, `version_name` TEXT, `version_code` INTEGER NOT NULL, `export_timestamp` INTEGER NOT NULL, `icon_file` TEXT, `content_hash` TEXT NOT NULL, `storage_id` TEXT NOT NULL, `flags` INTEGER NOT NULL, PRIMARY KEY(`uri`))",
+        "fields": [
+          {
+            "fieldPath": "uri",
+            "columnName": "uri",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pkg",
+            "columnName": "package",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "label",
+            "columnName": "label",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "versionName",
+            "columnName": "version_name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "versionCode",
+            "columnName": "version_code",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "exportTimestamp",
+            "columnName": "export_timestamp",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "iconFile",
+            "columnName": "icon_file",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "contentHash",
+            "columnName": "content_hash",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "storageId",
+            "columnName": "storage_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "flags",
+            "columnName": "flags",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "uri"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_BackupEntity_package_uri_content_hash",
+            "unique": false,
+            "columnNames": [
+              "package",
+              "uri",
+              "content_hash"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_BackupEntity_package_uri_content_hash` ON `${TABLE_NAME}` (`package`, `uri`, `content_hash`)"
+          },
+          {
+            "name": "index_BackupEntity_icon_file",
+            "unique": false,
+            "columnNames": [
+              "icon_file"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_BackupEntity_icon_file` ON `${TABLE_NAME}` (`icon_file`)"
+          }
+        ]
+      },
+      {
+        "tableName": "BackupComponentEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`backup_uri` TEXT NOT NULL, `type` TEXT NOT NULL, `size` INTEGER NOT NULL, PRIMARY KEY(`backup_uri`, `type`), FOREIGN KEY(`backup_uri`) REFERENCES `BackupEntity`(`uri`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "backupUri",
+            "columnName": "backup_uri",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "size",
+            "columnName": "size",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "backup_uri",
+            "type"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_BackupComponentEntity_backup_uri",
+            "unique": false,
+            "columnNames": [
+              "backup_uri"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_BackupComponentEntity_backup_uri` ON `${TABLE_NAME}` (`backup_uri`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "BackupEntity",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "backup_uri"
+            ],
+            "referencedColumns": [
+              "uri"
+            ]
+          }
+        ]
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5b2326ee590504edad6dd1f621bddf81')"
+    ]
+  }
+}

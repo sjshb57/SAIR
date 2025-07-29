@@ -1,59 +1,30 @@
 package com.aefyr.sai.billing;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
+import android.net.Uri;
 
-import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.preference.PreferenceManager;
 
 import com.aefyr.sai.R;
-import com.aefyr.sai.ui.dialogs.SimpleAlertDialogFragment;
-import com.android.billingclient.api.AcknowledgePurchaseParams;
-import com.android.billingclient.api.BillingClient;
-import com.android.billingclient.api.BillingClientStateListener;
-import com.android.billingclient.api.BillingFlowParams;
-import com.android.billingclient.api.BillingResult;
-import com.android.billingclient.api.Purchase;
-import com.android.billingclient.api.PurchasesUpdatedListener;
-import com.android.billingclient.api.SkuDetails;
-import com.android.billingclient.api.SkuDetailsParams;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailabilityLight;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
-import java.util.Set;
 
-//TODO rewrite this
-public class DefaultBillingManager implements BillingManager, PurchasesUpdatedListener, BillingClientStateListener {
-    private static final String TAG = "GmsBillingManager";
-    private static final String KEY_DONATION_STATUS = "donation_status";
-    private static final String SKU_DONATION = "cola";
+public class DefaultBillingManager implements BillingManager {
 
     private static DefaultBillingManager sInstance;
 
-    private MutableLiveData<BillingManagerStatus> mBillingStatus = new MutableLiveData<>(BillingManagerStatus.NOT_READY);
-    private MutableLiveData<DonationStatus> mDonationStatus = new MutableLiveData<>(DonationStatus.UNKNOWN);
+    private MutableLiveData<BillingManagerStatus> mStatus = new MutableLiveData<>(BillingManagerStatus.OK);
+    private MutableLiveData<DonationStatus> mDonationStatus = new MutableLiveData<>(DonationStatus.DONATED);
 
-    private Set<String> mPurchasedSkus = new HashSet<>();
-
-    private MutableLiveData<List<BillingProduct>> mAllProducts = new MutableLiveData<>(Collections.emptyList());
+    private MutableLiveData<List<BillingProduct>> mProducts = new MutableLiveData<>();
     private MutableLiveData<List<BillingProduct>> mPurchasedProducts = new MutableLiveData<>(Collections.emptyList());
-    private MutableLiveData<List<BillingProduct>> mPurchasableProducts = new MutableLiveData<>(Collections.emptyList());
-
-    private Context mContext;
-
-    private BillingClient mBillingClient;
 
     public static DefaultBillingManager getInstance(Context context) {
         synchronized (DefaultBillingManager.class) {
@@ -62,39 +33,20 @@ public class DefaultBillingManager implements BillingManager, PurchasesUpdatedLi
     }
 
     private DefaultBillingManager(Context context) {
-        mContext = context.getApplicationContext();
-
-        if (areGooglePlayServicesAvailable()) {
-            mDonationStatus.setValue(getCachedDonationStatus());
-            setupGooglePlayBilling();
-        } else {
-            mBillingStatus.setValue(BillingManagerStatus.NOT_AVAILABLE);
-            mDonationStatus.setValue(DonationStatus.NOT_AVAILABLE);
-        }
+        createProducts(context.getApplicationContext());
 
         sInstance = this;
     }
 
-    private void setupGooglePlayBilling() {
-        mBillingClient = BillingClient.newBuilder(mContext)
-                .enablePendingPurchases()
-                .setListener(this)
-                .build();
-
-        connectBillingService();
-    }
-
-    private void connectBillingService() {
-        if (mBillingStatus.getValue() != BillingManagerStatus.NOT_READY)
-            return;
-
-        mBillingStatus.setValue(BillingManagerStatus.PREPARING);
-        mBillingClient.startConnection(this);
+    private void createProducts(Context c) {
+        List<BillingProduct> products = new ArrayList<>();
+        products.add(new ExternalDonationServiceBillingProduct("yandex", c.getString(R.string.donate_non_iap_yandex_title), c.getString(R.string.donate_non_iap_yandex_desc), null, c.getString(R.string.donate_non_iap_yandex_target)));
+        mProducts.setValue(products);
     }
 
     @Override
     public LiveData<BillingManagerStatus> getStatus() {
-        return mBillingStatus;
+        return mStatus;
     }
 
     @Override
@@ -104,12 +56,12 @@ public class DefaultBillingManager implements BillingManager, PurchasesUpdatedLi
 
     @Override
     public DonationStatusRenderer getDonationStatusRenderer() {
-        return new GooglePlayDonationStatusRenderer();
+        return new FDroidDonationStatusRenderer();
     }
 
     @Override
     public LiveData<List<BillingProduct>> getAllProducts() {
-        return mAllProducts;
+        return mProducts;
     }
 
     @Override
@@ -119,236 +71,36 @@ public class DefaultBillingManager implements BillingManager, PurchasesUpdatedLi
 
     @Override
     public LiveData<List<BillingProduct>> getPurchasableProducts() {
-        return mPurchasableProducts;
+        return mProducts;
     }
 
     @Override
     public void launchBillingFlow(Activity activity, BillingProduct product) {
-        if (getStatus().getValue() != BillingManagerStatus.OK) {
-            if (activity instanceof FragmentActivity) {
-                FragmentActivity fragmentActivity = (FragmentActivity) activity;
-                SimpleAlertDialogFragment.newInstance(activity, R.string.error, R.string.donate_billing_not_available).show(fragmentActivity.getSupportFragmentManager(), null);
-            }
-            return;
+        ExternalDonationServiceBillingProduct extProduct = (ExternalDonationServiceBillingProduct) product;
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(extProduct.getTargetUrl()));
+            activity.startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            //whatever
         }
 
-        BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
-                .setSkuDetails(((SkuDetailsBillingProduct) product).getSkuDetails())
-                .build();
-
-        mBillingClient.launchBillingFlow(activity, billingFlowParams);
     }
 
     @Override
     public void refresh() {
-        switch (Objects.requireNonNull(getStatus().getValue())) {
-            case NOT_READY:
-                connectBillingService();
-                break;
-            case OK:
-                loadPurchases();
-                loadProducts();
-                break;
-            case PREPARING:
-            case NOT_AVAILABLE:
-                break;
-        }
+
     }
 
-    private void setDonationStatus(DonationStatus status) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-        prefs.edit().putString(KEY_DONATION_STATUS, status.name()).apply();
-
-        mDonationStatus.setValue(status);
-    }
-
-    private DonationStatus getCachedDonationStatus() {
-        try {
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-            return DonationStatus.valueOf(prefs.getString(KEY_DONATION_STATUS, DonationStatus.NOT_DONATED.name()));
-        } catch (IllegalArgumentException e) {
-            return DonationStatus.NOT_DONATED;
-        }
-    }
-
-    private boolean areGooglePlayServicesAvailable() {
-        return GoogleApiAvailabilityLight.getInstance().isGooglePlayServicesAvailable(mContext) == ConnectionResult.SUCCESS;
-    }
-
-    @Override
-    public void onPurchasesUpdated(BillingResult billingResult, @Nullable List<Purchase> list) {
-        if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.SERVICE_DISCONNECTED) {
-            connectBillingService();
-        } else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-            loadPurchases();
-        } else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED) {
-            loadPurchases();
-        }
-    }
-
-    private void loadPurchases() {
-        Purchase.PurchasesResult result = mBillingClient.queryPurchases(BillingClient.SkuType.INAPP);
-        if (result.getBillingResult().getResponseCode() != BillingClient.BillingResponseCode.OK) {
-            Log.w(TAG, String.format("Unable to load purchases, code %d - %s", result.getBillingResult().getResponseCode(), result.getBillingResult().getDebugMessage()));
-            return;
-        }
-
-        processPurchases(result.getPurchasesList());
-    }
-
-    private void processPurchases(Collection<Purchase> purchases) {
-        if (purchases == null)
-            return;
-
-        mPurchasedSkus.clear();
-        boolean containsDonationPurchase = false;
-        for (Purchase purchase : purchases) {
-            if (purchase.getPurchaseState() == Purchase.PurchaseState.UNSPECIFIED_STATE) {
-                Log.w(TAG, String.format("Purchase in unspecified state - %s", purchase));
-                continue;
-            }
-
-            if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED && !purchase.isAcknowledged()) {
-                acknowledgePurchase(purchase);
-            } else {
-                if (purchase.getSku().equals(SKU_DONATION)) {
-                    containsDonationPurchase = true;
-                    if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
-                        setDonationStatus(DonationStatus.DONATED);
-                    } else if (purchase.getPurchaseState() == Purchase.PurchaseState.PENDING) {
-                        setDonationStatus(DonationStatus.PENDING);
-                    }
-                }
-
-                mPurchasedSkus.add(purchase.getSku());
-            }
-        }
-
-        if (!containsDonationPurchase)
-            setDonationStatus(DonationStatus.NOT_DONATED);
-
-        invalidateProductsPurchaseStatus();
-    }
-
-    private void acknowledgePurchase(Purchase purchase) {
-        AcknowledgePurchaseParams acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
-                .setPurchaseToken(purchase.getPurchaseToken())
-                .build();
-
-        mBillingClient.acknowledgePurchase(acknowledgePurchaseParams, billingResult -> {
-            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-                Log.d(TAG, String.format("Acknowledged %s", purchase.getSku()));
-                loadPurchases();
-                return;
-            }
-
-            Log.w(TAG, String.format("Unable to acknowledge purchase, code %d - %s", billingResult.getResponseCode(), billingResult.getDebugMessage()));
-        });
-    }
-
-    private void loadProducts() {
-        List<String> skuList = new ArrayList<>();
-        skuList.add(SKU_DONATION);
-
-        SkuDetailsParams params = SkuDetailsParams.newBuilder()
-                .setSkusList(skuList)
-                .setType(BillingClient.SkuType.INAPP)
-                .build();
-
-        mBillingClient.querySkuDetailsAsync(params, (billingResult, skuDetailsList) -> {
-            if (billingResult.getResponseCode() != BillingClient.BillingResponseCode.OK) {
-                Log.d(TAG, String.format("Unable to query sku details: %d - %s", billingResult.getResponseCode(), billingResult.getDebugMessage()));
-                return;
-            }
-
-            ArrayList<BillingProduct> products = new ArrayList<>(skuDetailsList.size());
-            for (SkuDetails skuDetails : skuDetailsList)
-                products.add(new SkuDetailsBillingProduct(skuDetails));
-
-            mAllProducts.setValue(products);
-            invalidateProductsPurchaseStatus();
-        });
-    }
-
-    private void invalidateProductsPurchaseStatus() {
-        List<BillingProduct> allProducts = mAllProducts.getValue();
-        if (allProducts == null)
-            return;
-
-        List<BillingProduct> purchasedProducts = new ArrayList<>();
-        List<BillingProduct> purchasableProducts = new ArrayList<>();
-        for (BillingProduct product : allProducts) {
-            SkuDetailsBillingProduct skuProduct = (SkuDetailsBillingProduct) product;
-
-            boolean purchased = mPurchasedSkus.contains(skuProduct.getSkuDetails().getSku());
-            skuProduct.setPurchased(purchased);
-
-            if (mPurchasedSkus.contains(product.getId()))
-                purchasedProducts.add(product);
-            else
-                purchasableProducts.add(product);
-        }
-
-        mPurchasedProducts.setValue(purchasedProducts);
-        mPurchasableProducts.setValue(purchasableProducts);
-
-        Log.d(TAG, "Invalidated products purchase status");
-    }
-
-    @Override
-    public void onBillingSetupFinished(BillingResult billingResult) {
-        if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-            mBillingStatus.setValue(BillingManagerStatus.OK);
-            Log.d(TAG, "Billing service connected");
-            loadPurchases();
-            loadProducts();
-        } else {
-            mBillingStatus.setValue(BillingManagerStatus.NOT_AVAILABLE);
-            Log.w(TAG, String.format("Unable to connect to billing service, code %d - %s", billingResult.getResponseCode(), billingResult.getDebugMessage()));
-        }
-    }
-
-    @Override
-    public void onBillingServiceDisconnected() {
-        Log.d(TAG, "Billing service disconnected, reconnecting");
-        mBillingStatus.setValue(BillingManagerStatus.NOT_READY);
-        connectBillingService();
-    }
-
-    private static class GooglePlayDonationStatusRenderer implements DonationStatusRenderer {
+    private static class FDroidDonationStatusRenderer implements DonationStatusRenderer {
 
         @Override
         public String getText(Context context, DonationStatus donationStatus) {
-            switch (donationStatus) {
-                case NOT_AVAILABLE:
-                case UNKNOWN:
-                    return context.getString(R.string.donate_message_unknown_or_error);
-                case PENDING:
-                    return context.getString(R.string.donate_message_pending);
-                case DONATED:
-                    return context.getString(R.string.donate_message_donated);
-                case NOT_DONATED:
-                    return context.getString(R.string.donate_message_not_donated);
-            }
-
-            return context.getString(R.string.donate_message_unknown_or_error);
+            return context.getString(R.string.donate_message_floss);
         }
 
         @Override
         public Drawable getIcon(Context context, DonationStatus donationStatus) {
-            switch (donationStatus) {
-                case NOT_AVAILABLE:
-                case UNKNOWN:
-                    return context.getDrawable(R.drawable.ic_donation_status_unknown);
-                case PENDING:
-                    return context.getDrawable(R.drawable.ic_donation_status_pending);
-                case DONATED:
-                    return context.getDrawable(R.drawable.ic_donation_status_donated);
-                case NOT_DONATED:
-                    return context.getDrawable(R.drawable.ic_donation_status_not_donated);
-            }
-
-            return context.getDrawable(R.drawable.ic_donation_status_unknown);
+            return context.getResources().getDrawable(R.drawable.ic_donation_status_floss);
         }
     }
 }

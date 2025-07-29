@@ -98,10 +98,8 @@ public class BackupManageAppFragment extends SaiBaseFragment implements BackupAp
         popupMenu.getMenuInflater().inflate(R.menu.app_details, popupMenu.getMenu());
 
         popupMenu.setOnMenuItemClickListener((menuItem) -> {
-            switch (menuItem.getItemId()) {
-                case R.id.menu_backup_open_app_in_system_settings:
-                    openAppInSystemSettings();
-                    break;
+            if (menuItem.getItemId() == R.id.menu_backup_open_app_in_system_settings) {
+                openAppInSystemSettings();
             }
             return true;
         });

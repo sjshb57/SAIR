@@ -2,27 +2,15 @@ package com.aefyr.sai.flavor;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.aefyr.sai.utils.Logs;
-
-import java.util.Objects;
-
 public class FlavorInitProvider extends ContentProvider {
-
-    @NonNull
-    protected Context compatRequireContext() {
-        return Objects.requireNonNull(getContext(), "context is null");
-    }
-
     @Override
     public boolean onCreate() {
-        Logs.init(compatRequireContext());
         return true;
     }
 

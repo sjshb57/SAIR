@@ -181,19 +181,16 @@ public class BackupFragment extends SaiBaseFragment implements BackupPackagesAda
             popupMenu.getMenuInflater().inflate(R.menu.backup_fragment, popupMenu.getMenu());
 
             popupMenu.setOnMenuItemClickListener((menuItem) -> {
-                switch (menuItem.getItemId()) {
-                    case R.id.menu_export_all_split_apks:
-                        exportAllSplitApks();
-                        break;
-                    case R.id.menu_backup_help:
-                        SimpleAlertDialogFragment.newInstance(requireContext(), R.string.help, R.string.backup_warning).show(getChildFragmentManager(), null);
-                        break;
-                    case R.id.menu_backup_reindex:
-                        mViewModel.reindexBackups();
-                        break;
-                    case R.id.menu_backup_settings:
-                        startActivity(new Intent(requireContext(), BackupSettingsActivity.class));
-                        break;
+                int itemId = menuItem.getItemId();
+                if (itemId == R.id.menu_export_all_split_apks) {
+                    exportAllSplitApks();
+                } else if (itemId == R.id.menu_backup_help) {
+                    SimpleAlertDialogFragment.newInstance(requireContext(), R.string.help, R.string.backup_warning)
+                            .show(getChildFragmentManager(), null);
+                } else if (itemId == R.id.menu_backup_reindex) {
+                    mViewModel.reindexBackups();
+                } else if (itemId == R.id.menu_backup_settings) {
+                    startActivity(new Intent(requireContext(), BackupSettingsActivity.class));
                 }
                 return true;
             });

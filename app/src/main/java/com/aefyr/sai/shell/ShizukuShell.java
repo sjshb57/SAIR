@@ -10,6 +10,7 @@ import com.aefyr.sai.utils.Utils;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Method;
 
 import rikka.shizuku.Shizuku;
 import rikka.shizuku.ShizukuRemoteProcess;
@@ -65,7 +66,11 @@ public class ShizukuShell implements Shell {
         try {
             Command.Builder shCommand = new Command.Builder("sh", "-c", command.toString());
 
-            ShizukuRemoteProcess process = Shizuku.newProcess(shCommand.build().toStringArray(), null, null);
+            String[] cmdArray = shCommand.build().toStringArray();
+
+            Method method = Shizuku.class.getDeclaredMethod("newProcess", String[].class, String[].class, String.class);
+            method.setAccessible(true);
+            ShizukuRemoteProcess process = (ShizukuRemoteProcess) method.invoke(null, cmdArray, null, null);
 
             Thread stdOutD = IOUtils.writeStreamToStringBuilder(stdOutSb, process.getInputStream());
             Thread stdErrD = IOUtils.writeStreamToStringBuilder(stdErrSb, process.getErrorStream());
