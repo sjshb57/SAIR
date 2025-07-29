@@ -24,9 +24,22 @@ android {
         resConfigs("zh-rCN","zh-rTW")
     }
 
+    signingConfigs {
+        create("release") {
+            keyAlias = System.getenv("RELEASE_KEY_ALIAS")
+            keyPassword = System.getenv("RELEASE_KEY_PWD")
+            storeFile = file("../keystore.jks")
+            storePassword = System.getenv("RELEASE_KEY_STORE_PWD")
+            enableV1Signing = false
+            enableV2Signing = true
+            enableV3Signing = true
+        }
+    }
+
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
+    //        isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
         }
     }
@@ -43,14 +56,6 @@ android {
             buildConfigField("int", "DEFAULT_DARK_THEME", "1")
             buildConfigField("boolean", "HIDE_DONATE_BUTTON", "false")
         }
-
-        create("fdroid") {
-            dimension = "version"
-            applicationId = "com.aefyr.sai.fdroid"
-            buildConfigField("int", "DEFAULT_THEME", "6")
-            buildConfigField("int", "DEFAULT_DARK_THEME", "11")
-            buildConfigField("boolean", "HIDE_DONATE_BUTTON", "false")
-        }
     }
 
     compileOptions {
@@ -64,7 +69,9 @@ dependencies {
 
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.documentfile)
-    implementation(libs.androidx.lifecycle.extensions)
+    implementation(libs.androidx.lifecycle.livedata)
+    implementation(libs.androidx.lifecycle.runtime)
+    implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.androidx.lifecycle.common.java8)
     implementation(libs.androidx.preference)
     implementation(libs.androidx.recyclerview)
