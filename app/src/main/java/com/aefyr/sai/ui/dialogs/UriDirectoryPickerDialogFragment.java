@@ -81,7 +81,7 @@ public class UriDirectoryPickerDialogFragment extends SingleChoiceListDialogFrag
     }
 
     private void openFilePicker(FilePickerDialogFragment filePicker) {
-        if (!PermissionsUtils.checkAndRequestStoragePermissions(this, storagePermissionLauncher)) {
+        if (PermissionsUtils.checkAndRequestStoragePermissions(this, storagePermissionLauncher)) {
             mPendingFilePicker = filePicker;
             return;
         }

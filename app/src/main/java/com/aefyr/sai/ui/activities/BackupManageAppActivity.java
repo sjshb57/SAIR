@@ -29,7 +29,6 @@ public class BackupManageAppActivity extends ThemedActivity implements BackupMan
         context.startActivity(intent);
     }
 
-
     @Override
     public void dismiss(BackupManageAppFragment fragment) {
         finish();

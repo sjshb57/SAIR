@@ -136,7 +136,7 @@ public class LegacyInstallerFragment extends InstallerFragment implements FilePi
     }
 
     private void checkPermissionsAndPickFiles() {
-        if (!PermissionsUtils.checkAndRequestStoragePermissions(this, storagePermissionLauncher))
+        if (PermissionsUtils.checkAndRequestStoragePermissions(this, storagePermissionLauncher))
             return;
 
         DialogProperties properties = new DialogProperties();

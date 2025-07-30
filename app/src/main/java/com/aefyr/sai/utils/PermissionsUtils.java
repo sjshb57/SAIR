@@ -16,12 +16,11 @@ import java.util.List;
 public class PermissionsUtils {
 
     public static boolean hasStoragePermissions(Context context) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return true;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            return Environment.isExternalStorageManager();
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R &&
-                Environment.isExternalStorageManager()) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return true;
         }
 
@@ -30,6 +29,9 @@ public class PermissionsUtils {
     }
 
     public static String[] getStoragePermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            return new String[0];
+        }
         return new String[]{
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -37,6 +39,10 @@ public class PermissionsUtils {
     }
 
     public static boolean checkAndRequestStoragePermissions(Fragment fragment, ActivityResultLauncher<String[]> launcher) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            return !Environment.isExternalStorageManager();
+        }
+
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return true;
         }

@@ -224,7 +224,7 @@ public class Installer2Fragment extends InstallerFragment implements FilePickerD
     }
 
     private void checkPermissionsAndPickFiles() {
-        if (!PermissionsUtils.checkAndRequestStoragePermissions(this, storagePermissionLauncher))
+        if (PermissionsUtils.checkAndRequestStoragePermissions(this, storagePermissionLauncher))
             return;
 
         DialogProperties properties = new DialogProperties();

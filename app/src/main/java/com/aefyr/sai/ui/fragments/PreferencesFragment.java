@@ -232,7 +232,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Fil
     }
 
     private void openFilePicker(FilePickerDialogFragment filePicker) {
-        if (!PermissionsUtils.checkAndRequestStoragePermissions(this, storagePermissionLauncher)) {
+        if (PermissionsUtils.checkAndRequestStoragePermissions(this, storagePermissionLauncher)) {
             mPendingFilePicker = filePicker;
             return;
         }

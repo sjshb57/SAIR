@@ -1,10 +1,7 @@
 package com.aefyr.sai.installerx.resolver.urimess.impl;
 
-import android.Manifest;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.ParcelFileDescriptor;
 
 import androidx.documentfile.provider.DocumentFile;
@@ -26,7 +23,7 @@ import java.util.Objects;
 public class AndroidUriHost implements UriHost {
     private static final long MAX_FILE_LENGTH_FOR_COPY = 1024 * 1024 * 100;
 
-    private Context mContext;
+    private final Context mContext;
 
     public AndroidUriHost(Context context) {
         mContext = context;
@@ -52,16 +49,10 @@ public class AndroidUriHost implements UriHost {
         try {
             return new ProcSelfFdUriAsFile(uri);
         } catch (Exception e) {
-            boolean hasReadExternalStoragePermission = true;
-            if (Utils.apiIsAtLeast(Build.VERSION_CODES.M)) {
-                hasReadExternalStoragePermission = mContext.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
-            }
-
-            Logs.logException(new IOException(String.format("Unable to use /proc/self/fd, READ_EXTERNAL_STORAGE permission = %s", hasReadExternalStoragePermission)));
+            Logs.logException(new IOException("Failed to access file descriptor"));
             return new CopyFileUriAsFile(uri, MAX_FILE_LENGTH_FOR_COPY);
         }
     }
-
 
     @Override
     public InputStream openUriInputStream(Uri uri) throws Exception {
@@ -70,12 +61,12 @@ public class AndroidUriHost implements UriHost {
 
     private class ProcSelfFdUriAsFile implements UriAsFile {
 
-        private ParcelFileDescriptor mFd;
+        private final ParcelFileDescriptor mFd;
 
         private ProcSelfFdUriAsFile(Uri uri) throws Exception {
             mFd = mContext.getContentResolver().openFileDescriptor(uri, "r");
             if (!file().canRead())
-                throw new IOException("Can't read /proc/self/fd/" + mFd.getFd());
+                throw new IOException("Failed to read file descriptor");
         }
 
         @Override
@@ -92,7 +83,7 @@ public class AndroidUriHost implements UriHost {
 
     private class CopyFileUriAsFile implements UriAsFile {
 
-        private File mTempFile;
+        private final File mTempFile;
 
         private CopyFileUriAsFile(Uri uri, long maxFileLength) throws Exception {
             if (SafUtils.getFileLengthFromContentUri(mContext, uri) > maxFileLength) {
@@ -100,7 +91,8 @@ public class AndroidUriHost implements UriHost {
             }
 
             mTempFile = Utils.createTempFileInCache(mContext, "AndroidUriHost.CopyFileUriAsFile", "tmp");
-            try (InputStream in = Objects.requireNonNull(mContext.getContentResolver().openInputStream(uri)); OutputStream out = new FileOutputStream(mTempFile)) {
+            try (InputStream in = Objects.requireNonNull(mContext.getContentResolver().openInputStream(uri));
+                 OutputStream out = new FileOutputStream(mTempFile)) {
                 IOUtils.copyStream(in, out);
             }
         }
@@ -111,7 +103,7 @@ public class AndroidUriHost implements UriHost {
         }
 
         @Override
-        public void close() throws Exception {
+        public void close() {
             mTempFile.delete();
         }
     }
