@@ -1,11 +1,38 @@
+# config gradle scripts
+config.gradle
+
+# keystore
+keystore.jks
+
+# Generated files
+**/bin/
+**/gen/
+**/release/
+# Android Studio captures folder
+**/captures/
+
+#Binary Files
+*.apk
+*.ap_
+*.class
+*.dex
+*.war
+*.ear
+###############
+
+#IntelliJ
 *.iml
-.gradle
-/local.properties
-/.idea
+**/.idea/
+################
+
+# Local configuration file (sdk path, etc)
+local.properties
+################
+
+#Gradle files:
+**/.gradle/
+**/build/
+################
+
 .DS_Store
-/build
-/captures
 .externalNativeBuild
-crowdin.properties
-/app/normal
-/app/fdroid
