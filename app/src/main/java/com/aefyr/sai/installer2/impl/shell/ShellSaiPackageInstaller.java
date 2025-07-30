@@ -11,7 +11,6 @@ import android.os.HandlerThread;
 import android.util.Log;
 import android.util.Pair;
 
-import com.aefyr.sai.BuildConfig;
 import com.aefyr.sai.R;
 import com.aefyr.sai.installer2.base.model.AndroidPackageInstallerError;
 import com.aefyr.sai.installer2.base.model.SaiPiSessionParams;
@@ -28,6 +27,7 @@ import com.aefyr.sai.utils.Utils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
@@ -37,15 +37,14 @@ import java.util.regex.Pattern;
 
 public abstract class ShellSaiPackageInstaller extends BaseSaiPackageInstaller {
 
-    private static Semaphore mSharedSemaphore = new Semaphore(1);
-    private AtomicBoolean mAwaitingBroadcast = new AtomicBoolean(false);
-    private ExecutorService mExecutor = Executors.newFixedThreadPool(4);
-    private HandlerThread mWorkerThread = new HandlerThread("RootlessSaiPi Worker");
-    private Handler mWorkerHandler;
+    private final Semaphore mSharedSemaphore = new Semaphore(1);
+    private final AtomicBoolean mAwaitingBroadcast = new AtomicBoolean(false);
+    private final ExecutorService mExecutor = Executors.newFixedThreadPool(4);
+    private final HandlerThread mWorkerThread = new HandlerThread("RootlessSaiPi Worker");
+    private final Handler mWorkerHandler;
 
     private String mCurrentSessionId;
 
-    //TODO read package from apk stream, this is too potentially inconsistent
     private final BroadcastReceiver mPackageInstalledBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -58,17 +57,21 @@ public abstract class ShellSaiPackageInstaller extends BaseSaiPackageInstaller {
 
             String installedPackage;
             try {
-                installedPackage = intent.getDataString().replace("package:", "");
+                String dataString = intent.getDataString();
+                installedPackage = dataString != null ? dataString.replace("package:", "") : "";
                 String installerPackage = getContext().getPackageManager().getInstallerPackageName(installedPackage);
                 Log.d(tag(), "installerPackage=" + installerPackage);
-                if (!BuildConfig.APPLICATION_ID.equals(installerPackage))
+                if (!context.getPackageName().equals(installerPackage))
                     return;
             } catch (Exception e) {
                 Log.wtf(tag(), e);
                 return;
             }
 
-            setSessionState(mCurrentSessionId, new SaiPiSessionState.Builder(mCurrentSessionId, SaiPiSessionStatus.INSTALLATION_SUCCEED).packageName(installedPackage).resolvePackageMeta(getContext()).build());
+            setSessionState(mCurrentSessionId, new SaiPiSessionState.Builder(mCurrentSessionId, SaiPiSessionStatus.INSTALLATION_SUCCEED)
+                    .packageName(installedPackage)
+                    .resolvePackageMeta(getContext())
+                    .build());
             unlockInstallation();
         }
     };
@@ -87,19 +90,25 @@ public abstract class ShellSaiPackageInstaller extends BaseSaiPackageInstaller {
     @Override
     public void enqueueSession(String sessionId) {
         SaiPiSessionParams params = takeCreatedSession(sessionId);
-        setSessionState(sessionId, new SaiPiSessionState.Builder(sessionId, SaiPiSessionStatus.QUEUED).appTempName(params.apkSource().getAppName()).build());
+        setSessionState(sessionId, new SaiPiSessionState.Builder(sessionId, SaiPiSessionStatus.QUEUED)
+                .appTempName(params.apkSource().getAppName())
+                .build());
         mExecutor.submit(() -> install(sessionId, params));
     }
 
     private void install(String sessionId, SaiPiSessionParams params) {
         lockInstallation(sessionId);
         String appTempName = params.apkSource().getAppName();
-        setSessionState(sessionId, new SaiPiSessionState.Builder(sessionId, SaiPiSessionStatus.INSTALLING).appTempName(appTempName).build());
+        setSessionState(sessionId, new SaiPiSessionState.Builder(sessionId, SaiPiSessionStatus.INSTALLING)
+                .appTempName(appTempName)
+                .build());
+
         Integer androidSessionId = null;
         try (ApkSource apkSource = params.apkSource()) {
-
             if (!getShell().isAvailable()) {
-                setSessionState(sessionId, new SaiPiSessionState.Builder(sessionId, SaiPiSessionStatus.INSTALLATION_FAILED).error(getContext().getString(R.string.installer_error_shell, getInstallerName(), getShellUnavailableMessage()), null).build());
+                setSessionState(sessionId, new SaiPiSessionState.Builder(sessionId, SaiPiSessionStatus.INSTALLATION_FAILED)
+                        .error(getContext().getString(R.string.installer_error_shell, getInstallerName(), getShellUnavailableMessage()), null)
+                        .build());
                 unlockInstallation();
                 return;
             }
@@ -109,11 +118,16 @@ public abstract class ShellSaiPackageInstaller extends BaseSaiPackageInstaller {
             int currentApkFile = 0;
             while (apkSource.nextApk()) {
                 if (apkSource.getApkLength() == -1) {
-                    setSessionState(sessionId, new SaiPiSessionState.Builder(sessionId, SaiPiSessionStatus.INSTALLATION_FAILED).appTempName(appTempName).error(getContext().getString(R.string.installer_error_unknown_apk_size), null).build());
+                    setSessionState(sessionId, new SaiPiSessionState.Builder(sessionId, SaiPiSessionStatus.INSTALLATION_FAILED)
+                            .appTempName(appTempName)
+                            .error(getContext().getString(R.string.installer_error_unknown_apk_size), null)
+                            .build());
                     unlockInstallation();
                     return;
                 }
-                ensureCommandSucceeded(getShell().exec(new Shell.Command("pm", "install-write", "-S", String.valueOf(apkSource.getApkLength()), String.valueOf(androidSessionId), String.format("%d.apk", currentApkFile++)), apkSource.openApkInputStream()));
+                ensureCommandSucceeded(getShell().exec(new Shell.Command("pm", "install-write", "-S",
+                        String.valueOf(apkSource.getApkLength()), String.valueOf(androidSessionId),
+                        String.format(Locale.US, "%d.apk", currentApkFile++)), apkSource.openApkInputStream()));
             }
 
             mAwaitingBroadcast.set(true);
@@ -121,16 +135,16 @@ public abstract class ShellSaiPackageInstaller extends BaseSaiPackageInstaller {
             if (!installationResult.isSuccessful()) {
                 mAwaitingBroadcast.set(false);
 
-                String shortError = getContext().getString(R.string.installer_error_shell, getInstallerName(), getSessionInfo(apkSource) + "\n\n" + parseError(installationResult));
+                String shortError = getContext().getString(R.string.installer_error_shell, getInstallerName(),
+                        getSessionInfo(apkSource) + "\n\n" + parseError(installationResult));
                 setSessionState(sessionId, new SaiPiSessionState.Builder(sessionId, SaiPiSessionStatus.INSTALLATION_FAILED)
                         .appTempName(appTempName)
-                        .error(shortError, shortError + "\n\n" + installationResult.toString())
+                        .error(shortError, shortError + "\n\n" + installationResult.out)
                         .build());
 
                 unlockInstallation();
             }
         } catch (Exception e) {
-            //TODO this catches resources close exception causing a crash, same in rootless installer
             Log.w(tag(), e);
 
             if (androidSessionId != null) {
@@ -139,12 +153,14 @@ public abstract class ShellSaiPackageInstaller extends BaseSaiPackageInstaller {
 
             setSessionState(sessionId, new SaiPiSessionState.Builder(sessionId, SaiPiSessionStatus.INSTALLATION_FAILED)
                     .appTempName(appTempName)
-                    .error(getContext().getString(R.string.installer_error_shell, getInstallerName(), getSessionInfo(params.apkSource()) + "\n\n" + e.getLocalizedMessage()), getContext().getString(R.string.installer_error_shell, getInstallerName(), getSessionInfo(params.apkSource()) + "\n\n" + Utils.throwableToString(e)))
+                    .error(getContext().getString(R.string.installer_error_shell, getInstallerName(),
+                                    getSessionInfo(params.apkSource()) + "\n\n" + e.getLocalizedMessage()),
+                            getContext().getString(R.string.installer_error_shell, getInstallerName(),
+                                    getSessionInfo(params.apkSource()) + "\n\n" + Utils.throwableToString(e)))
                     .build());
 
             unlockInstallation();
         }
-
     }
 
     private void lockInstallation(String sessionId) {
@@ -160,23 +176,25 @@ public abstract class ShellSaiPackageInstaller extends BaseSaiPackageInstaller {
         mSharedSemaphore.release();
     }
 
-    private String ensureCommandSucceeded(Shell.Result result) {
+    private void ensureCommandSucceeded(Shell.Result result) {
         if (!result.isSuccessful())
-            throw new RuntimeException(result.toString());
-        return result.out;
+            throw new RuntimeException(result.out);
     }
 
     private String getSessionInfo(ApkSource apkSource) {
         String saiVersion = "???";
         try {
-            saiVersion = getContext().getPackageManager().getPackageInfo(getContext().getPackageName(), 0).versionName;
+            saiVersion = getContext().getPackageManager()
+                    .getPackageInfo(getContext().getPackageName(), 0).versionName;
         } catch (PackageManager.NameNotFoundException e) {
             Log.wtf(tag(), "Unable to get SAI version", e);
         }
-        return String.format("%s: %s %s | %s | Android %s | Using %s ApkSource implementation | SAI %s", getContext().getString(R.string.installer_device), Build.BRAND, Build.MODEL, Build.VERSION.RELEASE, apkSource.getClass().getSimpleName(), saiVersion);
+        return String.format(Locale.US, "%s: %s %s | %s | Android %s | Using %s ApkSource implementation | SAI %s",
+                getContext().getString(R.string.installer_device), Build.BRAND, Build.MODEL,
+                Build.VERSION.RELEASE, apkSource.getClass().getSimpleName(), saiVersion);
     }
 
-    private int createSession() throws RuntimeException {
+    private int createSession() {
         String installLocation = String.valueOf(PreferencesHelper.getInstance(getContext()).getInstallLocation());
         ArrayList<Shell.Command> commandsToAttempt = new ArrayList<>();
 
@@ -187,19 +205,20 @@ public abstract class ShellSaiPackageInstaller extends BaseSaiPackageInstaller {
             commandsToAttempt.add(new Shell.Command(command, args.toArray(new String[0])));
             Logs.d(tag(), "Using custom install-create command: " + customInstallCreateCommand);
         } else {
-            commandsToAttempt.add(new Shell.Command("pm", "install-create", "-r", "--install-location", installLocation, "-i", getShell().makeLiteral(BuildConfig.APPLICATION_ID)));
-            commandsToAttempt.add(new Shell.Command("pm", "install-create", "-r", "-i", getShell().makeLiteral(BuildConfig.APPLICATION_ID)));
+            commandsToAttempt.add(new Shell.Command("pm", "install-create", "-r", "--install-location",
+                    installLocation, "-i", getShell().makeLiteral(getContext().getPackageName())));
+            commandsToAttempt.add(new Shell.Command("pm", "install-create", "-r", "-i",
+                    getShell().makeLiteral(getContext().getPackageName())));
         }
-
 
         List<Pair<Shell.Command, String>> attemptedCommands = new ArrayList<>();
 
         for (Shell.Command commandToAttempt : commandsToAttempt) {
             Shell.Result result = getShell().exec(commandToAttempt);
-            attemptedCommands.add(new Pair<>(commandToAttempt, result.toString()));
+            attemptedCommands.add(new Pair<>(commandToAttempt, result.out));
 
             if (!result.isSuccessful()) {
-                Log.w(tag(), String.format("Command failed: %s > %s", commandToAttempt, result));
+                Log.w(tag(), String.format(Locale.US, "Command failed: %s > %s", commandToAttempt, result.out));
                 continue;
             }
 
@@ -207,7 +226,7 @@ public abstract class ShellSaiPackageInstaller extends BaseSaiPackageInstaller {
             if (sessionId != null)
                 return sessionId;
             else
-                Log.w(tag(), String.format("Command failed: %s > %s", commandToAttempt, result));
+                Log.w(tag(), String.format(Locale.US, "Command failed: %s > %s", commandToAttempt, result.out));
         }
 
         StringBuilder exceptionMessage = new StringBuilder("Unable to create session, attempted commands: ");
@@ -227,8 +246,11 @@ public abstract class ShellSaiPackageInstaller extends BaseSaiPackageInstaller {
         try {
             Pattern sessionIdPattern = Pattern.compile("(\\d+)");
             Matcher sessionIdMatcher = sessionIdPattern.matcher(commandResult);
-            sessionIdMatcher.find();
-            return Integer.parseInt(sessionIdMatcher.group(1));
+            if (sessionIdMatcher.find()) {
+                String group = sessionIdMatcher.group(1);
+                return group != null ? Integer.parseInt(group) : null;
+            }
+            return null;
         } catch (Exception e) {
             Log.w(tag(), commandResult, e);
             return null;

@@ -18,7 +18,6 @@ import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 import androidx.preference.SwitchPreference;
 
-import com.aefyr.sai.BuildConfig;
 import com.aefyr.sai.R;
 import com.aefyr.sai.shell.SuShell;
 import com.aefyr.sai.ui.activities.AboutActivity;
@@ -130,7 +129,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Fil
                 startActivity(new Intent(requireContext(), DonateActivity.class));
                 return true;
             });
-            donatePref.setVisible(!BuildConfig.HIDE_DONATE_BUTTON);
+            donatePref.setVisible(false);
         }
 
         mHomeDirPref = findPreference("home_directory");

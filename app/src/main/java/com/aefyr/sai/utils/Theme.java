@@ -15,7 +15,6 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.preference.PreferenceManager;
 
-import com.aefyr.sai.BuildConfig;
 import com.aefyr.sai.R;
 
 import java.util.ArrayList;
@@ -26,29 +25,26 @@ public class Theme {
     private static final String THEME_TAG_LIGHT = "light";
     private static final String THEME_TAG_DARK = "dark";
 
-    private static final int DEFAULT_LIGHT_THEME_ID = BuildConfig.DEFAULT_THEME;
-    private static final int DEFAULT_DARK_THEME_ID = BuildConfig.DEFAULT_DARK_THEME;
+    private static final int DEFAULT_LIGHT_THEME_ID = 0;
+    private static final int DEFAULT_DARK_THEME_ID = 1;
 
     public enum Mode {
         /**
-         * Use a single selected theme
+         * 使用单一选定主题
          */
         CONCRETE,
         /**
-         * Choose between two selected light and dark themes depending on system theme (Android Q+)
+         * 根据系统主题自动切换亮/暗主题 (Android Q+)
          */
         AUTO_LIGHT_DARK
     }
 
     private static Theme sInstance;
 
-    private Context mContext;
-
-    private SharedPreferences mPrefs;
-
-    private List<ThemeDescriptor> mThemes;
-
-    private MutableLiveData<ThemeDescriptor> mLiveTheme = new MutableLiveData<>();
+    private final Context mContext;
+    private final SharedPreferences mPrefs;
+    private final List<ThemeDescriptor> mThemes;
+    private final MutableLiveData<ThemeDescriptor> mLiveTheme = new MutableLiveData<>();
 
     private Mode mMode;
 
@@ -60,10 +56,10 @@ public class Theme {
 
     private Theme(Context c) {
         mContext = c.getApplicationContext();
-
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 
-        mMode = Mode.valueOf(mPrefs.getString(PreferencesKeys.THEME_MODE, Utils.apiIsAtLeast(Build.VERSION_CODES.Q) ? Mode.AUTO_LIGHT_DARK.name() : Mode.CONCRETE.name()));
+        mMode = Mode.valueOf(mPrefs.getString(PreferencesKeys.THEME_MODE,
+                Utils.apiIsAtLeast(Build.VERSION_CODES.Q) ? Mode.AUTO_LIGHT_DARK.name() : Mode.CONCRETE.name()));
 
         mThemes = new ArrayList<>();
         mThemes.add(new ThemeDescriptor(0, R.style.AppTheme_Light, false, R.string.theme_sai, false));
@@ -80,7 +76,6 @@ public class Theme {
         mThemes.add(new ThemeDescriptor(11, R.style.AppTheme_FDroidDark, true, R.string.theme_fdroid_dark, false));
 
         invalidateLiveTheme();
-
         sInstance = this;
     }
 
@@ -88,17 +83,10 @@ public class Theme {
         Theme theme = getInstance(c);
         ThemeDescriptor currentTheme = theme.getCurrentTheme();
         c.setTheme(currentTheme.getTheme());
-
-        //In case system dark mode changes
-        //TODO handle dark mode change better
         theme.invalidateLiveTheme();
-
         return currentTheme;
     }
 
-    /**
-     * Convenience method for {@link #getInstance(Context)}.{@link #getLiveTheme()}.{@link LiveData#observe(LifecycleOwner, Observer)}
-     */
     public static void observe(Context c, @NonNull LifecycleOwner owner, @NonNull Observer<ThemeDescriptor> observer) {
         getInstance(c).getLiveTheme().observe(owner, observer);
     }
@@ -108,17 +96,10 @@ public class Theme {
     }
 
     public ThemeDescriptor getCurrentTheme() {
-        switch (mMode) {
-            case CONCRETE:
-                return getConcreteTheme();
-            case AUTO_LIGHT_DARK:
-                if (shouldUseDarkThemeForAutoMode())
-                    return getDarkTheme();
-
-                return getLightTheme();
-        }
-
-        throw new IllegalStateException("Unknown mode");
+        return switch (mMode) {
+            case CONCRETE -> getConcreteTheme();
+            case AUTO_LIGHT_DARK -> shouldUseDarkThemeForAutoMode() ? getDarkTheme() : getLightTheme();
+        };
     }
 
     public LiveData<ThemeDescriptor> getLiveTheme() {
@@ -130,24 +111,20 @@ public class Theme {
     }
 
     public void setMode(Mode mode) {
-        if (mode == mMode)
-            return;
+        if (mode == mMode) return;
 
         mPrefs.edit().putString(PreferencesKeys.THEME_MODE, mode.name()).apply();
         mMode = mode;
-
         invalidateLiveTheme();
     }
 
     public ThemeDescriptor getConcreteTheme() {
-        return getThemeDescriptorById(getThemeId(THEME_TAG_CONCRETE, BuildConfig.DEFAULT_THEME));
+        return getThemeDescriptorById(getThemeId(THEME_TAG_CONCRETE, DEFAULT_LIGHT_THEME_ID));
     }
 
     public void setConcreteTheme(ThemeDescriptor theme) {
         saveThemeId(THEME_TAG_CONCRETE, theme.getId());
-
-        if (getThemeMode() == Mode.CONCRETE)
-            invalidateLiveTheme();
+        if (getThemeMode() == Mode.CONCRETE) invalidateLiveTheme();
     }
 
     public ThemeDescriptor getLightTheme() {
@@ -156,9 +133,9 @@ public class Theme {
 
     public void setLightTheme(ThemeDescriptor theme) {
         saveThemeId(THEME_TAG_LIGHT, theme.getId());
-
-        if (getThemeMode() == Mode.AUTO_LIGHT_DARK && !shouldUseDarkThemeForAutoMode())
+        if (getThemeMode() == Mode.AUTO_LIGHT_DARK && !shouldUseDarkThemeForAutoMode()) {
             invalidateLiveTheme();
+        }
     }
 
     public ThemeDescriptor getDarkTheme() {
@@ -167,9 +144,9 @@ public class Theme {
 
     public void setDarkTheme(ThemeDescriptor theme) {
         saveThemeId(THEME_TAG_DARK, theme.getId());
-
-        if (getThemeMode() == Mode.AUTO_LIGHT_DARK && shouldUseDarkThemeForAutoMode())
+        if (getThemeMode() == Mode.AUTO_LIGHT_DARK && shouldUseDarkThemeForAutoMode()) {
             invalidateLiveTheme();
+        }
     }
 
     private boolean shouldUseDarkThemeForAutoMode() {
@@ -177,10 +154,7 @@ public class Theme {
     }
 
     private ThemeDescriptor getThemeDescriptorById(int themeId) {
-        if (themeId >= mThemes.size())
-            return mThemes.get(0);
-
-        return mThemes.get(themeId);
+        return themeId >= mThemes.size() ? mThemes.get(0) : mThemes.get(themeId);
     }
 
     private int getThemeId(String themeTag, int defaultThemeId) {
@@ -193,20 +167,17 @@ public class Theme {
 
     private void invalidateLiveTheme() {
         ThemeDescriptor currentTheme = getCurrentTheme();
-        if (!currentTheme.equals(mLiveTheme.getValue()))
+        if (!currentTheme.equals(mLiveTheme.getValue())) {
             mLiveTheme.setValue(currentTheme);
+        }
     }
 
     public static class ThemeDescriptor {
-        private int mId;
-
-        @StyleRes
-        private int mTheme;
-        private boolean mIsDark;
-
-        @StringRes
-        private int mNameStringRes;
-        private boolean mDonationRequired;
+        private final int mId;
+        private final int mTheme;
+        private final boolean mIsDark;
+        private final int mNameStringRes;
+        private final boolean mDonationRequired;
 
         private ThemeDescriptor(int id, @StyleRes int theme, boolean isDark, @StringRes int nameStringRes, boolean donationRequired) {
             mId = id;

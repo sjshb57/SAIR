@@ -22,10 +22,6 @@ android {
             }
         }
         resConfigs("zh-rCN","zh-rTW")
-
-        buildConfigField("int", "DEFAULT_THEME", "0")
-        buildConfigField("int", "DEFAULT_DARK_THEME", "1")
-        buildConfigField("boolean", "HIDE_DONATE_BUTTON", "false")
     }
 
     signingConfigs {
@@ -86,7 +82,6 @@ dependencies {
     implementation(libs.androidx.preference)
     implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.room.runtime)
- //   implementation(libs.androidx.room.compiler)
 
     annotationProcessor(libs.androidx.room.compiler) {
     exclude(group = "com.intellij", module = "annotations") }
