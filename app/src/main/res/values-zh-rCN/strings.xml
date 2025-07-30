@@ -233,8 +233,6 @@
     <string name="settings_main_auto_theme_pre_q_warning">请注意，跟随系统主题可能在低于Android 10的版本上无法正常工作</string>
     <string name="settings_main_use_installerx">专业模式</string>
     <string name="settings_main_use_installerx_summary">启用安装程序的专业模式，该模式允许您从.apks文件（或具有多个APK文件的其他压缩文件）中选择要安装的部分。 请注意，专业模式是实验性的并且可能无法正常工作，欢迎反馈</string>
-    <string name="settings_main_enable_analytics">Analytics</string>
-    <string name="settings_main_enable_analytics_summary">允许SAI收集分析数据，例如应用使用情况数据和错误。 您可以在关于界面的“隐私政策”中找到更多将被收集 的数据。 在重新启动SAI之前，更改此设置可能无法即时生效。</string>
     <string name="settings_main_backup_settings">备份设置</string>
     <string name="settings_main_backup_settings_summary">点击打开备份设置</string>
     <string name="settings_main_enable_apk_action_view">允许通过 SAI 打开 .apk 文件</string>
@@ -337,4 +335,9 @@
     <string name="about_translate">帮助翻译SAI</string>
     <string name="about_privacy">隐私政策</string>
     <string name="about_eula">最终用户许可协议</string>
+
+    <!-- NEW Stings-->
+    <string name="permission_required">权限要求</string>
+    <string name="android_storage_permission_message">安卓11以上版本需要获取所有文件访问权限才能正常工作，请点击确定跳转到系统设置授予此权限。</string>
+    <string name="storage_permission_denied_message">访问权限被拒绝，应用可能无法正常工作。</string>
 </resources>

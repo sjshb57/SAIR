@@ -234,8 +234,6 @@
     <string name="settings_main_auto_theme_pre_q_warning">端末のテーマ設定による切り替えはAndroid 10より前のバージョンのOSではうまく動かない場合があります</string>
     <string name="settings_main_use_installerx">Proモード</string>
     <string name="settings_main_use_installerx_summary">Proモードを有効にして、.apksファイル(または複数のAPKファイルをアーカイブしたその他のファイル)からインストールする部分を選択できるようにします。Proモードは試験的な機能で、適切に動かないことがある点に注意してください。フィードバックは歓迎します。</string>
-    <string name="settings_main_enable_analytics">Analytics</string>
-    <string name="settings_main_enable_analytics_summary">Allow SAI to collect analytics data such as app usage data and errors. You can find out more about data being collected in Privacy Policy which you can find on about screen. Changing this setting may not fully apply it until you restart SAI</string>
     <string name="settings_main_backup_settings">バックアップの設定</string>
     <string name="settings_main_backup_settings_summary">タップしてバックアップの設定を開く</string>
     <string name="settings_main_enable_apk_action_view">Enable opening .apk files via SAI</string>
@@ -338,4 +336,9 @@
     <string name="about_translate">SAIの多言語化やりませんか？</string>
     <string name="about_privacy">プライバシーポリシー</string>
     <string name="about_eula">End User License Agreement</string>
+
+    <!-- NEW Stings-->
+    <string name="permission_required">権限が必要</string>
+    <string name="android_storage_permission_message">Android 11以降では正常に動作するためにすべてのファイルへのアクセス権が必要です。「OK」をクリックしてシステム設定に移動し、この権限を許可してください。</string>
+    <string name="storage_permission_denied_message">アクセス権限が拒否されました。アプリが正常に動作しない可能性があります。</string>
 </resources>

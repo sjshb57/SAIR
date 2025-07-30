@@ -233,8 +233,6 @@
     <string name="settings_main_auto_theme_pre_q_warning">Please note that following the system theme may not work correctly on Android versions lower than Q</string>
     <string name="settings_main_use_installerx">Pro mode</string>
     <string name="settings_main_use_installerx_summary">Enable installer Pro mode that allows you to select parts to install from a .apks file (or other archives with multiple APK files). Please note that Pro mode is experimental and it may not work properly, feedback is welcome</string>
-    <string name="settings_main_enable_analytics">Analytics</string>
-    <string name="settings_main_enable_analytics_summary">Allow SAI to collect analytics data such as app usage data and errors. You can find out more about data being collected in Privacy Policy which you can find on about screen. Changing this setting may not fully apply it until you restart SAI</string>
     <string name="settings_main_backup_settings">Backup settings</string>
     <string name="settings_main_backup_settings_summary">Tap to open backup settings</string>
     <string name="settings_main_enable_apk_action_view">Enable opening .apk files via SAI</string>
@@ -337,4 +335,9 @@
     <string name="about_translate">Help to translate SAI</string>
     <string name="about_privacy">Privacy Policy</string>
     <string name="about_eula">End User License Agreement</string>
+
+    <!-- NEW Stings-->
+    <string name="permission_required">權限要求</string>
+    <string name="android_storage_permission_message">Android 11及以上版本需要獲取所有文件訪問權限才能正常運作，請點擊確定跳轉到系統設定授予此權限。</string>
+    <string name="storage_permission_denied_message">訪問權限被拒絕，應用可能無法正常運作。</string>
 </resources>

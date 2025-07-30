@@ -39,7 +39,6 @@ public abstract class ShellSaiPackageInstaller extends BaseSaiPackageInstaller {
 
     private static Semaphore mSharedSemaphore = new Semaphore(1);
     private AtomicBoolean mAwaitingBroadcast = new AtomicBoolean(false);
-
     private ExecutorService mExecutor = Executors.newFixedThreadPool(4);
     private HandlerThread mWorkerThread = new HandlerThread("RootlessSaiPi Worker");
     private Handler mWorkerHandler;
