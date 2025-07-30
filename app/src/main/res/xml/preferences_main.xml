@@ -139,13 +139,6 @@
             android:summary="@string/settings_main_enable_apk_action_view_summary"
             android:defaultValue="true" />
 
-        <SwitchPreference
-            android:icon="@drawable/ic_pref_analytics"
-            android:key="firebase_enabled"
-            android:title="@string/settings_main_enable_analytics"
-            android:summary="@string/settings_main_enable_analytics_summary"
-            android:defaultValue="true" />
-
         <Preference
             android:icon="@drawable/ic_pref_donate"
             android:key="donate"

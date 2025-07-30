@@ -10,8 +10,8 @@ android {
         applicationId = "com.aefyr.sai"
         minSdk = 21
         targetSdk = 34
-        versionCode = 60
-        versionName = "4.5"
+        versionCode = 62
+        versionName = "4.7"
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments += mapOf(
@@ -22,14 +22,18 @@ android {
             }
         }
         resConfigs("zh-rCN","zh-rTW")
+
+        buildConfigField("int", "DEFAULT_THEME", "0")
+        buildConfigField("int", "DEFAULT_DARK_THEME", "1")
+        buildConfigField("boolean", "HIDE_DONATE_BUTTON", "false")
     }
 
     signingConfigs {
         create("release") {
-            keyAlias = System.getenv("RELEASE_KEY_ALIAS")
-            keyPassword = System.getenv("RELEASE_KEY_PWD")
+            keyAlias = System.getenv("RELEASE_KEY_ALIAS") ?: ""
+            keyPassword = System.getenv("RELEASE_KEY_PWD") ?: ""
             storeFile = file("../keystore.jks")
-            storePassword = System.getenv("RELEASE_KEY_STORE_PWD")
+            storePassword = System.getenv("RELEASE_KEY_STORE_PWD") ?: ""
             enableV1Signing = false
             enableV2Signing = true
             enableV3Signing = true
@@ -37,30 +41,36 @@ android {
     }
 
     buildTypes {
-        getByName("release") {
+        release {
             isMinifyEnabled = false
-    //        isShrinkResources = true
+        //    isShrinkResources = true
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
         }
+
     }
 
     buildFeatures {
         buildConfig = true
     }
 
-    flavorDimensions += "version"
-    productFlavors {
-        create("normal") {
-            dimension = "version"
-            buildConfigField("int", "DEFAULT_THEME", "0")
-            buildConfigField("int", "DEFAULT_DARK_THEME", "1")
-            buildConfigField("boolean", "HIDE_DONATE_BUTTON", "false")
-        }
-    }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
+    }
+
+    packaging {
+        resources {
+            excludes.add("META-INF/DEPENDENCIES")
+            excludes.add("META-INF/*android*")
+            excludes.add("META-INF/*kotlin*")
+            excludes.add("okhttp3/**")
+            excludes.add("kotlin/**")
+            excludes.add("META-INF/ASL2.0")
+            excludes.add("META-INF/README.md")
+            excludes.add("META-INF/services/**")
+            excludes.add("META-INF/CHANGES")
+        }
     }
 }
 
@@ -77,11 +87,11 @@ dependencies {
     implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.room.runtime)
  //   implementation(libs.androidx.room.compiler)
-    annotationProcessor(libs.androidx.room.compiler) {
-    exclude(group = "com.intellij", module = "annotations")
-   }
-    implementation(libs.material)
 
+    annotationProcessor(libs.androidx.room.compiler) {
+    exclude(group = "com.intellij", module = "annotations") }
+
+    implementation(libs.material)
     implementation(libs.glide)
     implementation(libs.flexbox)
     implementation(libs.tooltips)

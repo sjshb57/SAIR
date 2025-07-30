@@ -22,6 +22,14 @@ public class PreferencesHelper {
         sInstance = this;
     }
 
+    public boolean getBoolean(String key, boolean defaultValue) {
+        return mPrefs.getBoolean(key, defaultValue);
+    }
+
+    public void putBoolean(String key, boolean value) {
+        mPrefs.edit().putBoolean(key, value).apply();
+    }
+
     public SharedPreferences getPrefs() {
         return mPrefs;
     }
@@ -129,14 +137,6 @@ public class PreferencesHelper {
 
     public boolean isBruteParserEnabled() {
         return mPrefs.getBoolean(PreferencesKeys.USE_BRUTE_PARSER, true);
-    }
-
-    public boolean isAnalyticsEnabled() {
-        return mPrefs.getBoolean(PreferencesKeys.ENABLE_ANALYTICS, true);
-    }
-
-    public void setAnalyticsEnabled(boolean enabled) {
-        mPrefs.edit().putBoolean(PreferencesKeys.ENABLE_ANALYTICS, enabled).apply();
     }
 
     public boolean isInitialIndexingDone() {

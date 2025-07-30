@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
@@ -52,24 +54,43 @@ import java.util.Objects;
 public class Installer2Fragment extends InstallerFragment implements FilePickerDialogFragment.OnFilesSelectedListener, InstallationConfirmationDialogFragment.ConfirmationListener, SaiPiSessionsAdapter.ActionDelegate {
     private static final String TAG = "Installer2Fragment";
 
-    private static final int REQUEST_CODE_GET_FILES = 337;
-
     private InstallerViewModel mViewModel;
-
     private RecyclerView mSessionsRecycler;
     private ViewGroup mPlaceholderContainer;
-
     private PreferencesHelper mHelper;
-
     private Uri mPendingActionViewUri;
-
     private ToolTipsManager mToolTipsManager;
+
+    private final ActivityResultLauncher<String[]> storagePermissionLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestMultiplePermissions(),
+            permissions -> {
+                boolean allGranted = true;
+                for (Boolean isGranted : permissions.values()) {
+                    if (!isGranted) {
+                        allGranted = false;
+                        break;
+                    }
+                }
+
+                if (allGranted) {
+                    checkPermissionsAndPickFiles();
+                } else {
+                    AlertsUtils.showAlert(this, R.string.error, R.string.permissions_required_storage);
+                }
+            });
+
+    private final ActivityResultLauncher<Intent> filePickerLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    handleFilePickerResult(result.getData());
+                }
+            });
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mHelper = PreferencesHelper.getInstance(getContext());
+        mHelper = PreferencesHelper.getInstance(requireContext());
     }
 
     @Override
@@ -92,7 +113,6 @@ public class Installer2Fragment extends InstallerFragment implements FilePickerD
             if (event.isConsumed())
                 return;
 
-            //For some reason this observer gets called after state save on some devices
             if (isStateSaved())
                 return;
 
@@ -115,7 +135,7 @@ public class Installer2Fragment extends InstallerFragment implements FilePickerD
             }
         });
         mViewModel.getSessions().observe(getViewLifecycleOwner(), (sessions) -> {
-            setPlaceholderShown(sessions.size() == 0);
+            setPlaceholderShown(sessions.isEmpty());
             sessionsAdapter.setData(sessions);
         });
 
@@ -128,14 +148,14 @@ public class Installer2Fragment extends InstallerFragment implements FilePickerD
         }));
         findViewById(R.id.ib_help).setOnClickListener((v) -> AlertsUtils.showAlert(this, R.string.help, R.string.installer_help));
 
-        Button installButtton = findViewById(R.id.button_install);
-        installButtton.setOnClickListener((v) -> {
+        Button installButton = findViewById(R.id.button_install);
+        installButton.setOnClickListener((v) -> {
             if (mHelper.isInstallerXEnabled())
                 openInstallerXDialog(null);
             else
                 checkPermissionsAndPickFiles();
         });
-        installButtton.setOnLongClickListener((v) -> {
+        installButton.setOnLongClickListener((v) -> {
             if (mHelper.isInstallerXEnabled())
                 openInstallerXDialog(null);
             else
@@ -150,13 +170,13 @@ public class Installer2Fragment extends InstallerFragment implements FilePickerD
                     mHelper.setSafTipShown();
             });
 
-            ToolTip tooltip = new ToolTip.Builder(requireContext(), installButtton, ((ViewGroup) view), getText(R.string.installer_saf_tip), ToolTip.POSITION_ABOVE)
+            ToolTip tooltip = new ToolTip.Builder(requireContext(), installButton, ((ViewGroup) view), getText(R.string.installer_saf_tip), ToolTip.POSITION_ABOVE)
                     .setBackgroundColor(Utils.getThemeColor(requireContext(), R.attr.colorAccent))
                     .setTextAppearance(R.style.SAITooltipTextAppearance)
                     .setGravity(ToolTip.GRAVITY_CENTER)
                     .build();
 
-            installButtton.post(() -> mToolTipsManager.show(tooltip));
+            installButton.post(() -> mToolTipsManager.show(tooltip));
         }
 
         if (mPendingActionViewUri != null) {
@@ -168,10 +188,8 @@ public class Installer2Fragment extends InstallerFragment implements FilePickerD
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-
         if (mToolTipsManager != null)
             mToolTipsManager.dismissAll();
-
     }
 
     @Override
@@ -190,17 +208,11 @@ public class Installer2Fragment extends InstallerFragment implements FilePickerD
 
             InstallationConfirmationDialogFragment.newInstance(uri).show(getChildFragmentManager(), "installation_confirmation_dialog");
         }
-
     }
 
     private void setPlaceholderShown(boolean shown) {
-        if (shown) {
-            mPlaceholderContainer.setVisibility(View.VISIBLE);
-            mSessionsRecycler.setVisibility(View.GONE);
-        } else {
-            mPlaceholderContainer.setVisibility(View.GONE);
-            mSessionsRecycler.setVisibility(View.VISIBLE);
-        }
+        mPlaceholderContainer.setVisibility(shown ? View.VISIBLE : View.GONE);
+        mSessionsRecycler.setVisibility(shown ? View.GONE : View.VISIBLE);
     }
 
     private void openInstallerXDialog(@Nullable Uri apkSourceUri) {
@@ -212,7 +224,7 @@ public class Installer2Fragment extends InstallerFragment implements FilePickerD
     }
 
     private void checkPermissionsAndPickFiles() {
-        if (!PermissionsUtils.checkAndRequestStoragePermissions(this))
+        if (!PermissionsUtils.checkAndRequestStoragePermissions(this, storagePermissionLauncher))
             return;
 
         DialogProperties properties = new DialogProperties();
@@ -227,51 +239,27 @@ public class Installer2Fragment extends InstallerFragment implements FilePickerD
         FilePickerDialogFragment.newInstance(null, getString(R.string.installer_pick_apks), properties).show(getChildFragmentManager(), "dialog_files_picker");
     }
 
-    private boolean pickFilesWithSaf() {
+    private void pickFilesWithSaf() {
         Intent getContentIntent = new Intent(Intent.ACTION_GET_CONTENT);
         getContentIntent.setType("*/*");
         getContentIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        startActivityForResult(Intent.createChooser(getContentIntent, getString(R.string.installer_pick_apks)), REQUEST_CODE_GET_FILES);
-
-        return true;
+        filePickerLauncher.launch(Intent.createChooser(getContentIntent, getString(R.string.installer_pick_apks)));
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == PermissionsUtils.REQUEST_CODE_STORAGE_PERMISSIONS) {
-            if (grantResults.length == 0 || grantResults[0] == PackageManager.PERMISSION_DENIED)
-                AlertsUtils.showAlert(this, R.string.error, R.string.permissions_required_storage);
-            else
-                checkPermissionsAndPickFiles();
+    private void handleFilePickerResult(Intent data) {
+        if (data.getData() != null) {
+            mViewModel.installPackagesFromContentProviderZip(data.getData());
+            return;
         }
 
-    }
+        if (data.getClipData() != null) {
+            ClipData clipData = data.getClipData();
+            List<Uri> apkUris = new ArrayList<>(clipData.getItemCount());
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+            for (int i = 0; i < clipData.getItemCount(); i++)
+                apkUris.add(clipData.getItemAt(i).getUri());
 
-        if (requestCode == REQUEST_CODE_GET_FILES) {
-            if (resultCode != Activity.RESULT_OK || data == null)
-                return;
-
-            //TODO support multiple .apks files here
-            if (data.getData() != null) {
-                mViewModel.installPackagesFromContentProviderZip(data.getData());
-                return;
-            }
-
-            if (data.getClipData() != null) {
-                ClipData clipData = data.getClipData();
-                List<Uri> apkUris = new ArrayList<>(clipData.getItemCount());
-
-                for (int i = 0; i < clipData.getItemCount(); i++)
-                    apkUris.add(clipData.getItemAt(i).getUri());
-
-                mViewModel.installPackagesFromContentProviderUris(apkUris);
-            }
+            mViewModel.installPackagesFromContentProviderUris(apkUris);
         }
     }
 
@@ -281,7 +269,7 @@ public class Installer2Fragment extends InstallerFragment implements FilePickerD
 
     @Override
     public void onFilesSelected(String tag, List<File> files) {
-        if (files.size() == 0 || !ensureExtensionsConsistency(files)) {
+        if (files.isEmpty() || !ensureExtensionsConsistency(files)) {
             AlertsUtils.showAlert(this, R.string.error, R.string.installer_error_installer2_mixed_extensions_internal);
             return;
         }

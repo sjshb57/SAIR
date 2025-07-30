@@ -1,57 +1,70 @@
 package com.aefyr.sai.utils;
 
 import android.Manifest;
-import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Environment;
 
-import androidx.core.app.ActivityCompat;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PermissionsUtils {
-    public static final int REQUEST_CODE_STORAGE_PERMISSIONS = 322;
-    public static final int REQUEST_CODE_SHIZUKU = 1337;
 
-    public static boolean checkAndRequestStoragePermissions(Activity a) {
-        return checkAndRequestPermissions(a, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_STORAGE_PERMISSIONS);
-    }
-
-    public static boolean checkAndRequestStoragePermissions(Fragment f) {
-        return checkAndRequestPermissions(f, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_STORAGE_PERMISSIONS);
-    }
-
-    public static boolean checkAndRequestShizukuPermissions(Activity a) {
-        return checkAndRequestPermissions(a, new String[]{"moe.shizuku.manager.permission.API_V23"}, REQUEST_CODE_SHIZUKU);
-    }
-
-    public static boolean checkAndRequestShizukuPermissions(Fragment f) {
-        return checkAndRequestPermissions(f, new String[]{"moe.shizuku.manager.permission.API_V23"}, REQUEST_CODE_SHIZUKU);
-    }
-
-    private static boolean checkAndRequestPermissions(Activity a, String[] permissions, int requestCode) {
-        if (Build.VERSION.SDK_INT < 23)
+    public static boolean hasStoragePermissions(Context context) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return true;
+        }
 
-        for (String permission : permissions) {
-            if ((ActivityCompat.checkSelfPermission(a, permission)) == PackageManager.PERMISSION_DENIED) {
-                a.requestPermissions(permissions, requestCode);
-                return false;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R &&
+                Environment.isExternalStorageManager()) {
+            return true;
+        }
+
+        return ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    public static String[] getStoragePermissions() {
+        return new String[]{
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+        };
+    }
+
+    public static boolean checkAndRequestStoragePermissions(Fragment fragment, ActivityResultLauncher<String[]> launcher) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true;
+        }
+
+        List<String> permissionsToRequest = new ArrayList<>();
+        for (String permission : getStoragePermissions()) {
+            if (ContextCompat.checkSelfPermission(fragment.requireContext(), permission) != PackageManager.PERMISSION_GRANTED) {
+                permissionsToRequest.add(permission);
             }
+        }
+
+        if (!permissionsToRequest.isEmpty()) {
+            launcher.launch(permissionsToRequest.toArray(new String[0]));
+            return false;
         }
         return true;
     }
 
-    private static boolean checkAndRequestPermissions(Fragment f, String[] permissions, int requestCode) {
-        if (Build.VERSION.SDK_INT < 23)
+    public static boolean checkAndRequestShizukuPermissions(Fragment fragment, ActivityResultLauncher<String> launcher) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return true;
+        }
 
-        for (String permission : permissions) {
-            if ((ActivityCompat.checkSelfPermission(f.requireContext(), permission)) == PackageManager.PERMISSION_DENIED) {
-                f.requestPermissions(permissions, requestCode);
-                return false;
-            }
+        String permission = "moe.shizuku.manager.permission.API_V23";
+        if (ContextCompat.checkSelfPermission(fragment.requireContext(), permission) != PackageManager.PERMISSION_GRANTED) {
+            launcher.launch(permission);
+            return false;
         }
         return true;
     }
-
 }

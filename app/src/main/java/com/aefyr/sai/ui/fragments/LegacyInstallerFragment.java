@@ -3,7 +3,6 @@ package com.aefyr.sai.ui.fragments;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -11,6 +10,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
@@ -37,21 +38,43 @@ import java.util.List;
 
 public class LegacyInstallerFragment extends InstallerFragment implements FilePickerDialogFragment.OnFilesSelectedListener, InstallationConfirmationDialogFragment.ConfirmationListener {
 
-    private static final int REQUEST_CODE_GET_FILES = 337;
-
     private LegacyInstallerViewModel mViewModel;
     private Button mButton;
     private ImageButton mButtonSettings;
-
     private PreferencesHelper mHelper;
-
     private Uri mPendingActionViewUri;
+
+    private final ActivityResultLauncher<String[]> storagePermissionLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestMultiplePermissions(),
+            permissions -> {
+                boolean allGranted = true;
+                for (Boolean isGranted : permissions.values()) {
+                    if (!isGranted) {
+                        allGranted = false;
+                        break;
+                    }
+                }
+
+                if (allGranted) {
+                    checkPermissionsAndPickFiles();
+                } else {
+                    AlertsUtils.showAlert(this, R.string.error, R.string.permissions_required_storage);
+                }
+            });
+
+    private final ActivityResultLauncher<Intent> filePickerLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    handleFilePickerResult(result.getData());
+                }
+            });
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mHelper = PreferencesHelper.getInstance(getContext());
+        mHelper = PreferencesHelper.getInstance(requireContext());
 
         mButton = findViewById(R.id.button_install);
         mButtonSettings = findViewById(R.id.ib_settings);
@@ -113,7 +136,7 @@ public class LegacyInstallerFragment extends InstallerFragment implements FilePi
     }
 
     private void checkPermissionsAndPickFiles() {
-        if (!PermissionsUtils.checkAndRequestStoragePermissions(this))
+        if (!PermissionsUtils.checkAndRequestStoragePermissions(this, storagePermissionLauncher))
             return;
 
         DialogProperties properties = new DialogProperties();
@@ -132,46 +155,24 @@ public class LegacyInstallerFragment extends InstallerFragment implements FilePi
         Intent getContentIntent = new Intent(Intent.ACTION_GET_CONTENT);
         getContentIntent.setType("*/*");
         getContentIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        startActivityForResult(Intent.createChooser(getContentIntent, getString(R.string.installer_pick_apks)), REQUEST_CODE_GET_FILES);
-
+        filePickerLauncher.launch(Intent.createChooser(getContentIntent, getString(R.string.installer_pick_apks)));
         return true;
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == PermissionsUtils.REQUEST_CODE_STORAGE_PERMISSIONS) {
-            if (grantResults.length == 0 || grantResults[0] == PackageManager.PERMISSION_DENIED)
-                AlertsUtils.showAlert(this, R.string.error, R.string.permissions_required_storage);
-            else
-                checkPermissionsAndPickFiles();
+    private void handleFilePickerResult(Intent data) {
+        if (data.getData() != null) {
+            mViewModel.installPackagesFromContentProviderZip(data.getData());
+            return;
         }
 
-    }
+        if (data.getClipData() != null) {
+            ClipData clipData = data.getClipData();
+            List<Uri> apkUris = new ArrayList<>(clipData.getItemCount());
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+            for (int i = 0; i < clipData.getItemCount(); i++)
+                apkUris.add(clipData.getItemAt(i).getUri());
 
-        if (requestCode == REQUEST_CODE_GET_FILES) {
-            if (resultCode != Activity.RESULT_OK || data == null)
-                return;
-
-            if (data.getData() != null) {
-                mViewModel.installPackagesFromContentProviderZip(data.getData());
-                return;
-            }
-
-            if (data.getClipData() != null) {
-                ClipData clipData = data.getClipData();
-                List<Uri> apkUris = new ArrayList<>(clipData.getItemCount());
-
-                for (int i = 0; i < clipData.getItemCount(); i++)
-                    apkUris.add(clipData.getItemAt(i).getUri());
-
-                mViewModel.installPackagesFromContentProviderUris(apkUris);
-            }
+            mViewModel.installPackagesFromContentProviderUris(apkUris);
         }
     }
 

@@ -2,12 +2,14 @@ package com.aefyr.sai.utils;
 
 import android.app.Notification;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 
 /**
  * Manages delaying notification to avoid going over notifications per second limit
@@ -18,6 +20,7 @@ public class NotificationHelper {
     private static NotificationHelper sInstance;
 
     private NotificationManagerCompat mNotificationManager;
+    private Context mApplicationContext;
     private Handler mHandler = new Handler(Looper.getMainLooper());
 
     private long mLastNotificationTime = 0;
@@ -29,8 +32,17 @@ public class NotificationHelper {
     }
 
     private NotificationHelper(Context c) {
-        mNotificationManager = NotificationManagerCompat.from(c.getApplicationContext());
+        mApplicationContext = c.getApplicationContext();
+        mNotificationManager = NotificationManagerCompat.from(mApplicationContext);
         sInstance = this;
+    }
+
+    /**
+     * Check if notification permission is granted
+     */
+    private boolean hasNotificationPermission() {
+        return ContextCompat.checkSelfPermission(mApplicationContext,
+                android.Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED;
     }
 
     /**
@@ -53,11 +65,19 @@ public class NotificationHelper {
      * @param skipable     if notification can be skipped (such as progress notifications)
      */
     public synchronized void notify(@Nullable String tag, int id, Notification notification, boolean skipable) {
+        if (!hasNotificationPermission()) {
+            return;
+        }
+
         long timeSinceLastNotification = SystemClock.uptimeMillis() - mLastNotificationTime;
 
         if (timeSinceLastNotification < NOTIFICATION_CD) {
             if (!skipable) {
-                mHandler.postAtTime(() -> mNotificationManager.notify(tag, id, notification), mLastNotificationTime + NOTIFICATION_CD);
+                mHandler.postAtTime(() -> {
+                    if (hasNotificationPermission()) {
+                        mNotificationManager.notify(tag, id, notification);
+                    }
+                }, mLastNotificationTime + NOTIFICATION_CD);
                 mLastNotificationTime = mLastNotificationTime + NOTIFICATION_CD;
             }
             return;
@@ -74,5 +94,4 @@ public class NotificationHelper {
     public void cancel(int id) {
         cancel(null, id);
     }
-
 }
