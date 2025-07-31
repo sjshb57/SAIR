@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.facebook.shimmer.ShimmerFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<io.github.usefulness.shimmer.android.ShimmerFrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/shimmer_item_installer_session"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:shimmer_auto_start="false"
-    app:shimmer_duration="1500"
+    app:shimmer_auto_start="true"
+    app:shimmer_duration="1300"
     app:shimmer_base_alpha="0.5">
 
     <com.google.android.material.card.MaterialCardView
@@ -74,4 +75,4 @@
 
     </com.google.android.material.card.MaterialCardView>
 
-</com.facebook.shimmer.ShimmerFrameLayout>
+</io.github.usefulness.shimmer.android.ShimmerFrameLayout>
