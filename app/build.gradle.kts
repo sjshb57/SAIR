@@ -10,8 +10,8 @@ android {
         applicationId = "com.aefyr.sai"
         minSdk = 21
         targetSdk = 34
-        versionCode = 62
-        versionName = "4.7"
+        versionCode = 63
+        versionName = "4.8"
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments += mapOf(
