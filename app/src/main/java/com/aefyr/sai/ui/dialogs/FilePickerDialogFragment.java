@@ -28,6 +28,7 @@ public class FilePickerDialogFragment extends DialogFragment {
     private static final String ARG_EXTENSIONS = "extensions";
     private static final String ARG_SORT_BY = "sort_by";
     private static final String ARG_SORT_ORDER = "sort_order";
+    private static final String ARG_SHOW_HIDDEN = "show_hidden";
 
     public interface OnFilesSelectedListener {
         void onFilesSelected(String tag, List<File> files);
@@ -53,6 +54,7 @@ public class FilePickerDialogFragment extends DialogFragment {
         args.putStringArray(ARG_EXTENSIONS, properties.extensions);
         args.putInt(ARG_SORT_BY, properties.sortBy);
         args.putInt(ARG_SORT_ORDER, properties.sortOrder);
+        args.putBoolean(ARG_SHOW_HIDDEN, properties.showHiddenFiles);
 
         fragment.setArguments(args);
 
@@ -78,6 +80,7 @@ public class FilePickerDialogFragment extends DialogFragment {
         mDialogProperties.extensions = args.getStringArray(ARG_EXTENSIONS);
         mDialogProperties.sortBy = args.getInt(ARG_SORT_BY, mDialogProperties.sortBy);
         mDialogProperties.sortOrder = args.getInt(ARG_SORT_ORDER, mDialogProperties.sortOrder);
+        mDialogProperties.showHiddenFiles = args.getBoolean(ARG_SHOW_HIDDEN, false);
     }
 
     @NonNull
