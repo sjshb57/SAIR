@@ -14,14 +14,14 @@ import com.aefyr.sai.R;
 import com.aefyr.sai.installer2.base.model.SaiPiSessionState;
 import com.aefyr.sai.model.common.PackageMeta;
 import com.bumptech.glide.Glide;
-import com.facebook.shimmer.ShimmerFrameLayout;
+import io.github.usefulness.shimmer.android.ShimmerFrameLayout;
 
 import java.util.List;
 
 public class SaiPiSessionsAdapter extends RecyclerView.Adapter<SaiPiSessionsAdapter.ViewHolder> {
 
-    private Context mContext;
-    private LayoutInflater mInflater;
+    private final Context mContext;
+    private final LayoutInflater mInflater;
 
     private List<SaiPiSessionState> mSessions;
 

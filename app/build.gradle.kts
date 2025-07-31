@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId = "com.aefyr.sai"
-        minSdk = 21
+        minSdk = 23
         targetSdk = 34
         versionCode = 63
         versionName = "4.8"
@@ -75,9 +75,6 @@ dependencies {
 
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.documentfile)
-    implementation(libs.androidx.lifecycle.livedata)
-    implementation(libs.androidx.lifecycle.runtime)
-    implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.androidx.lifecycle.common.java8)
     implementation(libs.androidx.preference)
     implementation(libs.androidx.recyclerview)
@@ -91,7 +88,7 @@ dependencies {
     implementation(libs.flexbox)
     implementation(libs.tooltips)
     implementation(libs.gson)
-    implementation(libs.shimmer)
+    implementation(libs.shimmer.android)
 
     // Shizuku/Sui
     implementation(libs.shizuku.api)
