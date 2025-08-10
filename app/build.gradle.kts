@@ -75,6 +75,7 @@ dependencies {
 
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.documentfile)
+    implementation(libs.androidx.lifecycle.runtime)
     implementation(libs.androidx.lifecycle.common.java8)
     implementation(libs.androidx.preference)
     implementation(libs.androidx.recyclerview)

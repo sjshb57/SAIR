@@ -3,9 +3,11 @@ package com.aefyr.sai.utils;
 import android.app.Notification;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationManagerCompat;
@@ -19,9 +21,9 @@ public class NotificationHelper {
 
     private static NotificationHelper sInstance;
 
-    private NotificationManagerCompat mNotificationManager;
-    private Context mApplicationContext;
-    private Handler mHandler = new Handler(Looper.getMainLooper());
+    private final NotificationManagerCompat mNotificationManager;
+    private final Context mApplicationContext;
+    private final Handler mHandler = new Handler(Looper.getMainLooper());
 
     private long mLastNotificationTime = 0;
 
@@ -41,8 +43,11 @@ public class NotificationHelper {
      * Check if notification permission is granted
      */
     private boolean hasNotificationPermission() {
-        return ContextCompat.checkSelfPermission(mApplicationContext,
-                android.Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            return ContextCompat.checkSelfPermission(mApplicationContext,
+                    android.Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED;
+        }
+        return true;
     }
 
     /**
@@ -52,6 +57,7 @@ public class NotificationHelper {
      * @param notification notification to post
      * @param skipable     if notification can be skipped (such as progress notifications)
      */
+    @SuppressWarnings("unused")
     public void notify(int id, Notification notification, boolean skipable) {
         notify(null, id, notification, skipable);
     }
@@ -83,8 +89,12 @@ public class NotificationHelper {
             return;
         }
 
-        mLastNotificationTime = SystemClock.uptimeMillis();
-        mNotificationManager.notify(tag, id, notification);
+        try {
+            mLastNotificationTime = SystemClock.uptimeMillis();
+            mNotificationManager.notify(tag, id, notification);
+        } catch (SecurityException e) {
+            Log.w("NotificationHelper", "Failed to post notification due to security exception", e);
+        }
     }
 
     public void cancel(@Nullable String tag, int id) {

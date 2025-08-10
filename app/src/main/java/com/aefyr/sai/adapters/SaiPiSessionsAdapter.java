@@ -36,14 +36,10 @@ public class SaiPiSessionsAdapter extends RecyclerView.Adapter<SaiPiSessionsAdap
     public void setData(List<SaiPiSessionState> data) {
         int oldSize = mSessions.size();
         mSessions.clear();
-        if (oldSize > 0) {
-            notifyItemRangeRemoved(0, oldSize);
-        }
+        notifyItemRangeRemoved(0, oldSize);
 
         mSessions = new ArrayList<>(data);
-        if (!data.isEmpty()) {
-            notifyItemRangeInserted(0, data.size());
-        }
+        notifyItemRangeInserted(0, data.size());
     }
 
     public void setActionsDelegate(ActionDelegate delegate) {
@@ -88,7 +84,8 @@ public class SaiPiSessionsAdapter extends RecyclerView.Adapter<SaiPiSessionsAdap
         }
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
+
         private final ViewGroup mContainer;
         private final ShimmerFrameLayout mShimmer;
         private final TextView mName;
@@ -96,7 +93,7 @@ public class SaiPiSessionsAdapter extends RecyclerView.Adapter<SaiPiSessionsAdap
         private final ImageView mAppIcon;
         private final ImageView mActionIcon;
 
-        ViewHolder(@NonNull View itemView) {
+        private ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             mContainer = itemView.findViewById(R.id.container_item_installer_session);
@@ -105,16 +102,33 @@ public class SaiPiSessionsAdapter extends RecyclerView.Adapter<SaiPiSessionsAdap
             mStatus = itemView.findViewById(R.id.tv_session_status);
             mAppIcon = itemView.findViewById(R.id.iv_app_icon);
             mActionIcon = itemView.findViewById(R.id.iv_installed_app_action);
+
+            mContainer.setOnClickListener((v) -> {
+                int adapterPosition = getBindingAdapterPosition();
+                if (adapterPosition == RecyclerView.NO_POSITION) {
+                    return;
+                }
+
+                SaiPiSessionState state = mSessions.get(adapterPosition);
+                switch (state.status()) {
+                    case INSTALLATION_SUCCEED:
+                        launchApp(state.packageName());
+                        break;
+                    case INSTALLATION_FAILED:
+                        showException(state.shortError(), state.fullError());
+                        break;
+                }
+            });
         }
 
-        void bindTo(SaiPiSessionState state) {
+        private void bindTo(SaiPiSessionState state) {
             PackageMeta packageMeta = state.packageMeta();
             if (packageMeta != null) {
                 mName.setText(packageMeta.label);
             } else if (state.appTempName() != null) {
                 mName.setText(state.appTempName());
             } else {
-                mName.setText(itemView.getContext().getString(R.string.installer_unknown_app));
+                mName.setText(mContext.getString(R.string.installer_unknown_app));
             }
 
             if (packageMeta != null) {
@@ -129,7 +143,7 @@ public class SaiPiSessionsAdapter extends RecyclerView.Adapter<SaiPiSessionsAdap
                         .into(mAppIcon);
             }
 
-            mStatus.setText(state.status().getReadableName(itemView.getContext()));
+            mStatus.setText(state.status().getReadableName(mContext));
 
             switch (state.status()) {
                 case INSTALLATION_SUCCEED:
@@ -151,30 +165,13 @@ public class SaiPiSessionsAdapter extends RecyclerView.Adapter<SaiPiSessionsAdap
                     mContainer.setEnabled(false);
 
                     mShimmer.showShimmer(true);
-                    mShimmer.startShimmer();
+                    mShimmer.startShimmer(); //for some reason it doesn't start via showShimmer(true)
                     break;
             }
-
-            mContainer.setOnClickListener(v -> {
-                int adapterPosition = getBindingAdapterPosition();
-                if (adapterPosition == RecyclerView.NO_POSITION) {
-                    return;
-                }
-
-                switch (state.status()) {
-                    case INSTALLATION_SUCCEED:
-                        ((SaiPiSessionsAdapter) itemView.getParent().getParent()).launchApp(state.packageName());
-                        break;
-                    case INSTALLATION_FAILED:
-                        ((SaiPiSessionsAdapter) itemView.getParent().getParent()).showException(state.shortError(), state.fullError());
-                        break;
-                }
-            });
         }
 
-        void recycle() {
+        private void recycle() {
             Glide.with(mAppIcon).clear(mAppIcon);
-            mContainer.setOnClickListener(null);
         }
     }
 
