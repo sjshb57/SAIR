@@ -50,22 +50,19 @@ public class BackupService2 extends Service implements BackupStorage.BackupProgr
     public static final String EXTRA_STORAGE_ID = "storage_id";
     public static final String EXTRA_TASK_TOKEN = "task_token";
 
-    public static final String NOTIFICATION_GROUP_BACKUP_ONGOING = BuildConfig.APPLICATION_ID + ".notification_group.BACKUP_ONGOING";
-    public static final String NOTIFICATION_GROUP_BACKUP_DONE = BuildConfig.APPLICATION_ID + ".notification_group.BACKUP_DONE";
-
     private NotificationHelper mNotificationHelper;
 
-    private Map<String, BackupTaskInfo> mTasks = new ConcurrentHashMap<>();
-    private Map<String, BatchBackupTaskInfo> mBatchTasks = new ConcurrentHashMap<>();
+    private final Map<String, BackupTaskInfo> mTasks = new ConcurrentHashMap<>();
+    private final Map<String, BatchBackupTaskInfo> mBatchTasks = new ConcurrentHashMap<>();
 
-    private Handler mHandler = new Handler(Looper.getMainLooper());
+    private final Handler mHandler = new Handler(Looper.getMainLooper());
 
     private HandlerThread mProgressHandlerThread;
     private Handler mProgressHandler;
 
     private BackupManager mBackupManager;
 
-    private Map<String, AtomicInteger> mStorageDependencies = new HashMap<>();
+    private final Map<String, AtomicInteger> mStorageDependencies = new HashMap<>();
 
     public static void enqueueBackup(Context c, String storageId, String taskToken) {
         Intent intent = new Intent(c, BackupService2.class);
@@ -135,16 +132,16 @@ public class BackupService2 extends Service implements BackupStorage.BackupProgr
         BackupStorage storage = mBackupManager.getBackupStorageProvider(storageId).getStorage();
 
         BackupTaskConfig config = storage.getTaskConfig(taskToken);
-        if (config == null)
-            return;
-
-        if (config instanceof SingleBackupTaskConfig) {
-            SingleBackupTaskConfig taskConfig = (SingleBackupTaskConfig) config;
-            mTasks.put(taskToken, new BackupTaskInfo(config.getBackupStorageId(), taskConfig.packageMeta(), taskToken, taskToken));
-        } else if (config instanceof BatchBackupTaskConfig) {
-            mBatchTasks.put(taskToken, new BatchBackupTaskInfo(config.getBackupStorageId(), taskToken, taskToken));
-        } else {
-            Log.w(TAG, String.format("Got unsupported task config class - %s, task token - %s, ignoring", config.getClass().getCanonicalName(), taskToken));
+        switch (config) {
+            case null -> {
+                return;
+            }
+            case SingleBackupTaskConfig taskConfig ->
+                    mTasks.put(taskToken, new BackupTaskInfo(config.getBackupStorageId(), taskConfig.packageMeta(), taskToken, taskToken));
+            case BatchBackupTaskConfig ignored ->
+                    mBatchTasks.put(taskToken, new BatchBackupTaskInfo(config.getBackupStorageId(), taskToken, taskToken));
+            default ->
+                    Log.w(TAG, String.format("Got unsupported task config class - %s, task token - %s, ignoring", config.getClass().getCanonicalName(), taskToken));
         }
 
         addStorageDependency(storageId);
@@ -234,7 +231,7 @@ public class BackupService2 extends Service implements BackupStorage.BackupProgr
                 .build();
     }
 
-    private void publishProgress(BackupTaskInfo taskInfo, int current, int goal) {
+    private void publishProgress(BackupTaskInfo taskInfo, int current) {
         if (System.currentTimeMillis() - taskInfo.lastProgressUpdate < PROGRESS_NOTIFICATION_UPDATE_CD)
             return;
 
@@ -258,7 +255,7 @@ public class BackupService2 extends Service implements BackupStorage.BackupProgr
                 .setOngoing(true)
                 .setSmallIcon(R.drawable.ic_backup)
                 .setContentTitle(getString(R.string.backup_backup))
-                .setProgress(goal, current, false)
+                .setProgress(100, current, false)
                 .setContentText(getString(R.string.backup_backup_in_progress, taskInfo.packageMeta.label))
                 .addAction(new NotificationCompat.Action(null, getString(R.string.cancel), cancelTaskPendingIntent))
                 .build();
@@ -302,18 +299,18 @@ public class BackupService2 extends Service implements BackupStorage.BackupProgr
                 break;
             case IN_PROGRESS:
                 int progress = (int) ((float) status.currentProgress() / ((float) status.progressGoal() / 100f));
-                publishProgress(mTasks.get(status.token()), progress, 100);
+                publishProgress(Objects.requireNonNull(mTasks.get(status.token())), progress);
                 break;
             case CANCELLED:
-                notifyBackupCancelled(mTasks.get(status.token()));
+                notifyBackupCancelled(Objects.requireNonNull(mTasks.get(status.token())));
                 mHandler.post(() -> taskFinished(status.token()));
                 break;
             case SUCCEEDED:
-                notifyBackupCompleted(mTasks.get(status.token()), true);
+                notifyBackupCompleted(Objects.requireNonNull(mTasks.get(status.token())), true);
                 mHandler.post(() -> taskFinished(status.token()));
                 break;
             case FAILED:
-                notifyBackupCompleted(mTasks.get(status.token()), false);
+                notifyBackupCompleted(Objects.requireNonNull(mTasks.get(status.token())), false);
                 mHandler.post(() -> taskFinished(status.token()));
                 break;
         }
@@ -396,12 +393,12 @@ public class BackupService2 extends Service implements BackupStorage.BackupProgr
             case QUEUED:
                 break;
             case IN_PROGRESS:
-                publishBatchProgress(mBatchTasks.get(status.token()), status.completedBackupsCount(), status.totalBackupsCount(), status.currentConfig());
+                publishBatchProgress(Objects.requireNonNull(mBatchTasks.get(status.token())), status.completedBackupsCount(), status.totalBackupsCount(), status.currentConfig());
                 break;
             case CANCELLED:
             case SUCCEEDED:
             case FAILED:
-                notifyBatchBackupCompleted(mBatchTasks.get(status.token()), status);
+                notifyBatchBackupCompleted(Objects.requireNonNull(mBatchTasks.get(status.token())), status);
                 mHandler.post(() -> taskFinished(status.token()));
                 break;
         }

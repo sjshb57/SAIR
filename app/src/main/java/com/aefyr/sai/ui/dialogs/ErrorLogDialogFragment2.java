@@ -12,8 +12,6 @@ import androidx.fragment.app.DialogFragment;
 import com.aefyr.sai.R;
 import com.aefyr.sai.utils.Utils;
 
-import java.util.Objects;
-
 public class ErrorLogDialogFragment2 extends DialogFragment {
     private static final String ARG_TITLE = "title";
     private static final String ARG_ERROR_MESSAGE = "error_message";
@@ -24,7 +22,6 @@ public class ErrorLogDialogFragment2 extends DialogFragment {
     private CharSequence mErrorMessage;
     private CharSequence mFullError;
     private boolean mDisplayFullError;
-
 
     public static ErrorLogDialogFragment2 newInstance(CharSequence title, CharSequence errorMessage, CharSequence fullError, boolean displayFullError) {
         ErrorLogDialogFragment2 fragment = new ErrorLogDialogFragment2();
@@ -56,25 +53,25 @@ public class ErrorLogDialogFragment2 extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getContext()))
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext())
                 .setTitle(mTitle)
                 .setMessage(mDisplayFullError ? mFullError : mErrorMessage)
                 .setPositiveButton(R.string.ok, null);
 
         if (mDisplayFullError) {
             builder.setNeutralButton(R.string.copy2, (d, w) -> {
-                Utils.copyTextToClipboard(getContext(), mFullError);
-                Toast.makeText(getContext(), R.string.copied, Toast.LENGTH_SHORT).show();
+                Utils.copyTextToClipboard(requireContext(), mFullError);
+                Toast.makeText(requireContext(), R.string.copied, Toast.LENGTH_SHORT).show();
                 dismiss();
             });
         } else {
             builder.setNeutralButton(R.string.installer_show_full_error, (d, w) -> {
-                newInstance(mTitle, mErrorMessage, mFullError, true).show(getParentFragmentManager(), getTag());
+                newInstance(mTitle, mErrorMessage, mFullError, true)
+                        .show(requireActivity().getSupportFragmentManager(), getTag());
                 dismiss();
             });
         }
 
         return builder.create();
-
     }
 }

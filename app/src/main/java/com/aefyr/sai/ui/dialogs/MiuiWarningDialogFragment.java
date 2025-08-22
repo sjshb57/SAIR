@@ -14,8 +14,6 @@ import androidx.preference.PreferenceManager;
 import com.aefyr.sai.R;
 import com.aefyr.sai.utils.PreferencesKeys;
 
-import java.util.Objects;
-
 public class MiuiWarningDialogFragment extends DialogFragment {
 
     @Override
@@ -27,16 +25,22 @@ public class MiuiWarningDialogFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        return new AlertDialog.Builder(Objects.requireNonNull(getContext()))
+        return new AlertDialog.Builder(requireContext())
                 .setTitle(R.string.installer_miui_warning_title)
                 .setMessage(R.string.installer_miui_warning_message)
                 .setPositiveButton(R.string.installer_miui_warning_open_dev_settings, (d, w) -> {
-                    PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putBoolean(PreferencesKeys.MIUI_WARNING_SHOWN, true).apply();
+                    PreferenceManager.getDefaultSharedPreferences(requireContext())
+                            .edit()
+                            .putBoolean(PreferencesKeys.MIUI_WARNING_SHOWN, true)
+                            .apply();
 
                     try {
                         startActivity(new Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS));
                     } catch (Exception e) {
-                        SimpleAlertDialogFragment.newInstance(getString(R.string.error), getString(R.string.installer_miui_warning_oof)).show(getParentFragmentManager(), "alert_oof");
+                        SimpleAlertDialogFragment.newInstance(
+                                        requireContext().getString(R.string.error),
+                                        requireContext().getString(R.string.installer_miui_warning_oof))
+                                .show(requireActivity().getSupportFragmentManager(), "alert_oof");
                     }
 
                     dismiss();

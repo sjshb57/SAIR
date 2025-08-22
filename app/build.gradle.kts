@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 plugins {
     alias(libs.plugins.android.application)
 }
@@ -9,6 +11,7 @@ android {
     defaultConfig {
         applicationId = "com.aefyr.sai"
         minSdk = 23
+        //noinspection OldTargetApi
         targetSdk = 34
         versionCode = 63
         versionName = "4.8"
@@ -75,6 +78,7 @@ dependencies {
 
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.documentfile)
+    implementation(libs.androidx.fragment)
     implementation(libs.androidx.lifecycle.runtime)
     implementation(libs.androidx.lifecycle.common.java8)
     implementation(libs.androidx.preference)
