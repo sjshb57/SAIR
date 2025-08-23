@@ -91,7 +91,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.glide)
     implementation(libs.flexbox)
-    implementation(libs.tooltips)
+//    implementation(libs.tooltips)
     implementation(libs.gson)
     implementation(libs.shimmer.android)
 

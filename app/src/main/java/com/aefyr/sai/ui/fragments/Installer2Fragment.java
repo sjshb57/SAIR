@@ -5,6 +5,7 @@ import android.content.ClipData;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -17,6 +18,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -170,12 +172,12 @@ public class Installer2Fragment extends InstallerFragment implements FilePickerD
                     mHelper.setSafTipShown();
             });
 
-            ToolTip tooltip = new ToolTip.Builder(requireContext(), installButton, ((ViewGroup) view), getText(R.string.installer_saf_tip), ToolTip.POSITION_ABOVE)
-                    .setBackgroundColor(Utils.getThemeColor(requireContext(), R.attr.colorAccent))
-                    .setTextAppearance(R.style.SAITooltipTextAppearance)
-                    .setGravity(ToolTip.GRAVITY_CENTER)
-                    .build();
+            ToolTip.Builder builder = new ToolTip.Builder(requireContext(), installButton, ((ViewGroup) view), getText(R.string.installer_saf_tip), ToolTip.POSITION_ABOVE);
+            builder.setBackgroundColor(Utils.getThemeColor(requireContext(), R.attr.colorAccent));
+            builder.setTextAppearance(R.style.SAITooltipTextAppearance);
+            builder.setGravity(ToolTip.GRAVITY_CENTER);
 
+            ToolTip tooltip = builder.build();
             installButton.post(() -> mToolTipsManager.show(tooltip));
         }
 
@@ -267,6 +269,7 @@ public class Installer2Fragment extends InstallerFragment implements FilePickerD
         AppInstalledDialogFragment.newInstance(packageName).show(getChildFragmentManager(), "dialog_app_installed");
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.VANILLA_ICE_CREAM)
     @Override
     public void onFilesSelected(String tag, List<File> files) {
         if (files.isEmpty() || !ensureExtensionsConsistency(files)) {
@@ -274,7 +277,7 @@ public class Installer2Fragment extends InstallerFragment implements FilePickerD
             return;
         }
 
-        String extension = Utils.getExtension(files.get(0).getName());
+        String extension = Utils.getExtension(files.getFirst().getName());
 
         if ("apks".equals(extension) || "zip".equals(extension) || "xapk".equals(extension) || "apkm".equals(extension)) {
             mViewModel.installPackagesFromZip(files);
@@ -285,8 +288,9 @@ public class Installer2Fragment extends InstallerFragment implements FilePickerD
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.VANILLA_ICE_CREAM)
     private boolean ensureExtensionsConsistency(List<File> files) {
-        String firstFileExtension = Utils.getExtension(files.get(0).getName());
+        String firstFileExtension = Utils.getExtension(files.getFirst().getName());
         if (firstFileExtension == null)
             return false;
 

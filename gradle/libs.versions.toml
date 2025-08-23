@@ -14,12 +14,11 @@ androidxRoom = "2.7.2"
 material = "1.12.0"
 glide = "4.16.0"
 flexbox = "3.0.0"
-tooltips = "1.1.1"
+# tooltips = "1.1.1"
 gson = "2.13.1"
 shimmer = "1.0.0"
 shizuku = "13.1.5"
 leakcanary = "2.14"
-
 
 [libraries]
 
@@ -37,7 +36,7 @@ androidx-room-runtime = { group = "androidx.room", name = "room-runtime", versio
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 flexbox = { group = "com.google.android.flexbox", name = "flexbox", version.ref = "flexbox" }
-tooltips = { group = "com.tomergoldst.android", name = "tooltips", version.ref = "tooltips" }
+# tooltips = { group = "com.tomergoldst.android", name = "tooltips", version.ref = "tooltips" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 shimmer-android = { group = "io.github.usefulness", name = "shimmer-android-core", version.ref = "shimmer" }
 shizuku-api = { group = "dev.rikka.shizuku", name = "api", version.ref = "shizuku" }
