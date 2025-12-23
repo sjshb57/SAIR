@@ -1,11 +1,11 @@
 <resources>
 
     <style name="AppTheme.Light" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="colorPrimary">@color/colorPureWhite</item>
-        <item name="colorPrimaryDark">@color/colorPureWhite</item>
+        <item name="colorPrimary">@color/colorPrimarySai</item>
+        <item name="colorPrimaryDark">@color/colorPrimarySai</item>
         <item name="colorPrimaryLight">@color/colorPrimaryLightSai</item>
         <item name="colorAccent">@color/colorCoolBlue</item>
-        <item name="android:windowBackground">@color/colorPureWhite</item>
+        <item name="android:windowBackground">@color/colorPrimarySai</item>
         <item name="titleTextColor">@color/colorFineGrey</item>
         <item name="android:textColorPrimary">@color/colorFineGrey</item>
         <item name="android:textColorSecondary">@color/colorFineGrey</item>
