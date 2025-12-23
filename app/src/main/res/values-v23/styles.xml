@@ -2,16 +2,16 @@
 <resources>
 
     <style name="AppTheme.Light" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="colorPrimary">@color/colorPureWhite</item>
-        <item name="colorPrimaryDark">@color/colorPureWhite</item>
+        <item name="colorPrimary">@color/colorPrimarySai</item>
+        <item name="colorPrimaryDark">@color/colorPrimarySai</item>
         <item name="colorPrimaryLight">@color/colorPrimaryLightSai</item>
         <item name="colorAccent">@color/colorCoolBlue</item>
-        <item name="android:windowBackground">@color/colorPureWhite</item>
+        <item name="android:windowBackground">@color/colorPrimarySai</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="titleTextColor">@color/colorFineGrey</item>
         <item name="android:textColorPrimary">@color/colorFineGrey</item>
         <item name="android:textColorSecondary">@color/colorFineGrey</item>
-        <item name="android:statusBarColor">@color/colorPureWhite</item>
+        <item name="android:statusBarColor">@color/colorPrimarySai</item>
         <item name="alertDialogTheme">@style/AlertDialog.AppTheme.Light</item>
         <item name="android:textViewStyle">@style/SAITextViewStyle</item>
         <item name="filePickerDialogSelectButtonStyle">@style/SAIMaterialButton</item>
