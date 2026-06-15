@@ -340,4 +340,6 @@
     <string name="permission_required">權限要求</string>
     <string name="android_storage_permission_message">Android 11及以上版本需要獲取所有文件訪問權限才能正常運作，請點擊確定跳轉到系統設定授予此權限。</string>
     <string name="storage_permission_denied_message">訪問權限被拒絕，應用可能無法正常運作。</string>
+    <string name="install_permission_message">此應用需要安裝未知應用的權限才能安裝APK檔案。請點擊確認前往設定頁面開啟此權限。</string>
+    <string name="install_permission_denied_message">安裝未知應用的權限被拒絕，無法安裝APK檔案。</string>
 </resources>

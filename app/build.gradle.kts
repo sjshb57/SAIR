@@ -15,6 +15,7 @@ android {
         targetSdk = 34
         versionCode = 64
         versionName = "4.9"
+        resourceConfigurations += setOf("zh-rCN", "zh-rTW")
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments += mapOf(
@@ -24,7 +25,6 @@ android {
                 )
             }
         }
-        resConfigs("zh-rCN","zh-rTW")
     }
 
     signingConfigs {
@@ -44,7 +44,7 @@ android {
             isMinifyEnabled = false
         //    isShrinkResources = true
             signingConfig = signingConfigs.getByName("release")
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
 
     }
@@ -91,7 +91,6 @@ dependencies {
     implementation(libs.material)
     implementation(libs.glide)
     implementation(libs.flexbox)
-//    implementation(libs.tooltips)
     implementation(libs.gson)
     implementation(libs.shimmer.android)
 

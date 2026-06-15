@@ -181,6 +181,19 @@ public class InstallerXDialogFragment extends BaseBottomSheetDialogFragment impl
                 }).show(getChildFragmentManager(), DIALOG_TAG_STORAGE_PERMISSION);
     }
 
+        private final ActivityResultLauncher<Intent> installPermissionLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        if (requireContext().getPackageManager().canRequestPackageInstalls()) {
+                            startInstallation();
+                        } else {
+                            AlertsUtils.showAlert(this, R.string.permission_required,
+                                    R.string.install_permission_denied_message);
+                        }
+                    }
+                });
+
     @Nullable
     @Override
     protected View onCreateContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -205,8 +218,10 @@ public class InstallerXDialogFragment extends BaseBottomSheetDialogFragment impl
 
         getNegativeButton().setOnClickListener(v -> dismiss());
         getPositiveButton().setOnClickListener(v -> {
-            mViewModel.enqueueInstallation();
-            dismiss();
+            if (checkAndRequestInstallPermission()) {
+                mViewModel.enqueueInstallation();
+                dismiss();
+            }
         });
 
         view.findViewById(R.id.button_installerx_fp_internal).setOnClickListener(v -> checkPermissionsAndPickFiles());
@@ -340,5 +355,34 @@ public class InstallerXDialogFragment extends BaseBottomSheetDialogFragment impl
                 pickFilesWithSaf(false);
             }
         }
+    }
+
+    private boolean checkAndRequestInstallPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (!requireContext().getPackageManager().canRequestPackageInstalls()) {
+                // 显示权限请求对话框
+                showInstallPermissionDialog();
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void showInstallPermissionDialog() {
+        SimpleAlertDialogFragment.newInstance(requireContext(),
+                R.string.permission_required,
+                R.string.install_permission_message,
+                (dialog, which) -> {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        Intent intent = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES);
+                        intent.setData(Uri.parse("package:" + requireContext().getPackageName()));
+                        installPermissionLauncher.launch(intent);
+                    }
+                }).show(getChildFragmentManager(), "install_permission_dialog");
+    }
+
+    private void startInstallation() {
+        mViewModel.enqueueInstallation();
+        dismiss();
     }
 }

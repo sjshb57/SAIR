@@ -33,13 +33,13 @@ public class RootlessSaiPackageInstaller extends BaseSaiPackageInstaller impleme
 
     private static RootlessSaiPackageInstaller sInstance;
 
-    private PackageInstaller mPackageInstaller;
-    private ExecutorService mExecutor = Executors.newFixedThreadPool(4);
+    private final PackageInstaller mPackageInstaller;
+    private final ExecutorService mExecutor = Executors.newFixedThreadPool(4);
     private final HandlerThread mWorkerThread = new HandlerThread("RootlessSaiPi Worker");
     private final Handler mWorkerHandler;
 
-    private ConcurrentHashMap<Integer, String> mAndroidPiSessionIdToSaiPiSessionId = new ConcurrentHashMap<>();
-    private ConcurrentHashMap<String, String> mSessionIdToAppTempName = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Integer, String> mAndroidPiSessionIdToSaiPiSessionId = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, String> mSessionIdToAppTempName = new ConcurrentHashMap<>();
 
     private final RootlessSaiPiBroadcastReceiver mBroadcastReceiver;
 
@@ -114,7 +114,13 @@ public class RootlessSaiPackageInstaller extends BaseSaiPackageInstaller impleme
             }
 
             Intent callbackIntent = new Intent(RootlessSaiPiBroadcastReceiver.ACTION_DELIVER_PI_EVENT);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0, callbackIntent, PendingIntent.FLAG_IMMUTABLE);
+            callbackIntent.setPackage(getContext().getPackageName());
+
+            int flags = PendingIntent.FLAG_UPDATE_CURRENT;
+            if (Build.VERSION.SDK_INT >= 31) {
+                flags |= PendingIntent.FLAG_IMMUTABLE;
+            }
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0, callbackIntent, flags);
             session.commit(pendingIntent.getIntentSender());
         } catch (Exception e) {
             Log.w(TAG, e);

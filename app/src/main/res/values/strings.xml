@@ -364,4 +364,6 @@
     <string name="permission_required">Permission Required</string>
     <string name="android_storage_permission_message">Android 11 and above requires access to all files to function properly. Please click OK to go to system settings and grant this permission.</string>
     <string name="storage_permission_denied_message">Access permission denied, the app may not work properly.</string>
+    <string name="install_permission_message">This app requires permission to install unknown apps in order to install APK files. Please click confirm to go to the settings page and enable this permission.</string>
+    <string name="install_permission_denied_message">Permission to install unknown apps was denied. APK files cannot be installed.</string>
 </resources>

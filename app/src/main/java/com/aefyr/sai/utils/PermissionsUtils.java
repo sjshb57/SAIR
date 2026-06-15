@@ -20,10 +20,6 @@ public class PermissionsUtils {
             return Environment.isExternalStorageManager();
         }
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return true;
-        }
-
         return ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
     }
@@ -43,10 +39,6 @@ public class PermissionsUtils {
             return !Environment.isExternalStorageManager();
         }
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return true;
-        }
-
         List<String> permissionsToRequest = new ArrayList<>();
         for (String permission : getStoragePermissions()) {
             if (ContextCompat.checkSelfPermission(fragment.requireContext(), permission) != PackageManager.PERMISSION_GRANTED) {
@@ -62,9 +54,6 @@ public class PermissionsUtils {
     }
 
     public static boolean checkAndRequestShizukuPermissions(Fragment fragment, ActivityResultLauncher<String> launcher) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return true;
-        }
 
         String permission = "moe.shizuku.manager.permission.API_V23";
         if (ContextCompat.checkSelfPermission(fragment.requireContext(), permission) != PackageManager.PERMISSION_GRANTED) {

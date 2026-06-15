@@ -24,13 +24,13 @@ public abstract class SAIPackageInstaller {
         QUEUED, INSTALLING, INSTALLATION_SUCCEED, INSTALLATION_FAILED
     }
 
-    private Context mContext;
-    private Handler mHandler = new Handler(Looper.getMainLooper());
-    private ExecutorService mExecutor = Executors.newSingleThreadExecutor();
+    private final Context mContext;
+    private final Handler mHandler = new Handler(Looper.getMainLooper());
+    private final ExecutorService mExecutor = Executors.newSingleThreadExecutor();
 
-    private ArrayDeque<QueuedInstallation> mInstallationQueue = new ArrayDeque<>();
-    private ArrayList<InstallationStatusListener> mListeners = new ArrayList<>();
-    private LongSparseArray<QueuedInstallation> mCreatedInstallationSessions = new LongSparseArray<>();
+    private final ArrayDeque<QueuedInstallation> mInstallationQueue = new ArrayDeque<>();
+    private final ArrayList<InstallationStatusListener> mListeners = new ArrayList<>();
+    private final LongSparseArray<QueuedInstallation> mCreatedInstallationSessions = new LongSparseArray<>();
 
     private boolean mInstallationInProgress;
     private long mLastInstallationID = 0;
@@ -78,7 +78,7 @@ public abstract class SAIPackageInstaller {
     }
 
     private void processQueue() {
-        if (mInstallationQueue.size() == 0 || mInstallationInProgress)
+        if (mInstallationQueue.isEmpty() || mInstallationInProgress)
             return;
 
         QueuedInstallation installation = mInstallationQueue.removeFirst();
