@@ -13,8 +13,8 @@ android {
         minSdk = 24
         //noinspection OldTargetApi
         targetSdk = 34
-        versionCode = 64
-        versionName = "4.9"
+        versionCode = 65
+        versionName = "5.0"
         resourceConfigurations += setOf("zh-rCN", "zh-rTW")
         javaCompileOptions {
             annotationProcessorOptions {
@@ -41,8 +41,8 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
-        //    isShrinkResources = true
+            isMinifyEnabled = true
+            isShrinkResources = true
             signingConfig = signingConfigs.getByName("release")
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
