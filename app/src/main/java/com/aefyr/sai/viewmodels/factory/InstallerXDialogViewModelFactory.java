@@ -12,8 +12,8 @@ import com.aefyr.sai.installerx.resolver.urimess.UriHostFactory;
 
 public class InstallerXDialogViewModelFactory implements ViewModelProvider.Factory {
 
-    private Context mAppContext;
-    private UriHostFactory mUriHostFactory;
+    private final Context mAppContext;
+    private final UriHostFactory mUriHostFactory;
 
     public InstallerXDialogViewModelFactory(Context context, @Nullable UriHostFactory uriHostFactory) {
         mAppContext = context.getApplicationContext();

@@ -26,16 +26,16 @@ public class LegacyInstallerViewModel extends AndroidViewModel implements SAIPac
     public static final String EVENT_INSTALLATION_FAILED = "installation_failed";
 
     private SAIPackageInstaller mInstaller;
-    private Context mContext;
-    private PreferencesHelper mPrefsHelper;
+    private final Context mContext;
+    private final PreferencesHelper mPrefsHelper;
     private long mOngoingSessionId;
 
     public enum InstallerState {
         IDLE, INSTALLING
     }
 
-    private MutableLiveData<InstallerState> mState = new MutableLiveData<>();
-    private MutableLiveData<Event<String[]>> mEvents = new MutableLiveData<>();
+    private final MutableLiveData<InstallerState> mState = new MutableLiveData<>();
+    private final MutableLiveData<Event<String[]>> mEvents = new MutableLiveData<>();
 
     public LegacyInstallerViewModel(@NonNull Application application) {
         super(application);

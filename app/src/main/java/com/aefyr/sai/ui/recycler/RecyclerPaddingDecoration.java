@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class RecyclerPaddingDecoration extends RecyclerView.ItemDecoration {
 
-    private Rect mPadding = new Rect();
+    private final Rect mPadding = new Rect();
 
     public RecyclerPaddingDecoration(Rect padding) {
         mPadding.set(padding);

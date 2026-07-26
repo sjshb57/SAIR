@@ -27,7 +27,7 @@ public class ApkmAppMetaExtractor implements AppMetaExtractor {
     private static final String META_FILE = "info.json";
     private static final String ICON_FILE = "icon.png";
 
-    private Context mContext;
+    private final Context mContext;
 
     public ApkmAppMetaExtractor(Context context) {
         mContext = context.getApplicationContext();

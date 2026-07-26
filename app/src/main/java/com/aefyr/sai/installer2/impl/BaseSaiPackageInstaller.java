@@ -21,14 +21,14 @@ import java.util.concurrent.ConcurrentSkipListMap;
 @SuppressLint("UseSparseArrays")
 public abstract class BaseSaiPackageInstaller implements SaiPackageInstaller {
 
-    private Context mContext;
+    private final Context mContext;
     private long mLastSessionId = 0;
 
-    private ConcurrentHashMap<String, SaiPiSessionParams> mCreatedSessions = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, SaiPiSessionParams> mCreatedSessions = new ConcurrentHashMap<>();
 
-    private ConcurrentSkipListMap<String, SaiPiSessionState> mSessionStates = new ConcurrentSkipListMap<>();
+    private final ConcurrentSkipListMap<String, SaiPiSessionState> mSessionStates = new ConcurrentSkipListMap<>();
 
-    private Set<SaiPiSessionObserver> mObservers = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    private final Set<SaiPiSessionObserver> mObservers = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     protected BaseSaiPackageInstaller(Context c) {
         mContext = c.getApplicationContext();

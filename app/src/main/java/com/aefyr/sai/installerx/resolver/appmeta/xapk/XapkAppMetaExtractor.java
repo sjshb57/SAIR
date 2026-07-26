@@ -28,7 +28,7 @@ public class XapkAppMetaExtractor implements AppMetaExtractor {
     private static final String META_FILE = "manifest.json";
     private static final String ICON_FILE = "icon.png";
 
-    private Context mContext;
+    private final Context mContext;
 
     public XapkAppMetaExtractor(Context context) {
         mContext = context.getApplicationContext();

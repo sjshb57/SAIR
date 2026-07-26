@@ -11,7 +11,7 @@ import com.github.angads25.filepicker.model.DialogConfigs;
 public class PreferencesHelper {
     private static PreferencesHelper sInstance;
 
-    private SharedPreferences mPrefs;
+    private final SharedPreferences mPrefs;
 
     public static PreferencesHelper getInstance(Context c) {
         return sInstance != null ? sInstance : new PreferencesHelper(c);

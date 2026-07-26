@@ -11,7 +11,7 @@ import java.util.List;
 
 public class ComplexFilterConfig implements Parcelable {
 
-    private List<FilterConfig> mFilterConfigs;
+    private final List<FilterConfig> mFilterConfigs;
 
     public ComplexFilterConfig(List<FilterConfig> filterConfigs) {
         mFilterConfigs = filterConfigs;

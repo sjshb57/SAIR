@@ -6,7 +6,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class RwLock {
 
-    private ReadWriteLock mLock;
+    private final ReadWriteLock mLock;
 
     public RwLock(ReadWriteLock backingLock) {
         mLock = backingLock;

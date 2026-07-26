@@ -18,7 +18,7 @@ public class AbiConfigSplitMeta extends ConfigSplitMeta {
     public static final String MIPS = "mips";
     public static final String MIPS64 = "mips64";
 
-    private static Set<String> ALL_ABIS = new HashSet<>();
+    private static final Set<String> ALL_ABIS = new HashSet<>();
 
     static {
         ALL_ABIS.add(ARMEABI);
@@ -30,7 +30,7 @@ public class AbiConfigSplitMeta extends ConfigSplitMeta {
         ALL_ABIS.add(MIPS64);
     }
 
-    private String mAbi;
+    private final String mAbi;
 
     public AbiConfigSplitMeta(Map<String, String> manifestAttrs) {
         super(manifestAttrs);

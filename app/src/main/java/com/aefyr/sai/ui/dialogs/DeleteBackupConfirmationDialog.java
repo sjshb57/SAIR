@@ -25,7 +25,7 @@ public class DeleteBackupConfirmationDialog extends DialogFragment {
     private Uri mBackupUri;
     private long mTimestamp;
 
-    private SimpleDateFormat mBackupTimeSdf = new SimpleDateFormat("dd MMM yyyy, HH:mm:ss", Locale.getDefault());
+    private final SimpleDateFormat mBackupTimeSdf = new SimpleDateFormat("dd MMM yyyy, HH:mm:ss", Locale.getDefault());
 
     public static DeleteBackupConfirmationDialog newInstance(String storageId, Uri backupUri, long timestamp) {
 

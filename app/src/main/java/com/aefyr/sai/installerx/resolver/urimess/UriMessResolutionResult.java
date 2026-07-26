@@ -10,11 +10,11 @@ import java.util.List;
 
 public class UriMessResolutionResult {
 
-    private boolean mSuccessful;
-    private SourceType mSourceType;
-    private List<Uri> mUris;
-    private SplitApkSourceMeta mMeta;
-    private UriMessResolutionError mError;
+    private final boolean mSuccessful;
+    private final SourceType mSourceType;
+    private final List<Uri> mUris;
+    private final SplitApkSourceMeta mMeta;
+    private final UriMessResolutionError mError;
 
     private UriMessResolutionResult(boolean successful, @Nullable SourceType sourceType, List<Uri> uris, @Nullable SplitApkSourceMeta meta, @Nullable UriMessResolutionError error) {
         mSuccessful = successful;

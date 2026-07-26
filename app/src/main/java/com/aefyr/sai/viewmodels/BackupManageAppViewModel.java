@@ -13,12 +13,12 @@ import com.aefyr.sai.backup2.impl.DefaultBackupManager;
 
 public class BackupManageAppViewModel extends ViewModel {
 
-    private Context mContext;
-    private String mPackage;
+    private final Context mContext;
+    private final String mPackage;
 
-    private BackupManager mBackupManager;
+    private final BackupManager mBackupManager;
 
-    private LiveData<BackupAppDetails> mDetailsLiveData;
+    private final LiveData<BackupAppDetails> mDetailsLiveData;
 
     public BackupManageAppViewModel(Context appContext, String pkg) {
         mContext = appContext;

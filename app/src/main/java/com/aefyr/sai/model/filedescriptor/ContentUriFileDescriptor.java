@@ -13,9 +13,9 @@ import java.io.InputStream;
 
 public class ContentUriFileDescriptor implements FileDescriptor {
 
-    private ContentResolver mContentResolver;
-    private Uri mContentUri;
-    private DocumentFile mDocumentFile;
+    private final ContentResolver mContentResolver;
+    private final Uri mContentUri;
+    private final DocumentFile mDocumentFile;
 
     public ContentUriFileDescriptor(Context c, Uri contentUri) {
         mContentResolver = c.getContentResolver();

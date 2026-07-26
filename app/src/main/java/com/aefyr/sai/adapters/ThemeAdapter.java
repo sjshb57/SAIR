@@ -20,8 +20,8 @@ public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> 
     private List<Theme.ThemeDescriptor> mThemes;
     private DonationStatus mDonationStatus;
 
-    private Context mContext;
-    private LayoutInflater mInflater;
+    private final Context mContext;
+    private final LayoutInflater mInflater;
 
     private OnThemeInteractionListener mListener;
 
@@ -68,7 +68,7 @@ public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> 
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        private ThemeView mThemeView;
+        private final ThemeView mThemeView;
 
         private ViewHolder(@NonNull View itemView) {
             super(itemView);

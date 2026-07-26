@@ -48,9 +48,9 @@ public class DefaultSplitApkSourceMetaResolver implements SplitApkSourceMetaReso
 
     public static final String NOTICE_TYPE_NO_XAPK_OBB_SUPPORT = "Notice.DefaultSplitApkSourceMetaResolver.NoXApkObbSupport";
 
-    private Context mContext;
-    private AppMetaExtractor mAppMetaExtractor;
-    private List<Postprocessor> mPostprocessors = new ArrayList<>();
+    private final Context mContext;
+    private final AppMetaExtractor mAppMetaExtractor;
+    private final List<Postprocessor> mPostprocessors = new ArrayList<>();
 
     public DefaultSplitApkSourceMetaResolver(Context context, AppMetaExtractor appMetaExtractor) {
         mContext = context.getApplicationContext();

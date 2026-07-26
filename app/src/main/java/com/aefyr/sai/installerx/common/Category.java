@@ -8,7 +8,7 @@ public enum Category {
     CONFIG_LOCALE("config_locale"),
     UNKNOWN("unknown");
 
-    private String mId;
+    private final String mId;
 
     private Category(String id) {
         mId = id;

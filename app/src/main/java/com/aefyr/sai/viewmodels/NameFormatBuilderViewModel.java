@@ -18,11 +18,11 @@ import java.util.Objects;
 
 public class NameFormatBuilderViewModel extends ViewModel implements Selection.Observer<BackupNameFormatBuilder.Part> {
 
-    private PackageMeta mOwnMeta;
+    private final PackageMeta mOwnMeta;
     private final Selection<BackupNameFormatBuilder.Part> mSelection = new Selection<>(new SimpleKeyStorage<>());
 
     private final BackupNameFormatBuilder mBackupNameFormatBuilder;
-    private MutableLiveData<BackupNameFormatBuilder> mLiveFormat;
+    private final MutableLiveData<BackupNameFormatBuilder> mLiveFormat;
 
     public NameFormatBuilderViewModel(Context appContext, String format) {
         mOwnMeta = Objects.requireNonNull(PackageMeta.forPackage(appContext, appContext.getPackageName()));
@@ -85,8 +85,8 @@ public class NameFormatBuilderViewModel extends ViewModel implements Selection.O
 
     public static class Factory implements ViewModelProvider.Factory {
 
-        private Context mAppContext;
-        private String mFormat;
+        private final Context mAppContext;
+        private final String mFormat;
 
         public Factory(Context context, String format) {
             mAppContext = context.getApplicationContext();

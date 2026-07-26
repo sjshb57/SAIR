@@ -16,7 +16,7 @@ import com.google.android.material.chip.Chip;
 
 public class SortFilterConfigOptionAdapter extends RecyclerView.Adapter<SortFilterConfigOptionAdapter.OptionViewHolder> {
 
-    private LayoutInflater mInflater;
+    private final LayoutInflater mInflater;
 
     private SortFilterConfig mFilter;
 
@@ -62,7 +62,7 @@ public class SortFilterConfigOptionAdapter extends RecyclerView.Adapter<SortFilt
 
     static class OptionViewHolder extends RecyclerView.ViewHolder {
 
-        private Chip mChip;
+        private final Chip mChip;
 
         private SortFilterConfigOptionAdapter mAdapter;
 

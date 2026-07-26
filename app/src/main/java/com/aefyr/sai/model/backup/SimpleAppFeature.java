@@ -4,7 +4,7 @@ import com.aefyr.sai.model.common.AppFeature;
 
 public class SimpleAppFeature implements AppFeature {
 
-    private String mText;
+    private final String mText;
 
     public SimpleAppFeature(String text) {
         mText = text;

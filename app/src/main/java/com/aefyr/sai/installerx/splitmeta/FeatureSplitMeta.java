@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class FeatureSplitMeta extends SplitMeta {
 
-    private String mModule;
+    private final String mModule;
 
     public FeatureSplitMeta(Map<String, String> manifestAttrs) {
         super(manifestAttrs);

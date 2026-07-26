@@ -6,7 +6,7 @@ import com.aefyr.sai.model.apksource.ApkSource;
 
 public class SaiPiSessionParams {
 
-    private ApkSource mApkSource;
+    private final ApkSource mApkSource;
 
     public SaiPiSessionParams(@NonNull ApkSource apkSource) {
         mApkSource = apkSource;

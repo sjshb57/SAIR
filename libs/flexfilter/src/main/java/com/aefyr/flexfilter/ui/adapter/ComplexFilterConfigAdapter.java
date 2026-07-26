@@ -12,14 +12,14 @@ import java.util.List;
 
 public class ComplexFilterConfigAdapter extends RecyclerView.Adapter<FilterConfigViewHolder> {
 
-    private FilterConfigViewHolderFactory mFactory;
+    private final FilterConfigViewHolderFactory mFactory;
 
     private List<FilterConfig> mFilters;
 
     /**
      * Objects shared between ViewHolders of the same type
      */
-    private HashMap<String, Object> mSharedObjects;
+    private final HashMap<String, Object> mSharedObjects;
 
     public ComplexFilterConfigAdapter(FilterConfigViewHolderFactory factory) {
         mFactory = factory;

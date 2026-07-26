@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 public class BaseSplitMeta extends SplitMeta {
 
-    private String mVersionName;
+    private final String mVersionName;
 
     public BaseSplitMeta(HashMap<String, String> manifestAttrs) {
         super(manifestAttrs);

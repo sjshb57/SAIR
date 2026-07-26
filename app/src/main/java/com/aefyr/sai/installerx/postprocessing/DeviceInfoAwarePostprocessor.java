@@ -33,7 +33,7 @@ public class DeviceInfoAwarePostprocessor implements Postprocessor {
     public static final String NOTICE_TYPE_NO_MATCHING_LIBS = "Notice.DeviceInfoAwarePostprocessor.NoMatchingLibs";
     public static final String NOTICE_TYPE_NO_MATCHING_LOCALES = "Notice.DeviceInfoAwarePostprocessor.NoMatchingLocales";
 
-    private Context mContext;
+    private final Context mContext;
 
     public DeviceInfoAwarePostprocessor(Context context) {
         mContext = context.getApplicationContext();

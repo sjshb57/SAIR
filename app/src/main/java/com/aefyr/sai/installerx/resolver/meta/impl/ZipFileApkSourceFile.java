@@ -15,8 +15,8 @@ import java.util.zip.ZipFile;
 public class ZipFileApkSourceFile implements ApkSourceFile {
 
 
-    private File mFile;
-    private String mName;
+    private final File mFile;
+    private final String mName;
 
     private ZipFile mZipFile;
 
@@ -59,7 +59,7 @@ public class ZipFileApkSourceFile implements ApkSourceFile {
 
     private static class InternalEntry extends Entry {
 
-        private ZipEntry mZipEntry;
+        private final ZipEntry mZipEntry;
 
         private InternalEntry(ZipEntry zipEntry, String name, String localPath, long size) {
             super(name, localPath, size);

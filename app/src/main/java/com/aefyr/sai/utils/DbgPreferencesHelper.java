@@ -8,7 +8,7 @@ import androidx.preference.PreferenceManager;
 public class DbgPreferencesHelper {
     private static DbgPreferencesHelper sInstance;
 
-    private SharedPreferences mPrefs;
+    private final SharedPreferences mPrefs;
 
     public static DbgPreferencesHelper getInstance(Context c) {
         return sInstance != null ? sInstance : new DbgPreferencesHelper(c);

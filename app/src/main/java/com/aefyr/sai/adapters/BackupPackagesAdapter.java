@@ -39,16 +39,16 @@ import java.util.Locale;
 
 public class BackupPackagesAdapter extends SelectableAdapter<String, BackupPackagesAdapter.ViewHolder> {
 
-    private LayoutInflater mInflater;
+    private final LayoutInflater mInflater;
     private List<BackupApp> mApps;
 
     private OnItemInteractionListener mListener;
 
     private BackupPackagesFilterConfig mFilterConfig;
 
-    private RecyclerView.RecycledViewPool mFeatureViewPool;
+    private final RecyclerView.RecycledViewPool mFeatureViewPool;
 
-    private SimpleDateFormat mInstallOrUpdateDateSdf = new SimpleDateFormat("d MMM yyyy, HH:mm", Locale.getDefault());
+    private final SimpleDateFormat mInstallOrUpdateDateSdf = new SimpleDateFormat("d MMM yyyy, HH:mm", Locale.getDefault());
 
 
     public BackupPackagesAdapter(Selection<String> selection, LifecycleOwner lifecycleOwner, Context c) {
@@ -114,14 +114,14 @@ public class BackupPackagesAdapter extends SelectableAdapter<String, BackupPacka
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView mAppName;
-        private TextView mAppVersion;
-        private TextView mAppPackage;
-        private AppCompatImageView mAppIcon;
-        private View mSelectionOverlay;
-        private ImageView mBackupStatus;
+        private final TextView mAppName;
+        private final TextView mAppVersion;
+        private final TextView mAppPackage;
+        private final AppCompatImageView mAppIcon;
+        private final View mSelectionOverlay;
+        private final ImageView mBackupStatus;
 
-        private BackupAppFeatureAdapter mFeatureAdapter;
+        private final BackupAppFeatureAdapter mFeatureAdapter;
 
         private ViewHolder(@NonNull View itemView) {
             super(itemView);

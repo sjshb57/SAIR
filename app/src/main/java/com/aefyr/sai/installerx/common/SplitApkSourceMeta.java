@@ -11,10 +11,10 @@ import java.util.List;
 
 public class SplitApkSourceMeta {
 
-    private AppMeta mAppMeta;
-    private List<SplitCategory> mSplits;
-    private List<SplitPart> mHiddenSplits;
-    private List<Notice> mNotices;
+    private final AppMeta mAppMeta;
+    private final List<SplitCategory> mSplits;
+    private final List<SplitPart> mHiddenSplits;
+    private final List<Notice> mNotices;
 
     public SplitApkSourceMeta(@Nullable AppMeta appMeta, List<SplitCategory> splits, List<SplitPart> hiddenSplits, List<Notice> notices) {
         mAppMeta = appMeta;

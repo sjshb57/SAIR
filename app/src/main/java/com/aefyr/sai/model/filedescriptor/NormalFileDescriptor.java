@@ -8,7 +8,7 @@ import java.io.InputStream;
 
 public class NormalFileDescriptor implements FileDescriptor {
 
-    private File mFile;
+    private final File mFile;
 
     public NormalFileDescriptor(File file) {
         mFile = file;

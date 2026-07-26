@@ -11,8 +11,8 @@ import com.aefyr.sai.utils.Stopwatch;
 
 public class SaiPiSessionState implements Comparable<SaiPiSessionState> {
 
-    private String mSessionId;
-    private SaiPiSessionStatus mStatus;
+    private final String mSessionId;
+    private final SaiPiSessionStatus mStatus;
     private String mPackageName;
     private String mAppTempName;
     private PackageMeta mPackageMeta;
@@ -107,7 +107,7 @@ public class SaiPiSessionState implements Comparable<SaiPiSessionState> {
     }
 
     public static class Builder {
-        private SaiPiSessionState mState;
+        private final SaiPiSessionState mState;
 
         public Builder(@NonNull String sessionId, @NonNull SaiPiSessionStatus status) {
             mState = new SaiPiSessionState(sessionId, status);

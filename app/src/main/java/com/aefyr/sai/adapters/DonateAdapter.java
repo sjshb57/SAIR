@@ -25,10 +25,10 @@ public class DonateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private static final int VH_TYPE_HEADER = 0;
     private static final int VH_TYPE_PRODUCT = 1;
 
-    private LayoutInflater mInflater;
+    private final LayoutInflater mInflater;
 
     private DonationStatus mDonationStatus;
-    private DonationStatusRenderer mDonationStatusRenderer;
+    private final DonationStatusRenderer mDonationStatusRenderer;
     private List<BillingProduct> mProducts;
 
     private OnProductInteractionListener mProductInteractionListener;
@@ -112,8 +112,8 @@ public class DonateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private class HeaderViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView mMessage;
-        private AppCompatImageView mIcon;
+        private final TextView mMessage;
+        private final AppCompatImageView mIcon;
 
         public HeaderViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -133,13 +133,13 @@ public class DonateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private class ProductViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView mTitle;
-        private TextView mDesc;
-        private TextView mPrice;
+        private final TextView mTitle;
+        private final TextView mDesc;
+        private final TextView mPrice;
 
-        private ImageView mIcon;
+        private final ImageView mIcon;
 
-        private ViewGroup mContainer;
+        private final ViewGroup mContainer;
 
         public ProductViewHolder(@NonNull View itemView) {
             super(itemView);

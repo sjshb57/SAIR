@@ -19,8 +19,8 @@ import java.util.List;
 
 public class BackupNameFormatBuilderPartsAdapter extends SelectableAdapter<BackupNameFormatBuilder.Part, BackupNameFormatBuilderPartsAdapter.ViewHolder> {
 
-    private Context mContext;
-    private LayoutInflater mInflater;
+    private final Context mContext;
+    private final LayoutInflater mInflater;
 
     private List<BackupNameFormatBuilder.Part> mParts;
 

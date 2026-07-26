@@ -12,9 +12,9 @@ import java.util.Map;
 
 public class ParserContext {
 
-    private Map<Category, MutableSplitCategory> mIndex = new HashMap<>();
-    private List<MutableSplitCategory> mCategories = new ArrayList<>();
-    private List<Notice> mNotices = new ArrayList<>();
+    private final Map<Category, MutableSplitCategory> mIndex = new HashMap<>();
+    private final List<MutableSplitCategory> mCategories = new ArrayList<>();
+    private final List<Notice> mNotices = new ArrayList<>();
     private AppMeta mAppMeta;
 
     public ParserContext() {

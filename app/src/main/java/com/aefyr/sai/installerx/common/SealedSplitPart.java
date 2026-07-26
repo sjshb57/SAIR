@@ -6,12 +6,12 @@ import com.aefyr.sai.installerx.splitmeta.SplitMeta;
 
 public class SealedSplitPart implements SplitPart {
 
-    private SplitMeta mMeta;
-    private String mId;
-    private String mLocalPath;
+    private final SplitMeta mMeta;
+    private final String mId;
+    private final String mLocalPath;
     private String mName;
-    private long mSize;
-    private String mDescription;
+    private final long mSize;
+    private final String mDescription;
     private boolean mRequired;
     private boolean mRecommended;
 

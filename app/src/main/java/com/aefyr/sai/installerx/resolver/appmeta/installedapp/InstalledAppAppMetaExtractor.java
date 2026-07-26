@@ -14,7 +14,7 @@ import com.aefyr.sai.utils.Utils;
 public class InstalledAppAppMetaExtractor implements AppMetaExtractor {
     private static final String TAG = "IAAppMetaExtractor";
 
-    private Context mContext;
+    private final Context mContext;
 
     public InstalledAppAppMetaExtractor(Context context) {
         mContext = context.getApplicationContext();

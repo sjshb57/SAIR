@@ -10,7 +10,7 @@ import java.util.Objects;
 
 public class LocaleConfigSplitMeta extends ConfigSplitMeta {
 
-    private Locale mLocale;
+    private final Locale mLocale;
 
     public LocaleConfigSplitMeta(Map<String, String> manifestAttrs) {
         super(manifestAttrs);

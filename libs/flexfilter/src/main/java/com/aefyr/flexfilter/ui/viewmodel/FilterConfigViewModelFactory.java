@@ -8,7 +8,7 @@ import com.aefyr.flexfilter.config.core.ComplexFilterConfig;
 
 public class FilterConfigViewModelFactory implements ViewModelProvider.Factory {
 
-    private ComplexFilterConfig mConfig;
+    private final ComplexFilterConfig mConfig;
 
     public FilterConfigViewModelFactory(ComplexFilterConfig config) {
         mConfig = config;

@@ -9,12 +9,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class SimpleAsyncTask<Argument, Result> {
 
-    private static ExecutorService sExecutor = Executors.newCachedThreadPool();
-    private static Handler sHandler = new Handler(Looper.getMainLooper());
+    private static final ExecutorService sExecutor = Executors.newCachedThreadPool();
+    private static final Handler sHandler = new Handler(Looper.getMainLooper());
 
-    private Argument mArgument;
-    private AtomicBoolean mIsCancelled = new AtomicBoolean();
-    private AtomicBoolean mIsOngoing = new AtomicBoolean();
+    private final Argument mArgument;
+    private final AtomicBoolean mIsCancelled = new AtomicBoolean();
+    private final AtomicBoolean mIsOngoing = new AtomicBoolean();
 
     public SimpleAsyncTask(Argument argument) {
         mArgument = argument;

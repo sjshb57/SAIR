@@ -2,7 +2,7 @@ package com.aefyr.sai.utils;
 
 public class Event<T> {
     private boolean mConsumed;
-    private T mData;
+    private final T mData;
 
     public Event(T t) {
         mData = t;

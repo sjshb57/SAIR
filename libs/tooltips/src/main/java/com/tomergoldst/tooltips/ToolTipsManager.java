@@ -43,7 +43,7 @@ public class ToolTipsManager {
     private static final int DEFAULT_ANIM_DURATION = 400;
 
     // Parameter for managing tip creation or reuse
-    private Map<Integer, View> mTipsMap = new HashMap<>();
+    private final Map<Integer, View> mTipsMap = new HashMap<>();
 
     private int mAnimationDuration;
     @NonNull

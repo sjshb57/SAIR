@@ -61,11 +61,11 @@ public enum AndroidPackageInstallerError {
     INSTALL_FAILED_MULTIPACKAGE_INCONSISTENCY("INSTALL_FAILED_MULTIPACKAGE_INCONSISTENCY", -120, R.string.installer_rootless_error2_install_failed_multipackage_inconsistency),
     INSTALL_FAILED_WRONG_INSTALLED_VERSION("INSTALL_FAILED_WRONG_INSTALLED_VERSION", -121, R.string.installer_rootless_error2_install_failed_wrong_installed_version);
 
-    private String mError;
-    private int mLegacyCode;
+    private final String mError;
+    private final int mLegacyCode;
 
     @StringRes
-    private int mDescription;
+    private final int mDescription;
 
     AndroidPackageInstallerError(String error, int legacyCode, @StringRes int description) {
         mError = error;

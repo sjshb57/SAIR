@@ -11,10 +11,10 @@ import com.aefyr.sai.utils.Theme;
 
 public class DarkLightThemeSelectionViewModel extends AndroidViewModel {
 
-    private Theme mThemeManager;
+    private final Theme mThemeManager;
 
-    private MutableLiveData<Theme.ThemeDescriptor> mLightTheme = new MutableLiveData<>();
-    private MutableLiveData<Theme.ThemeDescriptor> mDarkTheme = new MutableLiveData<>();
+    private final MutableLiveData<Theme.ThemeDescriptor> mLightTheme = new MutableLiveData<>();
+    private final MutableLiveData<Theme.ThemeDescriptor> mDarkTheme = new MutableLiveData<>();
 
     public DarkLightThemeSelectionViewModel(@NonNull Application application) {
         super(application);

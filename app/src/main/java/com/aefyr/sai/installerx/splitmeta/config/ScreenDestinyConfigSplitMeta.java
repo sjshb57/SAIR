@@ -30,8 +30,8 @@ public class ScreenDestinyConfigSplitMeta extends ConfigSplitMeta {
         DENSITY_NAME_TO_DENSITY.put(XXXHDPI, DisplayMetrics.DENSITY_XXXHIGH);
     }
 
-    private String mDensityName;
-    private int mDensity;
+    private final String mDensityName;
+    private final int mDensity;
 
     public ScreenDestinyConfigSplitMeta(Map<String, String> manifestAttrs) {
         super(manifestAttrs);

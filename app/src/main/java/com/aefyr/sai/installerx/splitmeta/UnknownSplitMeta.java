@@ -4,7 +4,7 @@ import java.util.Map;
 
 public class UnknownSplitMeta extends SplitMeta {
 
-    private Map<String, String> mManifestAttrs;
+    private final Map<String, String> mManifestAttrs;
 
     public UnknownSplitMeta(Map<String, String> manifestAttrs) {
         super(manifestAttrs);

@@ -28,12 +28,12 @@ public class InstallerViewModel extends AndroidViewModel implements SaiPiSession
      */
     public static final String EVENT_INSTALLATION_FAILED = "installation_failed";
 
-    private FlexSaiPackageInstaller mInstaller;
-    private PreferencesHelper mPrefsHelper;
+    private final FlexSaiPackageInstaller mInstaller;
+    private final PreferencesHelper mPrefsHelper;
 
-    private MutableLiveData<List<SaiPiSessionState>> mSessions = new MutableLiveData<>();
+    private final MutableLiveData<List<SaiPiSessionState>> mSessions = new MutableLiveData<>();
 
-    private MutableLiveData<Event2> mEvents = new MutableLiveData<>();
+    private final MutableLiveData<Event2> mEvents = new MutableLiveData<>();
 
     public InstallerViewModel(@NonNull Application application) {
         super(application);

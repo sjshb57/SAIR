@@ -11,9 +11,9 @@ import java.util.List;
 
 public class FilterConfigViewModel extends ViewModel {
 
-    private ComplexFilterConfig mConfig;
+    private final ComplexFilterConfig mConfig;
 
-    private MutableLiveData<List<FilterConfig>> mFilters;
+    private final MutableLiveData<List<FilterConfig>> mFilters;
 
     public FilterConfigViewModel(ComplexFilterConfig config) {
         mConfig = config;

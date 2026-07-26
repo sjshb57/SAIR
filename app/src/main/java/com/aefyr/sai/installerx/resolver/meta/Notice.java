@@ -4,9 +4,9 @@ import androidx.annotation.Nullable;
 
 public class Notice {
 
-    private String mType;
-    private String mContext;
-    private String mText;
+    private final String mType;
+    private final String mContext;
+    private final String mText;
 
     public Notice(String type, @Nullable String context, String text) {
         mType = type;

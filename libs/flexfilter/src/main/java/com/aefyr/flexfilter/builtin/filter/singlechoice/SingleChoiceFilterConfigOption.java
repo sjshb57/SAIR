@@ -8,8 +8,8 @@ import androidx.annotation.Nullable;
 
 public class SingleChoiceFilterConfigOption implements Parcelable {
 
-    private String mId;
-    private CharSequence mName;
+    private final String mId;
+    private final CharSequence mName;
     private boolean mSelected;
 
     private SingleChoiceFilterConfig mFilter;

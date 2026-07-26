@@ -4,8 +4,8 @@ import com.aefyr.sai.backup2.BackupComponent;
 
 public class SimpleBackupComponent implements BackupComponent {
 
-    private String mType;
-    private long mSize;
+    private final String mType;
+    private final long mSize;
 
     public SimpleBackupComponent(String type, long size) {
         mType = type;

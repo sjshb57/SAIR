@@ -23,13 +23,13 @@ public class FlexSaiPackageInstaller implements SaiPackageInstaller, SaiPiSessio
 
     private static FlexSaiPackageInstaller sInstance;
 
-    private Context mContext;
+    private final Context mContext;
 
     private SaiPackageInstaller mDefaultInstaller;
-    private HashMap<Integer, SaiPackageInstaller> mInstallers = new HashMap<>();
-    private ConcurrentHashMap<String, SaiPackageInstaller> mSessionIdToInstaller = new ConcurrentHashMap<>();
+    private final HashMap<Integer, SaiPackageInstaller> mInstallers = new HashMap<>();
+    private final ConcurrentHashMap<String, SaiPackageInstaller> mSessionIdToInstaller = new ConcurrentHashMap<>();
 
-    private Set<SaiPiSessionObserver> mObservers = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    private final Set<SaiPiSessionObserver> mObservers = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     public static FlexSaiPackageInstaller getInstance(Context c) {
         synchronized (FlexSaiPackageInstaller.class) {

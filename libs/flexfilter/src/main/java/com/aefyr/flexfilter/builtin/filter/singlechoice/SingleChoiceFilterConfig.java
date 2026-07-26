@@ -12,10 +12,10 @@ import java.util.List;
 
 //TODO cleanup this and other builtin filters
 public class SingleChoiceFilterConfig implements FilterConfig {
-    private String mId;
-    private CharSequence mName;
+    private final String mId;
+    private final CharSequence mName;
 
-    private List<SingleChoiceFilterConfigOption> mOptions;
+    private final List<SingleChoiceFilterConfigOption> mOptions;
 
     public SingleChoiceFilterConfig(String id, CharSequence name) {
         mId = id;

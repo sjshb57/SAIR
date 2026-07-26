@@ -21,8 +21,8 @@ import java.util.List;
 
 public class BackupSplitPartsAdapter extends SelectableAdapter<String, BackupSplitPartsAdapter.ViewHolder> {
 
-    private Context mContext;
-    private LayoutInflater mInflater;
+    private final Context mContext;
+    private final LayoutInflater mInflater;
     private List<SplitApkPart> mParts;
 
     public BackupSplitPartsAdapter(Selection<String> selection, LifecycleOwner lifecycleOwner, Context c) {
@@ -66,11 +66,11 @@ public class BackupSplitPartsAdapter extends SelectableAdapter<String, BackupSpl
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView mName;
-        private TextView mSize;
-        private TextView mPath;
+        private final TextView mName;
+        private final TextView mSize;
+        private final TextView mPath;
 
-        private CheckBox mCheck;
+        private final CheckBox mCheck;
 
         private ViewHolder(@NonNull View itemView) {
             super(itemView);

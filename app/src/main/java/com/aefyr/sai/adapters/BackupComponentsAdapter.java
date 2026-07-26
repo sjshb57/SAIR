@@ -21,7 +21,7 @@ public class BackupComponentsAdapter extends RecyclerView.Adapter<BackupComponen
 
     private List<BackupComponent> mComponents;
 
-    private LayoutInflater mInflater;
+    private final LayoutInflater mInflater;
     private ComponentRenderer mComponentRenderer;
 
     public BackupComponentsAdapter(Context context) {
@@ -58,7 +58,7 @@ public class BackupComponentsAdapter extends RecyclerView.Adapter<BackupComponen
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        private Chip mChip;
+        private final Chip mChip;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -80,7 +80,7 @@ public class BackupComponentsAdapter extends RecyclerView.Adapter<BackupComponen
 
     public static class DefaultComponentRenderer implements ComponentRenderer {
 
-        private Context mContext;
+        private final Context mContext;
 
         public DefaultComponentRenderer(Context context) {
             mContext = context;

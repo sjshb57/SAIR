@@ -18,15 +18,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class SingleBackupTaskExecutor implements CancellableBackupTaskExecutor {
 
-    private Context mContext;
-    private SingleBackupTaskConfig mConfig;
-    private DelegatedFile mDelegatedFile;
+    private final Context mContext;
+    private final SingleBackupTaskConfig mConfig;
+    private final DelegatedFile mDelegatedFile;
 
     private Listener mListener;
     private Handler mListenerHandler;
 
-    private AtomicBoolean mIsStarted = new AtomicBoolean(false);
-    private AtomicBoolean mIsCancelled = new AtomicBoolean(false);
+    private final AtomicBoolean mIsStarted = new AtomicBoolean(false);
+    private final AtomicBoolean mIsCancelled = new AtomicBoolean(false);
 
     public SingleBackupTaskExecutor(Context context, SingleBackupTaskConfig config, DelegatedFile delegatedFile) {
         mContext = context.getApplicationContext();

@@ -26,7 +26,7 @@ public class RestoreBackupDialogFragment extends DialogFragment {
     private Uri mBackupUri;
     private long mTimestamp;
 
-    private SimpleDateFormat mBackupTimeSdf = new SimpleDateFormat("dd MMM yyyy, HH:mm:ss", Locale.getDefault());
+    private final SimpleDateFormat mBackupTimeSdf = new SimpleDateFormat("dd MMM yyyy, HH:mm:ss", Locale.getDefault());
 
     public static RestoreBackupDialogFragment newInstance(Uri backupUri, long timestamp) {
 

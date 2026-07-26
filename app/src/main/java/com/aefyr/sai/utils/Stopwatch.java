@@ -2,7 +2,7 @@ package com.aefyr.sai.utils;
 
 public class Stopwatch {
 
-    private long mStart;
+    private final long mStart;
 
     public Stopwatch() {
         mStart = System.currentTimeMillis();

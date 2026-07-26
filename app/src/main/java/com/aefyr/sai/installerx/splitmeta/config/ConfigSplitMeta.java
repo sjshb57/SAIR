@@ -10,7 +10,7 @@ import java.util.Map;
 
 public abstract class ConfigSplitMeta extends SplitMeta {
 
-    private String mModule;
+    private final String mModule;
 
     public ConfigSplitMeta(Map<String, String> manifestAttrs) {
         super(manifestAttrs);

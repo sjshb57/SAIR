@@ -11,7 +11,7 @@ public class MutableSplitCategory implements SplitCategory {
     private Category mCategory;
     private String mName;
     private String mDescription;
-    private List<MutableSplitPart> mParts;
+    private final List<MutableSplitPart> mParts;
 
     public MutableSplitCategory(Category category, String name, @Nullable String description) {
         mCategory = category;

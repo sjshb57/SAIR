@@ -15,8 +15,8 @@ import java.util.List;
 public class InstalledAppApkSourceFile implements ApkSourceFile {
     public static final String FAKE_EXTENSION = "installedApp";
 
-    private Context mContext;
-    private String mPackage;
+    private final Context mContext;
+    private final String mPackage;
 
     private List<File> mApkFiles;
 

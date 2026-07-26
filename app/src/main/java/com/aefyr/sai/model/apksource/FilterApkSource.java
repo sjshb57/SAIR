@@ -10,9 +10,9 @@ import java.util.Set;
  */
 public class FilterApkSource implements ApkSource {
 
-    private ApkSource mWrappedApkSource;
-    private Set<String> mFilteredEntries;
-    private boolean mBlacklist;
+    private final ApkSource mWrappedApkSource;
+    private final Set<String> mFilteredEntries;
+    private final boolean mBlacklist;
 
     public FilterApkSource(ApkSource apkSource, Set<String> filteredEntries, boolean blacklist) {
         mWrappedApkSource = apkSource;

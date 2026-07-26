@@ -11,10 +11,10 @@ import java.util.List;
 
 public class SortFilterConfig implements FilterConfig {
 
-    private String mId;
-    private CharSequence mName;
+    private final String mId;
+    private final CharSequence mName;
 
-    private List<SortFilterConfigOption> mOptions;
+    private final List<SortFilterConfigOption> mOptions;
 
     public SortFilterConfig(String id, CharSequence name) {
         mId = id;

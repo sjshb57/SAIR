@@ -13,7 +13,7 @@ public class HugeAppWarningPostprocessor implements Postprocessor {
     private static final String NOTICE_TYPE_HUGE_APP = "Notice.HugeAppWarningPostprocessor.HugeApp";
     private static final long WARNING_THRESHOLD_SIZE_BYTES = 150 * 1000 * 1000; //150MB
 
-    private Context mContext;
+    private final Context mContext;
 
     public HugeAppWarningPostprocessor(Context context) {
         mContext = context;

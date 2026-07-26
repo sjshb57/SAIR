@@ -11,8 +11,8 @@ import java.util.ArrayList;
 
 public class BatchBackupDialogViewModelFactory implements ViewModelProvider.Factory {
 
-    private Context mAppContext;
-    private ArrayList<String> mSelectedPackages;
+    private final Context mAppContext;
+    private final ArrayList<String> mSelectedPackages;
 
     public BatchBackupDialogViewModelFactory(@NonNull Context applicationContext, @Nullable ArrayList<String> selectedPackages) {
         mAppContext = applicationContext.getApplicationContext();

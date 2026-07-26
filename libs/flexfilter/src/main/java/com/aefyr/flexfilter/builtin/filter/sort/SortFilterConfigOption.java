@@ -6,8 +6,8 @@ import android.text.TextUtils;
 
 public class SortFilterConfigOption implements Parcelable {
 
-    private String mId;
-    private CharSequence mName;
+    private final String mId;
+    private final CharSequence mName;
     private boolean mSelected;
 
     private SortFilterConfig mFilter;

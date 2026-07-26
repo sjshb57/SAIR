@@ -22,7 +22,7 @@ import java.util.Set;
 
 public class ApkSourceBuilder {
 
-    private Context mContext;
+    private final Context mContext;
 
     private boolean mSourceSet;
     private List<File> mApkFiles;

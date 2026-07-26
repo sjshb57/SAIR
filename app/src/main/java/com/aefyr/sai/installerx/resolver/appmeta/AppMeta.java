@@ -11,7 +11,7 @@ public class AppMeta {
     public Uri iconUri;
 
     public static class Builder {
-        private AppMeta mMeta;
+        private final AppMeta mMeta;
 
         public Builder() {
             mMeta = new AppMeta();

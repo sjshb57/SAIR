@@ -8,8 +8,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 public class BackupManageAppViewModelFactory implements ViewModelProvider.Factory {
 
-    private Context mAppContext;
-    private String mPackage;
+    private final Context mAppContext;
+    private final String mPackage;
 
     public BackupManageAppViewModelFactory(Context context, String pkg) {
         mAppContext = context.getApplicationContext();

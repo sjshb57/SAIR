@@ -9,7 +9,7 @@ import java.util.HashSet;
  */
 public class SimpleKeyStorage<Key> implements Selection.KeyStorage<Key> {
 
-    private HashSet<Key> mKeys = new HashSet<>();
+    private final HashSet<Key> mKeys = new HashSet<>();
 
     @Override
     public void store(Key key) {

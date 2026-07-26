@@ -10,7 +10,7 @@ public class MutableSplitPart implements SplitPart {
     private String mId;
     private String mLocalPath;
     private String mName;
-    private long mSize;
+    private final long mSize;
     private String mDescription;
     private boolean mRequired;
     private boolean mRecommended;

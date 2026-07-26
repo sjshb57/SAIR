@@ -37,16 +37,16 @@ public class BackupAppDetailsAdapter extends SelectableAdapter<String, BackupApp
     private static final int VH_TYPE_HEADER = 0;
     private static final int VH_TYPE_BACKUP = 1;
 
-    private Context mContext;
-    private LayoutInflater mInflater;
+    private final Context mContext;
+    private final LayoutInflater mInflater;
 
     private BackupAppDetails mDetails;
 
-    private ActionDelegate mActionDelegate;
+    private final ActionDelegate mActionDelegate;
 
-    private SimpleDateFormat mBackupTimeSdf = new SimpleDateFormat("dd MMM yyyy, HH:mm:ss", Locale.getDefault());
+    private final SimpleDateFormat mBackupTimeSdf = new SimpleDateFormat("dd MMM yyyy, HH:mm:ss", Locale.getDefault());
 
-    private RecyclerView.RecycledViewPool mComponentViewPool;
+    private final RecyclerView.RecycledViewPool mComponentViewPool;
 
     public BackupAppDetailsAdapter(Context context, Selection<String> selection, LifecycleOwner lifecycleOwner, ActionDelegate actionDelegate) {
         super(selection, lifecycleOwner);
@@ -146,14 +146,14 @@ public class BackupAppDetailsAdapter extends SelectableAdapter<String, BackupApp
 
     protected class HeaderViewHolder extends BaseViewHolder<BackupApp> {
 
-        private ImageView mAppIcon;
-        private TextView mAppTitle;
-        private TextView mAppPackage;
-        private TextView mAppVersion;
+        private final ImageView mAppIcon;
+        private final TextView mAppTitle;
+        private final TextView mAppPackage;
+        private final TextView mAppVersion;
 
-        private Button mBackupButton;
-        private Button mDeleteButton;
-        private Button mInstallButton;
+        private final Button mBackupButton;
+        private final Button mDeleteButton;
+        private final Button mInstallButton;
 
         public HeaderViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -208,16 +208,16 @@ public class BackupAppDetailsAdapter extends SelectableAdapter<String, BackupApp
 
     protected class BackupViewHolder extends BaseViewHolder<Backup> {
 
-        private TextView mBackupTitle;
-        private TextView mAppVersion;
-        private AppCompatImageView mBackupStatus;
+        private final TextView mBackupTitle;
+        private final TextView mAppVersion;
+        private final AppCompatImageView mBackupStatus;
 
-        private Button mRestoreButton;
-        private Button mDeleteButton;
+        private final Button mRestoreButton;
+        private final Button mDeleteButton;
 
-        private TextView mIncompatibleVersionWarning;
+        private final TextView mIncompatibleVersionWarning;
 
-        private BackupComponentsAdapter mComponentsAdapter;
+        private final BackupComponentsAdapter mComponentsAdapter;
 
         public BackupViewHolder(@NonNull View itemView) {
             super(itemView);

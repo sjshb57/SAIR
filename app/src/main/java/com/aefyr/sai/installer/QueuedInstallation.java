@@ -6,9 +6,9 @@ import com.aefyr.sai.model.apksource.ApkSource;
 
 public class QueuedInstallation {
 
-    private Context mContext;
-    private ApkSource mApkSource;
-    private long mId;
+    private final Context mContext;
+    private final ApkSource mApkSource;
+    private final long mId;
 
     QueuedInstallation(Context c, ApkSource apkSource, long id) {
         mContext = c;

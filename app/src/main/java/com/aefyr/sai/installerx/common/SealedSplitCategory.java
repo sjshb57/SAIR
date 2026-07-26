@@ -7,10 +7,10 @@ import java.util.List;
 
 public class SealedSplitCategory implements SplitCategory {
 
-    private Category mCategory;
-    private String mName;
-    private String mDescription;
-    private List<SplitPart> mParts;
+    private final Category mCategory;
+    private final String mName;
+    private final String mDescription;
+    private final List<SplitPart> mParts;
 
     public SealedSplitCategory(Category category, String name, @Nullable String description, List<SealedSplitPart> parts) {
         mCategory = category;

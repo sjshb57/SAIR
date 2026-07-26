@@ -34,9 +34,9 @@ public interface ApkSourceFile extends AutoCloseable {
     }
 
     class Entry {
-        private String mName;
-        private String mLocalPath;
-        private long mSize;
+        private final String mName;
+        private final String mLocalPath;
+        private final long mSize;
 
         public Entry(String name, String localPath, long size) {
             mName = name;
