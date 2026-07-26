@@ -75,7 +75,7 @@ public class BackupNameFormatBuilderPartsAdapter extends SelectableAdapter<Backu
                 if (mPauseCheckedListener)
                     return;
 
-                int adapterPosition = getAdapterPosition();
+                int adapterPosition = getBindingAdapterPosition();
                 if (adapterPosition == RecyclerView.NO_POSITION)
                     return;
 

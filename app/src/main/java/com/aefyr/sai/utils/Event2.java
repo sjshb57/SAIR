@@ -19,6 +19,7 @@ public class Event2 {
         return mType;
     }
 
+    @SuppressWarnings("unchecked")
     public <T> T consume() {
         if (mConsumed)
             return null;

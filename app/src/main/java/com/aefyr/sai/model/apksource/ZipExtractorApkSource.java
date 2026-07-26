@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -46,7 +47,7 @@ public class ZipExtractorApkSource implements ApkSource {
     @Override
     public boolean nextApk() throws Exception {
         if (!mIsOpen) {
-            mZipInputStream = new ZipInputStream(mZipFileDescriptor.open());
+            mZipInputStream = new ZipInputStream(IOUtils.buffer(mZipFileDescriptor.open()));
             mIsOpen = true;
         }
 
@@ -71,7 +72,7 @@ public class ZipExtractorApkSource implements ApkSource {
 
     @Override
     public InputStream openApkInputStream() throws Exception {
-        return new FileInputStream(mCurrentExtractedZipEntryFile);
+        return IOUtils.buffer(new FileInputStream(mCurrentExtractedZipEntryFile));
     }
 
     @Override
@@ -107,7 +108,7 @@ public class ZipExtractorApkSource implements ApkSource {
 
     private void extractCurrentEntry() throws Exception {
         mCurrentExtractedZipEntryFile = new File(mExtractedFilesDir, Utils.getFileNameFromZipEntry(mCurrentZipEntry));
-        try (FileOutputStream fileOutputStream = new FileOutputStream(mCurrentExtractedZipEntryFile)) {
+        try (OutputStream fileOutputStream = IOUtils.buffer(new FileOutputStream(mCurrentExtractedZipEntryFile))) {
             IOUtils.copyStream(mZipInputStream, fileOutputStream);
         }
     }

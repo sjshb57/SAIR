@@ -121,6 +121,7 @@ public class InstallerXAdapterDividerItemDecoration extends RecyclerView.ItemDec
         }
     }
 
+    @SuppressWarnings("rawtypes")
     private void drawVertical(Canvas canvas, RecyclerView parent) {
         canvas.save();
         final int left;

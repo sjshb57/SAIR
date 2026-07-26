@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.SystemClock;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -24,6 +25,7 @@ import com.aefyr.sai.utils.Utils;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -40,6 +42,7 @@ public class RootlessSaiPackageInstaller extends BaseSaiPackageInstaller impleme
 
     private final ConcurrentHashMap<Integer, String> mAndroidPiSessionIdToSaiPiSessionId = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, String> mSessionIdToAppTempName = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, Long> mSessionIdToCommitStartedAt = new ConcurrentHashMap<>();
 
     private final RootlessSaiPiBroadcastReceiver mBroadcastReceiver;
 
@@ -105,13 +108,23 @@ public class RootlessSaiPackageInstaller extends BaseSaiPackageInstaller impleme
             mAndroidPiSessionIdToSaiPiSessionId.put(androidSessionId, sessionId);
 
             session = mPackageInstaller.openSession(androidSessionId);
+            long writeStartedAt = SystemClock.elapsedRealtime();
+            long bytesWritten = 0;
             int currentApkFile = 0;
             while (apkSource.nextApk()) {
-                try (InputStream inputStream = apkSource.openApkInputStream(); OutputStream outputStream = session.openWrite(String.format("%d.apk", currentApkFile++), 0, apkSource.getApkLength())) {
-                    IOUtils.copyStream(inputStream, outputStream);
-                    session.fsync(outputStream);
+                OutputStream sessionStream = session.openWrite(String.format("%d.apk", currentApkFile++), 0, apkSource.getApkLength());
+                try (InputStream inputStream = apkSource.openApkInputStream();
+                     OutputStream outputStream = IOUtils.buffer(sessionStream)) {
+                    bytesWritten += IOUtils.copyStream(inputStream, outputStream);
+                    outputStream.flush();
+                    session.fsync(sessionStream);
                 }
             }
+
+            long writeMs = SystemClock.elapsedRealtime() - writeStartedAt;
+            Log.i(TAG, String.format(Locale.US, "Wrote %d bytes in %d ms (%.1f MB/s); handing off to system",
+                    bytesWritten, writeMs, writeMs > 0 ? bytesWritten / 1048.576f / writeMs : 0f));
+            mSessionIdToCommitStartedAt.put(sessionId, SystemClock.elapsedRealtime());
 
             Intent callbackIntent = new Intent(RootlessSaiPiBroadcastReceiver.ACTION_DELIVER_PI_EVENT);
             callbackIntent.setPackage(getContext().getPackageName());
@@ -140,6 +153,7 @@ public class RootlessSaiPackageInstaller extends BaseSaiPackageInstaller impleme
         if (sessionId == null)
             return;
 
+        logSystemPhaseDuration(sessionId, "succeeded");
         setSessionState(sessionId, new SaiPiSessionState.Builder(sessionId, SaiPiSessionStatus.INSTALLATION_SUCCEED).packageName(packageName).resolvePackageMeta(getContext()).build());
     }
 
@@ -154,6 +168,14 @@ public class RootlessSaiPackageInstaller extends BaseSaiPackageInstaller impleme
                 .error(shortError, fullError)
                 .build());
 
+    }
+
+    private void logSystemPhaseDuration(String sessionId, String outcome) {
+        Long commitStartedAt = mSessionIdToCommitStartedAt.remove(sessionId);
+        if (commitStartedAt != null) {
+            Log.i(TAG, String.format(Locale.US, "System-side install phase took %d ms (%s)",
+                    SystemClock.elapsedRealtime() - commitStartedAt, outcome));
+        }
     }
 
     @Override

@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 
 import com.aefyr.sai.R;
 import com.aefyr.sai.model.filedescriptor.FileDescriptor;
+import com.aefyr.sai.utils.IOUtils;
 import com.aefyr.sai.utils.Utils;
 
 import java.io.IOException;
@@ -35,7 +36,7 @@ public class ZipApkSource implements ZipBackedApkSource {
     @Override
     public boolean nextApk() throws Exception {
         if (!mIsOpen) {
-            mZipInputStream = new ZipInputStream(mZipFileDescriptor.open());
+            mZipInputStream = new ZipInputStream(IOUtils.buffer(mZipFileDescriptor.open()));
             mWrappedStream = new ZipInputStreamWrapper(mZipInputStream);
             mIsOpen = true;
         }

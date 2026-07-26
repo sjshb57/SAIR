@@ -14,6 +14,7 @@ import com.aefyr.sai.installer2.base.model.AndroidPackageInstallerError;
 import com.aefyr.sai.utils.Utils;
 
 import java.util.HashSet;
+import androidx.core.content.IntentCompat;
 
 class RootlessSaiPiBroadcastReceiver extends BroadcastReceiver {
     private static final String TAG = "RootlessSaiPiBR";
@@ -47,7 +48,7 @@ class RootlessSaiPiBroadcastReceiver extends BroadcastReceiver {
             case PackageInstaller.STATUS_PENDING_USER_ACTION:
                 Log.d(TAG, "Requesting user confirmation for installation");
                 dispatchOnConfirmationPending(intent.getIntExtra(PackageInstaller.EXTRA_SESSION_ID, -1), intent.getStringExtra(PackageInstaller.EXTRA_PACKAGE_NAME));
-                Intent confirmationIntent = intent.getParcelableExtra(Intent.EXTRA_INTENT);
+                Intent confirmationIntent = IntentCompat.getParcelableExtra(intent, Intent.EXTRA_INTENT, Intent.class);
 
                 ConfirmationIntentWrapperActivity2.start(context, intent.getIntExtra(PackageInstaller.EXTRA_SESSION_ID, -1), confirmationIntent);
                 break;

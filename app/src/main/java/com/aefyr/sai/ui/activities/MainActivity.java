@@ -21,8 +21,9 @@ import com.aefyr.sai.ui.fragments.PreferencesFragment;
 import com.aefyr.sai.utils.FragmentNavigator;
 import com.aefyr.sai.utils.PreferencesHelper;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
-public class MainActivity extends ThemedActivity implements BottomNavigationView.OnNavigationItemSelectedListener, FragmentNavigator.FragmentFactory {
+public class MainActivity extends ThemedActivity implements NavigationBarView.OnItemSelectedListener, FragmentNavigator.FragmentFactory {
 
     private BottomNavigationView mBottomNavigationView;
 
@@ -46,7 +47,7 @@ public class MainActivity extends ThemedActivity implements BottomNavigationView
 
 
         mBottomNavigationView = findViewById(R.id.bottomnav_main);
-        mBottomNavigationView.setOnNavigationItemSelectedListener(this);
+        mBottomNavigationView.setOnItemSelectedListener(this);
 
         mFragmentNavigator = new FragmentNavigator(savedInstanceState, getSupportFragmentManager(), R.id.container_main, this);
         mInstallerFragment = mFragmentNavigator.findFragmentByTag("installer");

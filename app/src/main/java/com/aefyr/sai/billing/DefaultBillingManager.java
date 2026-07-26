@@ -15,6 +15,7 @@ import com.aefyr.sai.R;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import androidx.core.content.res.ResourcesCompat;
 
 public class DefaultBillingManager implements BillingManager {
 
@@ -100,7 +101,7 @@ public class DefaultBillingManager implements BillingManager {
 
         @Override
         public Drawable getIcon(Context context, DonationStatus donationStatus) {
-            return context.getResources().getDrawable(R.drawable.ic_donation_status_floss);
+            return ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_donation_status_floss, context.getTheme());
         }
     }
 }

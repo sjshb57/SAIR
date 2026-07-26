@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import androidx.core.os.ConfigurationCompat;
 
 public class DeviceInfoAwarePostprocessor implements Postprocessor {
     private static final String NO_MODULE = "DeviceInfoAwarePostprocessor.NO_MODULE";
@@ -123,7 +124,7 @@ public class DeviceInfoAwarePostprocessor implements Postprocessor {
         if (localeCategory == null)
             return;
 
-        localeCategory.setDescription(mContext.getString(R.string.installerx_category_config_locale_desc, mContext.getResources().getConfiguration().locale.getDisplayLanguage()));
+        localeCategory.setDescription(mContext.getString(R.string.installerx_category_config_locale_desc, ConfigurationCompat.getLocales(mContext.getResources().getConfiguration()).get(0).getDisplayLanguage()));
 
         scopeToModuleAndProcess(parserContext, localeCategory.getPartsList(), this::processLocaleParts);
     }
@@ -160,7 +161,7 @@ public class DeviceInfoAwarePostprocessor implements Postprocessor {
     private Map<String, Integer> getPreferredLanguagesRanking() {
         if (!Utils.apiIsAtLeast(Build.VERSION_CODES.N)) {
             HashMap<String, Integer> localeRanking = new HashMap<>();
-            localeRanking.put(mContext.getResources().getConfiguration().locale.getLanguage(), 0);
+            localeRanking.put(ConfigurationCompat.getLocales(mContext.getResources().getConfiguration()).get(0).getLanguage(), 0);
             return localeRanking;
         } else {
             HashMap<String, Integer> localeRanking = new HashMap<>();

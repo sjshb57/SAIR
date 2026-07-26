@@ -58,6 +58,7 @@ public class FragmentNavigator {
         transaction.commitNow();
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends Fragment> T findFragmentByTag(String tag) {
         ensureStateWasRestored();
         return (T) mFragmentManager.findFragmentByTag(tag);

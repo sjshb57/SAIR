@@ -17,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import androidx.core.content.pm.PackageInfoCompat;
 
 //TODO add validation
 public class SaiExportedAppMeta2 {
@@ -83,7 +84,7 @@ public class SaiExportedAppMeta2 {
         if (Utils.apiIsAtLeast(Build.VERSION_CODES.P)) {
             appMeta.mVersionCode = packageInfo.getLongVersionCode();
         } else {
-            appMeta.mVersionCode = (long) packageInfo.versionCode;
+            appMeta.mVersionCode = PackageInfoCompat.getLongVersionCode(packageInfo);
         }
 
         appMeta.mExportTimestamp = exportTimestamp;

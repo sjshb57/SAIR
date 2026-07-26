@@ -68,7 +68,7 @@ public class BackupManageAppFragment extends SaiBaseFragment implements BackupAp
         RecyclerView recycler = findViewById(R.id.rv_backup_app_details);
         recycler.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        BackupAppDetailsAdapter detailsAdapter = new BackupAppDetailsAdapter(requireContext(), new Selection<>(new SimpleKeyStorage()), this, this);
+        BackupAppDetailsAdapter detailsAdapter = new BackupAppDetailsAdapter(requireContext(), new Selection<>(new SimpleKeyStorage<>()), this, this);
         recycler.setAdapter(detailsAdapter);
 
         mViewModel.getDetails().observe(getViewLifecycleOwner(), details -> {
@@ -129,7 +129,7 @@ public class BackupManageAppFragment extends SaiBaseFragment implements BackupAp
 
     @Override
     public void deleteApp(BackupApp backupApp) {
-        Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
+        Intent intent = new Intent(Intent.ACTION_DELETE);
         intent.setData(new Uri.Builder().scheme("package").opaquePart(backupApp.packageMeta().packageName).build());
         startActivity(intent);
     }

@@ -64,6 +64,7 @@ public class MutableSplitCategory implements SplitCategory {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<SplitPart> parts() {
         return (List<SplitPart>) ((Object) mParts);
     }

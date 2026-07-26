@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="FilePickerDialog.DefaultTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="filePickerDialogCancelButtonStyle">@style/Widget.MaterialComponents.Button
+        </item>
+        <item name="filePickerDialogSelectButtonStyle">@style/Widget.MaterialComponents.Button
+        </item>
+    </style>
+
+</resources>

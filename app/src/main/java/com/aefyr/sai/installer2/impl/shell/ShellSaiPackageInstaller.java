@@ -32,47 +32,53 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import androidx.core.content.ContextCompat;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import com.aefyr.sai.utils.IOUtils;
 
 public abstract class ShellSaiPackageInstaller extends BaseSaiPackageInstaller {
 
     private final Semaphore mSharedSemaphore = new Semaphore(1);
     private final AtomicBoolean mAwaitingBroadcast = new AtomicBoolean(false);
+    private final AtomicReference<String> mBroadcastPackageName = new AtomicReference<>();
     private final ExecutorService mExecutor = Executors.newFixedThreadPool(4);
     private final HandlerThread mWorkerThread = new HandlerThread("RootlessSaiPi Worker");
     private final Handler mWorkerHandler;
 
-    private String mCurrentSessionId;
+    private volatile String mCurrentSessionId;
 
+    /**
+     * Best-effort source for the installed package name. Success is decided by the exit code of
+     * pm install-commit, never by this broadcast.
+     */
     private final BroadcastReceiver mPackageInstalledBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d(tag(), intent.toString());
-
             if (!mAwaitingBroadcast.get())
                 return;
 
-            mAwaitingBroadcast.set(false);
+            String dataString = intent.getDataString();
+            if (dataString == null)
+                return;
 
-            String installedPackage;
+            String installedPackage = dataString.replace("package:", "");
             try {
-                String dataString = intent.getDataString();
-                installedPackage = dataString != null ? dataString.replace("package:", "") : "";
-                String installerPackage = getContext().getPackageManager().getInstallerPackageName(installedPackage);
-                Log.d(tag(), "installerPackage=" + installerPackage);
+                String installerPackage = getInstallerPackage(getContext(), installedPackage);
                 if (!context.getPackageName().equals(installerPackage))
                     return;
             } catch (Exception e) {
-                Log.wtf(tag(), e);
-                return;
+                // Package visibility may hide the installer info; keep the name anyway.
+                Log.d(tag(), "Unable to verify installer package for " + installedPackage, e);
             }
 
-            setSessionState(mCurrentSessionId, new SaiPiSessionState.Builder(mCurrentSessionId, SaiPiSessionStatus.INSTALLATION_SUCCEED)
-                    .packageName(installedPackage)
-                    .resolvePackageMeta(getContext())
-                    .build());
-            unlockInstallation();
+            mBroadcastPackageName.set(installedPackage);
         }
     };
 
@@ -84,7 +90,8 @@ public abstract class ShellSaiPackageInstaller extends BaseSaiPackageInstaller {
 
         IntentFilter packageAddedFilter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
         packageAddedFilter.addDataScheme("package");
-        getContext().registerReceiver(mPackageInstalledBroadcastReceiver, packageAddedFilter, null, mWorkerHandler);
+        ContextCompat.registerReceiver(getContext(), mPackageInstalledBroadcastReceiver, packageAddedFilter,
+                null, mWorkerHandler, ContextCompat.RECEIVER_NOT_EXPORTED);
     }
 
     @Override
@@ -117,33 +124,53 @@ public abstract class ShellSaiPackageInstaller extends BaseSaiPackageInstaller {
 
             int currentApkFile = 0;
             while (apkSource.nextApk()) {
-                if (apkSource.getApkLength() == -1) {
-                    setSessionState(sessionId, new SaiPiSessionState.Builder(sessionId, SaiPiSessionStatus.INSTALLATION_FAILED)
-                            .appTempName(appTempName)
-                            .error(getContext().getString(R.string.installer_error_unknown_apk_size), null)
-                            .build());
-                    unlockInstallation();
-                    return;
+                String splitName = String.format(Locale.US, "%d.apk", currentApkFile++);
+                long apkLength = apkSource.getApkLength();
+
+                if (apkLength == -1) {
+                    // Streamed zip entries carry no size in their local header. Materialise the
+                    // split into cache so pm gets a definite -S value instead of failing outright.
+                    File stagedApk = stageApkToCache(apkSource);
+                    try {
+                        ensureCommandSucceeded(getShell().exec(new Shell.Command("pm", "install-write", "-S",
+                                String.valueOf(stagedApk.length()), String.valueOf(androidSessionId), splitName),
+                                IOUtils.buffer(new FileInputStream(stagedApk))));
+                    } finally {
+                        //noinspection ResultOfMethodCallIgnored
+                        stagedApk.delete();
+                    }
+                } else {
+                    ensureCommandSucceeded(getShell().exec(new Shell.Command("pm", "install-write", "-S",
+                            String.valueOf(apkLength), String.valueOf(androidSessionId), splitName),
+                            apkSource.openApkInputStream()));
                 }
-                ensureCommandSucceeded(getShell().exec(new Shell.Command("pm", "install-write", "-S",
-                        String.valueOf(apkSource.getApkLength()), String.valueOf(androidSessionId),
-                        String.format(Locale.US, "%d.apk", currentApkFile++)), apkSource.openApkInputStream()));
             }
 
             mAwaitingBroadcast.set(true);
             Shell.Result installationResult = getShell().exec(new Shell.Command("pm", "install-commit", String.valueOf(androidSessionId)));
-            if (!installationResult.isSuccessful()) {
-                mAwaitingBroadcast.set(false);
+            mAwaitingBroadcast.set(false);
 
+            if (!installationResult.isSuccessful()) {
                 String shortError = getContext().getString(R.string.installer_error_shell, getInstallerName(),
                         getSessionInfo(apkSource) + "\n\n" + parseError(installationResult));
                 setSessionState(sessionId, new SaiPiSessionState.Builder(sessionId, SaiPiSessionStatus.INSTALLATION_FAILED)
                         .appTempName(appTempName)
                         .error(shortError, shortError + "\n\n" + installationResult.out)
                         .build());
-
                 unlockInstallation();
+                return;
             }
+
+            // install-commit 已同步确认成功,不再等 PACKAGE_ADDED 广播:
+            // Android 11+ 的包可见性过滤会让广播丢失或包名查询失败,
+            // 旧实现在那种情况下永远不会 unlockInstallation,导致后续安装全部死锁。
+            String installedPackage = mBroadcastPackageName.getAndSet(null);
+            SaiPiSessionState.Builder success = new SaiPiSessionState.Builder(sessionId, SaiPiSessionStatus.INSTALLATION_SUCCEED)
+                    .appTempName(appTempName);
+            if (installedPackage != null)
+                success.packageName(installedPackage).resolvePackageMeta(getContext());
+            setSessionState(sessionId, success.build());
+            unlockInstallation();
         } catch (Exception e) {
             Log.w(tag(), e);
 
@@ -276,4 +303,21 @@ public abstract class ShellSaiPackageInstaller extends BaseSaiPackageInstaller {
     protected abstract String getShellUnavailableMessage();
 
     protected abstract String tag();
+
+    @SuppressWarnings("deprecation")
+    private static String getInstallerPackage(Context context, String packageName) throws Exception {
+        PackageManager pm = context.getPackageManager();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+            return pm.getInstallSourceInfo(packageName).getInstallingPackageName();
+        return pm.getInstallerPackageName(packageName);
+    }
+
+    private File stageApkToCache(ApkSource apkSource) throws Exception {
+        File staged = Utils.createTempFileInCache(getContext(), "ShellSaiPi", "apk");
+        try (InputStream in = apkSource.openApkInputStream();
+             OutputStream out = IOUtils.buffer(new FileOutputStream(staged))) {
+            IOUtils.copyStream(in, out);
+        }
+        return staged;
+    }
 }

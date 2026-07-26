@@ -42,7 +42,8 @@ public class CopyToFileApkSource implements ApkSource {
 
         mCurrentApkFile = new File(mTempDir, mWrappedApkSource.getApkName());
 
-        try (InputStream in = mWrappedApkSource.openApkInputStream(); OutputStream out = new FileOutputStream(mCurrentApkFile)) {
+        try (InputStream in = mWrappedApkSource.openApkInputStream();
+             OutputStream out = IOUtils.buffer(new FileOutputStream(mCurrentApkFile))) {
             IOUtils.copyStream(in, out);
         }
 
@@ -51,7 +52,7 @@ public class CopyToFileApkSource implements ApkSource {
 
     @Override
     public InputStream openApkInputStream() throws Exception {
-        return new FileInputStream(mCurrentApkFile);
+        return IOUtils.buffer(new FileInputStream(mCurrentApkFile));
     }
 
     @Override

@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.aefyr.sai"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.aefyr.sai"
@@ -46,7 +46,6 @@ android {
             signingConfig = signingConfigs.getByName("release")
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
-
     }
 
     buildFeatures {
@@ -60,21 +59,22 @@ android {
 
     packaging {
         resources {
-            excludes.add("META-INF/DEPENDENCIES")
-            excludes.add("META-INF/*android*")
-            excludes.add("META-INF/*kotlin*")
-            excludes.add("okhttp3/**")
-            excludes.add("kotlin/**")
-            excludes.add("META-INF/ASL2.0")
-            excludes.add("META-INF/README.md")
-            excludes.add("META-INF/services/**")
-            excludes.add("META-INF/CHANGES")
+            excludes += setOf(
+                "META-INF/DEPENDENCIES",
+                "META-INF/ASL2.0",
+                "META-INF/CHANGES",
+                "META-INF/README.md",
+                "META-INF/*.version"
+            )
         }
     }
 }
 
 dependencies {
-    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
+    implementation(project(":libs:flexfilter"))
+    implementation(project(":libs:filepicker"))
+    implementation(project(":libs:tooltips"))
+    implementation(project(":libs:pseudoapksigner"))
 
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.documentfile)
@@ -86,7 +86,8 @@ dependencies {
     implementation(libs.androidx.room.runtime)
 
     annotationProcessor(libs.androidx.room.compiler) {
-    exclude(group = "com.intellij", module = "annotations") }
+        exclude(group = "com.intellij", module = "annotations")
+    }
 
     implementation(libs.material)
     implementation(libs.glide)

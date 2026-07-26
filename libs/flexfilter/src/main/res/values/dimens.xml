@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <dimen name="alert_dialog_corners_radius">12dp</dimen>
+</resources>

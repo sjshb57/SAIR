@@ -39,6 +39,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import androidx.core.os.BundleCompat;
 
 public class InstallerXDialogFragment extends BaseBottomSheetDialogFragment implements FilePickerDialogFragment.OnFilesSelectedListener, SimpleAlertDialogFragment.OnDismissListener {
     private static final String ARG_APK_SOURCE_URI = "apk_source_uri";
@@ -138,7 +139,7 @@ public class InstallerXDialogFragment extends BaseBottomSheetDialogFragment impl
         if (args == null)
             return;
 
-        Uri apkSourceUri = args.getParcelable(ARG_APK_SOURCE_URI);
+        Uri apkSourceUri = BundleCompat.getParcelable(args, ARG_APK_SOURCE_URI, Uri.class);
         if (apkSourceUri != null)
             mViewModel.setApkSourceUris(Collections.singletonList(apkSourceUri));
     }

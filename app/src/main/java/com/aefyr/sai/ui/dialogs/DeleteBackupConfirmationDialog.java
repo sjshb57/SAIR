@@ -15,6 +15,7 @@ import com.aefyr.sai.backup2.impl.DefaultBackupManager;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import androidx.core.os.BundleCompat;
 
 public class DeleteBackupConfirmationDialog extends DialogFragment {
 
@@ -43,7 +44,7 @@ public class DeleteBackupConfirmationDialog extends DialogFragment {
         super.onCreate(savedInstanceState);
 
         Bundle args = requireArguments();
-        mBackupUri = args.getParcelable(ARG_BACKUP_URI);
+        mBackupUri = BundleCompat.getParcelable(args, ARG_BACKUP_URI, Uri.class);
         mTimestamp = args.getLong(ARG_TIMESTAMP);
     }
 

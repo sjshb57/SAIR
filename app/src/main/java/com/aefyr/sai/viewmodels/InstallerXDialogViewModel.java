@@ -56,7 +56,7 @@ public class InstallerXDialogViewModel extends ViewModel {
 
     private LoadMetaTask mLoadMetaTask;
 
-    private Selection<String> mPartsSelection = new Selection<>(new SimpleKeyStorage());
+    private Selection<String> mPartsSelection = new Selection<>(new SimpleKeyStorage<>());
     private List<UriMessResolutionResult> mResolutionResults;
 
     public InstallerXDialogViewModel(@NonNull Context appContext, @Nullable UriHost uriHost) {

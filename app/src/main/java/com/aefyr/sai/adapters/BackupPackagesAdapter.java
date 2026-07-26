@@ -134,7 +134,7 @@ public class BackupPackagesAdapter extends SelectableAdapter<String, BackupPacka
             mBackupStatus = itemView.findViewById(R.id.iv_backup_status);
 
             itemView.findViewById(R.id.container_backup_package).setOnFocusChangeListener((v, hasFocus) -> {
-                int adapterPosition = getAdapterPosition();
+                int adapterPosition = getBindingAdapterPosition();
                 if (adapterPosition == RecyclerView.NO_POSITION)
                     return;
 
@@ -143,7 +143,7 @@ public class BackupPackagesAdapter extends SelectableAdapter<String, BackupPacka
             });
 
             itemView.findViewById(R.id.container_backup_package).setOnLongClickListener(v -> {
-                int adapterPosition = getAdapterPosition();
+                int adapterPosition = getBindingAdapterPosition();
                 if (adapterPosition == RecyclerView.NO_POSITION)
                     return false;
 
@@ -155,7 +155,7 @@ public class BackupPackagesAdapter extends SelectableAdapter<String, BackupPacka
             });
 
             itemView.findViewById(R.id.container_backup_package).setOnClickListener(v -> {
-                int adapterPosition = getAdapterPosition();
+                int adapterPosition = getBindingAdapterPosition();
                 if (adapterPosition == RecyclerView.NO_POSITION)
                     return;
 

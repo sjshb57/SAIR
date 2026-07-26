@@ -15,6 +15,7 @@ import androidx.fragment.app.DialogFragment;
 
 import com.aefyr.sai.R;
 import com.aefyr.sai.utils.Logs;
+import androidx.core.os.BundleCompat;
 
 public class InstallationConfirmationDialogFragment extends DialogFragment {
     private static final String ARG_APKS_FILE = "file";
@@ -44,7 +45,7 @@ public class InstallationConfirmationDialogFragment extends DialogFragment {
         Bundle args = getArguments();
         if (args == null)
             return;
-        mApksFileUri = args.getParcelable(ARG_APKS_FILE);
+        mApksFileUri = BundleCompat.getParcelable(args, ARG_APKS_FILE, Uri.class);
     }
 
     @NonNull

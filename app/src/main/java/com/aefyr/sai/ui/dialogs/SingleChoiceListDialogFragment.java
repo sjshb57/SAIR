@@ -20,6 +20,7 @@ import com.aefyr.sai.R;
 import com.aefyr.sai.ui.dialogs.base.BaseBottomSheetDialogFragment;
 
 import java.util.Objects;
+import androidx.core.os.BundleCompat;
 
 public class SingleChoiceListDialogFragment extends BaseBottomSheetDialogFragment {
 
@@ -72,7 +73,7 @@ public class SingleChoiceListDialogFragment extends BaseBottomSheetDialogFragmen
         if (args == null)
             return;
 
-        mParams = Objects.requireNonNull(args.getParcelable(ARG_PARAMS), "params must not be null");
+        mParams = Objects.requireNonNull(BundleCompat.getParcelable(args, ARG_PARAMS, DialogParams.class), "params must not be null");
         mParams.setTag(getTag());
     }
 
@@ -158,7 +159,7 @@ public class SingleChoiceListDialogFragment extends BaseBottomSheetDialogFragmen
                 mText = itemView.findViewById(R.id.tv_single_choice_item);
 
                 itemView.setOnClickListener((v) -> {
-                    int adapterPosition = getAdapterPosition();
+                    int adapterPosition = getBindingAdapterPosition();
                     if (adapterPosition == RecyclerView.NO_POSITION)
                         return;
 

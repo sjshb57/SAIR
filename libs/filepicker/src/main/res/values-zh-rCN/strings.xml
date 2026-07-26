@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="cancel_button_label">取消</string>
+    <string name="choose_button_label">选择</string>
+    <string name="label_parent_directory">上级目录</string>
+    <string name="last_edit">最近修改：%s</string>
+    <string name="last_edit_with_size">%1$s, 最近修改：%2$s</string>
+    <string name="error_dir_access">目录无法访问</string>
+</resources>

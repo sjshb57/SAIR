@@ -99,9 +99,12 @@ public class RootlessSAIPackageInstaller extends SAIPackageInstaller {
             session = mPackageInstaller.openSession(sessionID);
             int currentApkFile = 0;
             while (apkSource.nextApk()) {
-                try (InputStream inputStream = apkSource.openApkInputStream(); OutputStream outputStream = session.openWrite(String.format("%d.apk", currentApkFile++), 0, apkSource.getApkLength())) {
+                OutputStream sessionStream = session.openWrite(String.format("%d.apk", currentApkFile++), 0, apkSource.getApkLength());
+                try (InputStream inputStream = apkSource.openApkInputStream();
+                     OutputStream outputStream = IOUtils.buffer(sessionStream)) {
                     IOUtils.copyStream(inputStream, outputStream);
-                    session.fsync(outputStream);
+                    outputStream.flush();
+                    session.fsync(sessionStream);
                 }
             }
 

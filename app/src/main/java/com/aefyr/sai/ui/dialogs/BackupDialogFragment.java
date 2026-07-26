@@ -20,6 +20,7 @@ import com.aefyr.sai.view.ViewSwitcherLayout;
 import com.aefyr.sai.viewmodels.BackupDialogViewModel;
 
 import java.util.Objects;
+import androidx.core.os.BundleCompat;
 
 public class BackupDialogFragment extends BaseBottomSheetDialogFragment {
     private static final String ARG_PACKAGE = "package";
@@ -45,7 +46,7 @@ public class BackupDialogFragment extends BaseBottomSheetDialogFragment {
         Bundle args = getArguments();
         if (args == null)
             return;
-        mPackage = Objects.requireNonNull(args.getParcelable(ARG_PACKAGE));
+        mPackage = Objects.requireNonNull(BundleCompat.getParcelable(args, ARG_PACKAGE, PackageMeta.class));
 
         if (savedInstanceState == null)
             mViewModel.setPackage(mPackage);

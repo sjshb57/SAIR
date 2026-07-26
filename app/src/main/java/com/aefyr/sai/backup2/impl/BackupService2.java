@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
+import android.content.pm.ServiceInfo;
 import android.os.Looper;
 import android.util.Log;
 
@@ -19,6 +20,7 @@ import androidx.annotation.MainThread;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.app.ServiceCompat;
 
 import com.aefyr.sai.BuildConfig;
 import com.aefyr.sai.R;
@@ -169,12 +171,12 @@ public class BackupService2 extends Service implements BackupStorage.BackupProgr
         if (mTasks.isEmpty() && mBatchTasks.isEmpty()) {
             die();
         } else {
-            startForeground(NOTIFICATION_ID, buildStatusNotification());
+            startForegroundCompat();
         }
     }
 
     private void die() {
-        stopForeground(true);
+        ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE);
         stopSelf();
     }
 
@@ -220,7 +222,12 @@ public class BackupService2 extends Service implements BackupStorage.BackupProgr
             mNotificationManager.createNotificationChannel(new NotificationChannel(NOTIFICATION_CHANNEL_ID, getString(R.string.backup_backup), NotificationManager.IMPORTANCE_DEFAULT));
         }
 
-        startForeground(NOTIFICATION_ID, buildStatusNotification());
+        startForegroundCompat();
+    }
+
+    private void startForegroundCompat() {
+        ServiceCompat.startForeground(this, NOTIFICATION_ID, buildStatusNotification(),
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC);
     }
 
     private Notification buildStatusNotification() {
@@ -245,7 +252,8 @@ public class BackupService2 extends Service implements BackupStorage.BackupProgr
             cancelTaskIntent.putExtra(EXTRA_STORAGE_ID, taskInfo.storageId);
             cancelTaskIntent.putExtra(EXTRA_TASK_TOKEN, taskInfo.taskToken);
 
-            cancelTaskPendingIntent = PendingIntent.getService(this, 0, cancelTaskIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            cancelTaskPendingIntent = PendingIntent.getService(this, 0, cancelTaskIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
             taskInfo.cachedCancelPendingIntent = cancelTaskPendingIntent;
         }
 
@@ -330,7 +338,8 @@ public class BackupService2 extends Service implements BackupStorage.BackupProgr
             cancelTaskIntent.putExtra(EXTRA_STORAGE_ID, taskInfo.storageId);
             cancelTaskIntent.putExtra(EXTRA_TASK_TOKEN, taskInfo.taskToken);
 
-            cancelTaskPendingIntent = PendingIntent.getService(this, 0, cancelTaskIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            cancelTaskPendingIntent = PendingIntent.getService(this, 0, cancelTaskIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
             taskInfo.cachedCancelPendingIntent = cancelTaskPendingIntent;
         }
 

@@ -51,7 +51,7 @@ public class SignerApkSource implements ApkSource {
 
     @Override
     public InputStream openApkInputStream() throws Exception {
-        return new FileInputStream(mCurrentSignedApkFile);
+        return IOUtils.buffer(new FileInputStream(mCurrentSignedApkFile));
     }
 
     @Override

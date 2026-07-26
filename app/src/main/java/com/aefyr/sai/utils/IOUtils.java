@@ -3,6 +3,8 @@ package com.aefyr.sai.utils;
 import android.content.Context;
 import android.util.Log;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -23,12 +25,32 @@ import java.util.zip.CRC32;
 public class IOUtils {
     private static final String TAG = "IOUtils";
 
-    public static void copyStream(InputStream from, OutputStream to) throws IOException {
-        byte[] buf = new byte[1024 * 1024];
+    /**
+     * Buffer size for stream wrapping and bulk copies. Sized to keep the number of syscalls low
+     * on FUSE-backed external storage, where each read is a userspace round trip.
+     */
+    public static final int BUFFER_SIZE = 256 * 1024;
+
+    /**
+     * @return number of bytes copied
+     */
+    public static long copyStream(InputStream from, OutputStream to) throws IOException {
+        byte[] buf = new byte[BUFFER_SIZE];
+        long total = 0;
         int len;
         while ((len = from.read(buf)) > 0) {
             to.write(buf, 0, len);
+            total += len;
         }
+        return total;
+    }
+
+    public static InputStream buffer(InputStream in) {
+        return in instanceof BufferedInputStream ? in : new BufferedInputStream(in, BUFFER_SIZE);
+    }
+
+    public static OutputStream buffer(OutputStream out) {
+        return out instanceof BufferedOutputStream ? out : new BufferedOutputStream(out, BUFFER_SIZE);
     }
 
     public static void copyFile(File original, File destination) throws IOException {

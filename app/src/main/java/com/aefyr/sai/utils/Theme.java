@@ -212,5 +212,10 @@ public class Theme {
         public boolean equals(@Nullable Object obj) {
             return obj instanceof ThemeDescriptor && ((ThemeDescriptor) obj).getId() == getId();
         }
+
+        @Override
+        public int hashCode() {
+            return mId;
+        }
     }
 }

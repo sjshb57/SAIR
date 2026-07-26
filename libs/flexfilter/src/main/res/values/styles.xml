@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <style name="Chip.Selection" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="android:checkable">true</item>
+        <item name="chipBackgroundColor">@color/selector_chip_background_color_selection</item>
+        <item name="chipSurfaceColor">?colorPrimary</item>
+        <item name="android:textColor">@color/selector_chip_text_color_selection</item>
+        <item name="checkedIconVisible">false</item>
+    </style>
+    <style name="BaseBottomSheetDialog" parent="Theme.Design.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/BaseBottomSheetDialogStyle</item>
+    </style>
+    <style name="BaseBottomSheetDialog.Light" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/BaseBottomSheetDialogStyle</item>
+    </style>
+    <style name="BaseBottomSheetDialogStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:padding">8dp</item>
+    </style>
+    <style name="MaterialButton" parent="Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingLeft">24dp</item>
+        <item name="android:paddingRight">24dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:singleLine">true</item>
+        <item name="colorPrimary">?attr/colorAccent</item>
+        <item name="colorOnPrimary">?attr/colorPrimaryDark</item>
+        <item name="android:theme">@style/MaterialButton</item>
+        <item name="cornerRadius">20dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+    <style name="MaterialButton.Outlined" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingLeft">24dp</item>
+        <item name="android:paddingRight">24dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:singleLine">true</item>
+        <item name="colorPrimary">?attr/colorAccent</item>
+        <item name="android:theme">@style/MaterialButton.Outlined</item>
+        <item name="cornerRadius">20dp</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="strokeWidth">2dp</item>
+        <item name="strokeColor">?attr/colorAccent</item>
+    </style>
+</resources>

@@ -67,7 +67,8 @@ public class ZipFileApkSource implements ZipBackedApkSource {
     private void copyAndOpenZip() throws Exception {
         mTempFile = createTempFile();
 
-        try (InputStream in = mZipFileDescriptor.open(); OutputStream out = new FileOutputStream(mTempFile)) {
+        try (InputStream in = mZipFileDescriptor.open();
+             OutputStream out = IOUtils.buffer(new FileOutputStream(mTempFile))) {
             IOUtils.copyStream(in, out);
         }
 
@@ -77,7 +78,7 @@ public class ZipFileApkSource implements ZipBackedApkSource {
 
     @Override
     public InputStream openApkInputStream() throws Exception {
-        return mZipFile.getInputStream(mCurrentEntry);
+        return IOUtils.buffer(mZipFile.getInputStream(mCurrentEntry));
     }
 
     @Override

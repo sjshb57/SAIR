@@ -4,18 +4,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.aefyr.sai.R;
 import com.aefyr.sai.installer.rootless.RootlessSAIPIService;
 import com.aefyr.sai.utils.Logs;
+import androidx.core.content.IntentCompat;
 
 public class ConfirmationIntentWrapperActivity extends AppCompatActivity {
 
     private static final String EXTRA_CONFIRMATION_INTENT = "confirmation_intent";
-
-    private static final int REQUEST_CODE_CONFIRM_INSTALLATION = 322;
 
     /**
      * Used to send abort event when this activity is force closed due to MainActivity being started from launcher/open with.
@@ -23,28 +24,24 @@ public class ConfirmationIntentWrapperActivity extends AppCompatActivity {
      */
     private boolean mFinishedProperly = false;
 
+    private final ActivityResultLauncher<Intent> mConfirmationLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                mFinishedProperly = true;
+                finish();
+            });
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
 
-        Intent confirmationIntent = intent.getParcelableExtra(EXTRA_CONFIRMATION_INTENT);
+        Intent confirmationIntent = IntentCompat.getParcelableExtra(intent, EXTRA_CONFIRMATION_INTENT, Intent.class);
         try {
-            startActivityForResult(confirmationIntent, REQUEST_CODE_CONFIRM_INSTALLATION);
+            mConfirmationLauncher.launch(confirmationIntent);
         } catch (Exception e) {
             Logs.logException(e);
             sendErrorBroadcast(intent.getIntExtra(RootlessSAIPIService.EXTRA_SESSION_ID, -1), getString(R.string.installer_error_lidl_rom));
-            finish();
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQUEST_CODE_CONFIRM_INSTALLATION) {
-            mFinishedProperly = true;
             finish();
         }
     }

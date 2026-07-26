@@ -13,12 +13,12 @@ import java.util.Set;
 
 public class Selection<Key> {
 
-    private KeyStorage<Key> mKeyStorage;
+    private final KeyStorage<Key> mKeyStorage;
 
-    private Set<Observer<Key>> mObservers = new HashSet<>();
-    private MutableLiveData<Selection<Key>> mLiveSelection = new MutableLiveData<>(this);
+    private final Set<Observer<Key>> mObservers = new HashSet<>();
+    private final MutableLiveData<Selection<Key>> mLiveSelection = new MutableLiveData<>(this);
 
-    public Selection(KeyStorage keyStorage) {
+    public Selection(KeyStorage<Key> keyStorage) {
         mKeyStorage = keyStorage;
     }
 

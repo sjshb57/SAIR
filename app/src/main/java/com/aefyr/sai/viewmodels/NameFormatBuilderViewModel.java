@@ -19,7 +19,7 @@ import java.util.Objects;
 public class NameFormatBuilderViewModel extends ViewModel implements Selection.Observer<BackupNameFormatBuilder.Part> {
 
     private PackageMeta mOwnMeta;
-    private final Selection<BackupNameFormatBuilder.Part> mSelection = new Selection<>(new SimpleKeyStorage());
+    private final Selection<BackupNameFormatBuilder.Part> mSelection = new Selection<>(new SimpleKeyStorage<>());
 
     private final BackupNameFormatBuilder mBackupNameFormatBuilder;
     private MutableLiveData<BackupNameFormatBuilder> mLiveFormat;
@@ -55,7 +55,7 @@ public class NameFormatBuilderViewModel extends ViewModel implements Selection.O
     }
 
     @Override
-    public void onKeySelectionChanged(Selection selection, BackupNameFormatBuilder.Part key, boolean selected) {
+    public void onKeySelectionChanged(Selection<BackupNameFormatBuilder.Part> selection, BackupNameFormatBuilder.Part key, boolean selected) {
         if (selected)
             mBackupNameFormatBuilder.addPart(key);
         else

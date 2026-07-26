@@ -45,7 +45,7 @@ public abstract class ShellSAIPackageInstaller extends SAIPackageInstaller {
             try {
                 installedPackage = intent.getDataString() != null ?
                         intent.getDataString().replace("package:", "") : "";
-                String installerPackage = getContext().getPackageManager().getInstallerPackageName(installedPackage);
+                String installerPackage = getInstallerPackage(getContext(), installedPackage);
                 Log.d(TAG, "installerPackage=" + installerPackage);
                 if (!context.getPackageName().equals(installerPackage))
                     return;
@@ -198,4 +198,12 @@ public abstract class ShellSAIPackageInstaller extends SAIPackageInstaller {
     protected abstract String getInstallerName();
 
     protected abstract String getShellUnavailableMessage();
+
+    @SuppressWarnings("deprecation")
+    private static String getInstallerPackage(Context context, String packageName) throws Exception {
+        PackageManager pm = context.getPackageManager();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+            return pm.getInstallSourceInfo(packageName).getInstallingPackageName();
+        return pm.getInstallerPackageName(packageName);
+    }
 }

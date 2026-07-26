@@ -3,6 +3,7 @@ pluginManagement {
         google()
         mavenCentral()
         gradlePluginPortal()
+        maven { url = uri("https://maven.aliyun.com/repository/gradle-plugin") }
         maven { url = uri("https://maven.aliyun.com/repository/public") }
     }
 }
@@ -23,11 +24,13 @@ dependencyResolutionManagement {
                 artifact()
             }
         }
-        flatDir {
-            dirs("libs")
-        }
     }
 }
 
 rootProject.name = "SAIR"
+
 include(":app")
+include(":libs:flexfilter")
+include(":libs:filepicker")
+include(":libs:tooltips")
+include(":libs:pseudoapksigner")

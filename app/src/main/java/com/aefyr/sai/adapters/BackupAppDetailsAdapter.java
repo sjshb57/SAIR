@@ -93,6 +93,7 @@ public class BackupAppDetailsAdapter extends SelectableAdapter<String, BackupApp
     }
 
     @NonNull
+    @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
     public BackupAppDetailsAdapter.BaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         switch (viewType) {
@@ -113,6 +114,7 @@ public class BackupAppDetailsAdapter extends SelectableAdapter<String, BackupApp
         return 1 + mDetails.backups().size();
     }
 
+    @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
@@ -122,6 +124,7 @@ public class BackupAppDetailsAdapter extends SelectableAdapter<String, BackupApp
             holder.bindTo(getBackupForPosition(position));
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     public void onViewRecycled(@NonNull BaseViewHolder holder) {
         super.onViewRecycled(holder);
@@ -229,7 +232,7 @@ public class BackupAppDetailsAdapter extends SelectableAdapter<String, BackupApp
             mIncompatibleVersionWarning = itemView.findViewById(R.id.tv_backup_incompatible_version_warning);
 
             mRestoreButton.setOnClickListener(v -> {
-                int adapterPosition = getAdapterPosition();
+                int adapterPosition = getBindingAdapterPosition();
                 if (adapterPosition == RecyclerView.NO_POSITION)
                     return;
 
@@ -237,7 +240,7 @@ public class BackupAppDetailsAdapter extends SelectableAdapter<String, BackupApp
             });
 
             mDeleteButton.setOnClickListener(v -> {
-                int adapterPosition = getAdapterPosition();
+                int adapterPosition = getBindingAdapterPosition();
                 if (adapterPosition == RecyclerView.NO_POSITION)
                     return;
 

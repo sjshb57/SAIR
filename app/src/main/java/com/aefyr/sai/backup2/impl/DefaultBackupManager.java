@@ -51,6 +51,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import androidx.core.content.pm.PackageInfoCompat;
 
 public class DefaultBackupManager implements BackupManager, BackupStorage.Observer, BackupIndex.BackupIconProvider {
     private static final String TAG = "DefaultBackupManager";
@@ -256,7 +257,7 @@ public class DefaultBackupManager implements BackupManager, BackupStorage.Observ
                     .setLabel(applicationInfo.loadLabel(pm).toString())
                     .setHasSplits(applicationInfo.splitPublicSourceDirs != null && applicationInfo.splitPublicSourceDirs.length > 0)
                     .setIsSystemApp((applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0)
-                    .setVersionCode(Utils.apiIsAtLeast(Build.VERSION_CODES.P) ? packageInfo.getLongVersionCode() : packageInfo.versionCode)
+                    .setVersionCode(PackageInfoCompat.getLongVersionCode(packageInfo))
                     .setVersionName(packageInfo.versionName)
                     .setIcon(applicationInfo.icon)
                     .setInstallTime(packageInfo.firstInstallTime)

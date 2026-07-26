@@ -13,6 +13,8 @@ import android.os.Parcelable;
 import androidx.annotation.Nullable;
 
 import com.aefyr.sai.utils.Utils;
+import androidx.core.os.ParcelCompat;
+import androidx.core.content.pm.PackageInfoCompat;
 
 public class PackageMeta implements Parcelable {
 
@@ -38,7 +40,7 @@ public class PackageMeta implements Parcelable {
         isSystemApp = in.readInt() == 1;
         versionCode = in.readLong();
         versionName = in.readString();
-        iconUri = in.readParcelable(Uri.class.getClassLoader());
+        iconUri = ParcelCompat.readParcelable(in, Uri.class.getClassLoader(), Uri.class);
         installTime = in.readLong();
         updateTime = in.readLong();
     }
@@ -153,7 +155,7 @@ public class PackageMeta implements Parcelable {
                     .setLabel(applicationInfo.loadLabel(pm).toString())
                     .setHasSplits(applicationInfo.splitPublicSourceDirs != null && applicationInfo.splitPublicSourceDirs.length > 0)
                     .setIsSystemApp((applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0)
-                    .setVersionCode(Utils.apiIsAtLeast(Build.VERSION_CODES.P) ? packageInfo.getLongVersionCode() : packageInfo.versionCode)
+                    .setVersionCode(PackageInfoCompat.getLongVersionCode(packageInfo))
                     .setVersionName(packageInfo.versionName)
                     .setIcon(applicationInfo.icon)
                     .setInstallTime(packageInfo.firstInstallTime)

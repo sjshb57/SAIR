@@ -6,6 +6,7 @@ import android.net.Uri;
 
 import androidx.documentfile.provider.DocumentFile;
 
+import com.aefyr.sai.utils.IOUtils;
 import com.aefyr.sai.utils.saf.SafUtils;
 
 import java.io.InputStream;
@@ -44,10 +45,12 @@ public class ContentUriFileDescriptor implements FileDescriptor {
 
     @Override
     public InputStream open() throws Exception {
-        return mContentResolver.openInputStream(mContentUri);
+        return IOUtils.buffer(mContentResolver.openInputStream(mContentUri));
     }
 
     private static class BadContentProviderException extends Exception {
+    private static final long serialVersionUID = 1L;
+
 
         private BadContentProviderException(String message) {
             super(message);

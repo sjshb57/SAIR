@@ -35,6 +35,7 @@ public abstract class SimpleAsyncTask<Argument, Result> {
         return mIsOngoing.get();
     }
 
+    @SuppressWarnings("unchecked")
     public final <T extends SimpleAsyncTask<Argument, Result>> T execute() {
         if (isOngoing())
             throw new IllegalStateException("Unable to execute a task that is already ongoing");

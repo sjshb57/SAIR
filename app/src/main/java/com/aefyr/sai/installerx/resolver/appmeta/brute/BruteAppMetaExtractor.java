@@ -29,6 +29,7 @@ import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import androidx.core.content.pm.PackageInfoCompat;
 
 /**
  * Extracts AppMeta from an APK directly, currently not very efficient since it copies the APK to a temp file
@@ -140,7 +141,7 @@ public class BruteAppMetaExtractor implements AppMetaExtractor {
 
             AppMeta appMeta = new AppMeta.Builder()
                     .setPackageName(packageInfo.packageName)
-                    .setVersionCode(packageInfo.versionCode)
+                    .setVersionCode(PackageInfoCompat.getLongVersionCode(packageInfo))
                     .setVersionName(packageInfo.versionName)
                     .setAppName(label)
                     .setIconUri(iconUri)

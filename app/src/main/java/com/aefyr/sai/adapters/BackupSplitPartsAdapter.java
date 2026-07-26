@@ -82,7 +82,7 @@ public class BackupSplitPartsAdapter extends SelectableAdapter<String, BackupSpl
             mCheck = itemView.findViewById(R.id.check_split_apk_part);
 
             itemView.setOnClickListener((v) -> {
-                int adapterPosition = getAdapterPosition();
+                int adapterPosition = getBindingAdapterPosition();
                 if (adapterPosition == RecyclerView.NO_POSITION)
                     return;
 

@@ -150,6 +150,8 @@ public abstract class SingleBackupTaskExecutor implements CancellableBackupTaskE
     }
 
     protected static class TaskCancelledException extends Exception {
+    private static final long serialVersionUID = 1L;
+
 
     }
 

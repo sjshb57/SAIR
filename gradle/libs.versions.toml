@@ -3,16 +3,17 @@
 agp = "9.2.1"
 
 # AndroidX
+androidx-annotation = "1.10.0"
 androidx-appcompat = "1.7.1"
 androidx-documentfile = "1.1.0"
 androidx-fragment = "1.8.9"
-androidx-lifecycle = "2.10.0"
+androidx-lifecycle = "2.11.0"
 androidx-preference = "1.2.1"
 androidx-recyclerview = "1.4.0"
 androidxRoom = "2.8.4"
 
 material = "1.14.0"
-glide = "5.0.7"
+glide = "5.0.9"
 flexbox = "3.0.0"
 gson = "2.14.0"
 shimmer = "1.0.0"
@@ -22,11 +23,14 @@ leakcanary = "2.14"
 [libraries]
 
 # AndroidX
+androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "androidx-annotation" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx-appcompat" }
 androidx-documentfile = { group = "androidx.documentfile", name = "documentfile", version.ref = "androidx-documentfile" }
 androidx-fragment = { group = "androidx.fragment", name = "fragment", version.ref = "androidx-fragment" }
 androidx-lifecycle-runtime = { group = "androidx.lifecycle", name = "lifecycle-runtime", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-common-java8 = { group = "androidx.lifecycle", name = "lifecycle-common-java8", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-livedata = { group = "androidx.lifecycle", name = "lifecycle-livedata", version.ref = "androidx-lifecycle" }
 androidx-preference = { group = "androidx.preference", name = "preference", version.ref = "androidx-preference" }
 androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "androidx-recyclerview" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidxRoom" }
@@ -43,3 +47,4 @@ leakcanary-android = { group = "com.squareup.leakcanary", name = "leakcanary-and
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }

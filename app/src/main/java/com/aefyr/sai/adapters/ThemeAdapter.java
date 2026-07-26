@@ -77,7 +77,7 @@ public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> 
             mThemeView = itemView.findViewById(R.id.themeview_theme_item);
 
             mThemeView.setOnClickListener(v -> {
-                int adapterPosition = getAdapterPosition();
+                int adapterPosition = getBindingAdapterPosition();
                 if (adapterPosition == RecyclerView.NO_POSITION)
                     return;
 

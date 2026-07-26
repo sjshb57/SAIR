@@ -56,7 +56,7 @@ public class AndroidUriHost implements UriHost {
 
     @Override
     public InputStream openUriInputStream(Uri uri) throws Exception {
-        return mContext.getContentResolver().openInputStream(uri);
+        return IOUtils.buffer(mContext.getContentResolver().openInputStream(uri));
     }
 
     private class ProcSelfFdUriAsFile implements UriAsFile {
@@ -92,7 +92,7 @@ public class AndroidUriHost implements UriHost {
 
             mTempFile = Utils.createTempFileInCache(mContext, "AndroidUriHost.CopyFileUriAsFile", "tmp");
             try (InputStream in = Objects.requireNonNull(mContext.getContentResolver().openInputStream(uri));
-                 OutputStream out = new FileOutputStream(mTempFile)) {
+                 OutputStream out = IOUtils.buffer(new FileOutputStream(mTempFile))) {
                 IOUtils.copyStream(in, out);
             }
         }

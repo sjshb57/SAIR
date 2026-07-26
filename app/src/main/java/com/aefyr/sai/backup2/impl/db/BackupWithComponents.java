@@ -72,6 +72,7 @@ public class BackupWithComponents implements Backup {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<BackupComponent> components() {
         return (List<BackupComponent>) ((List<? extends BackupComponent>) components);
     }

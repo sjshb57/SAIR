@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import com.aefyr.sai.R;
 import com.aefyr.sai.ui.activities.ConfirmationIntentWrapperActivity;
 import com.aefyr.sai.utils.Utils;
+import androidx.core.content.IntentCompat;
 
 /**
  * Handles installation events from the package manager
@@ -35,7 +36,7 @@ public class RootlessSAIPIService extends Service {
             case PackageInstaller.STATUS_PENDING_USER_ACTION:
                 Log.d(TAG, "Requesting user confirmation for installation");
                 sendStatusChangeBroadcast(intent.getIntExtra(PackageInstaller.EXTRA_SESSION_ID, -1), STATUS_CONFIRMATION_PENDING, intent.getStringExtra(PackageInstaller.EXTRA_PACKAGE_NAME));
-                Intent confirmationIntent = intent.getParcelableExtra(Intent.EXTRA_INTENT);
+                Intent confirmationIntent = IntentCompat.getParcelableExtra(intent, Intent.EXTRA_INTENT, Intent.class);
 
                 ConfirmationIntentWrapperActivity.start(this, intent.getIntExtra(PackageInstaller.EXTRA_SESSION_ID, -1), confirmationIntent);
                 break;

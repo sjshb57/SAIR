@@ -9,6 +9,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
 import com.aefyr.sai.backup2.impl.local.LocalBackupStorageProvider;
+import android.os.Looper;
 
 public class LocalBackupStorageSetupViewModel extends AndroidViewModel implements LocalBackupStorageProvider.OnConfigChangeListener {
 
@@ -21,7 +22,7 @@ public class LocalBackupStorageSetupViewModel extends AndroidViewModel implement
 
         mProvider = LocalBackupStorageProvider.getInstance(getApplication());
 
-        mProvider.addOnConfigChangeListener(this, new Handler());
+        mProvider.addOnConfigChangeListener(this, new Handler(Looper.getMainLooper()));
         mBackupDirUriLiveData.setValue(mProvider.getBackupDirUri());
     }
 

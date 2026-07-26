@@ -77,6 +77,7 @@ public class SplitApkSourceMetaAdapter extends SelectableAdapter<String, SplitAp
     }
 
     @NonNull
+    @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
     public SplitApkSourceMetaAdapter.BaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         switch (viewType) {
@@ -112,6 +113,7 @@ public class SplitApkSourceMetaAdapter extends SelectableAdapter<String, SplitAp
         throw new IllegalStateException("Unexpected object class in data - " + object.getClass().getCanonicalName());
     }
 
+    @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
     public void onBindViewHolder(@NonNull SplitApkSourceMetaAdapter.BaseViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
@@ -269,7 +271,7 @@ public class SplitApkSourceMetaAdapter extends SelectableAdapter<String, SplitAp
             mCheck = itemView.findViewById(R.id.check_split_apk_part);
 
             itemView.setOnClickListener((v) -> {
-                int adapterPosition = getAdapterPosition();
+                int adapterPosition = getBindingAdapterPosition();
                 if (adapterPosition == RecyclerView.NO_POSITION)
                     return;
 
