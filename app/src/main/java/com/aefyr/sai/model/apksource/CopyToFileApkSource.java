@@ -17,8 +17,8 @@ import java.io.OutputStream;
  */
 public class CopyToFileApkSource implements ApkSource {
 
-    private Context mContext;
-    private ApkSource mWrappedApkSource;
+    private final Context mContext;
+    private final ApkSource mWrappedApkSource;
 
     private File mTempDir;
     private File mCurrentApkFile;
@@ -96,6 +96,7 @@ public class CopyToFileApkSource implements ApkSource {
     private File createTempDir() {
         File tempDir = new File(mContext.getFilesDir(), "CopyToFileApkSource");
         tempDir = new File(tempDir, String.valueOf(System.currentTimeMillis()));
+        //noinspection ResultOfMethodCallIgnored
         tempDir.mkdirs();
         return tempDir;
     }

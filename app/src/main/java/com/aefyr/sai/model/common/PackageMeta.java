@@ -6,13 +6,11 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.Nullable;
 
-import com.aefyr.sai.utils.Utils;
 import androidx.core.os.ParcelCompat;
 import androidx.core.content.pm.PackageInfoCompat;
 
@@ -76,7 +74,7 @@ public class PackageMeta implements Parcelable {
     }
 
     public static class Builder {
-        private PackageMeta mPackageMeta;
+        private final PackageMeta mPackageMeta;
 
         public Builder(String packageName) {
             mPackageMeta = new PackageMeta(packageName, "?");

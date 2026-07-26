@@ -16,6 +16,7 @@ import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import java.util.Locale;
 
 /**
  * An ApkSource implementation that copies given zip file FileDescriptor to a temp file and uses {@link ZipFile} API to read APKs from it.
@@ -23,8 +24,8 @@ import java.util.zip.ZipFile;
  */
 public class ZipFileApkSource implements ZipBackedApkSource {
 
-    private Context mContext;
-    private FileDescriptor mZipFileDescriptor;
+    private final Context mContext;
+    private final FileDescriptor mZipFileDescriptor;
 
     private File mTempFile;
     private ZipFile mZipFile;
@@ -48,7 +49,7 @@ public class ZipFileApkSource implements ZipBackedApkSource {
         mCurrentEntry = null;
         while (mCurrentEntry == null && mZipEntries.hasMoreElements()) {
             ZipEntry nextEntry = mZipEntries.nextElement();
-            if (!nextEntry.isDirectory() && nextEntry.getName().toLowerCase().endsWith(".apk")) {
+            if (!nextEntry.isDirectory() && nextEntry.getName().toLowerCase(Locale.ROOT).endsWith(".apk")) {
                 mCurrentEntry = nextEntry;
                 mSeenApkFile = true;
             }
@@ -117,6 +118,7 @@ public class ZipFileApkSource implements ZipBackedApkSource {
 
     private File createTempFile() {
         File tempFile = new File(mContext.getFilesDir(), "ZipFileApkSource");
+        //noinspection ResultOfMethodCallIgnored
         tempFile.mkdir();
         tempFile = new File(tempFile, System.currentTimeMillis() + ".zip");
         return tempFile;

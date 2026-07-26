@@ -11,7 +11,7 @@ import java.util.List;
 
 public class DefaultApkSource implements ApkSource {
 
-    private List<FileDescriptor> mApkFileDescriptors;
+    private final List<FileDescriptor> mApkFileDescriptors;
     private FileDescriptor mCurrentApk;
 
     public DefaultApkSource(List<FileDescriptor> apkFileDescriptors) {
@@ -20,7 +20,7 @@ public class DefaultApkSource implements ApkSource {
 
     @Override
     public boolean nextApk() {
-        if (mApkFileDescriptors.size() == 0)
+        if (mApkFileDescriptors.isEmpty())
             return false;
 
         mCurrentApk = mApkFileDescriptors.remove(0);

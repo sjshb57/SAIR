@@ -24,14 +24,14 @@ import java.util.zip.ZipInputStream;
  */
 @Deprecated
 public class ZipExtractorApkSource implements ApkSource {
-    private Context mContext;
-    private FileDescriptor mZipFileDescriptor;
+    private final Context mContext;
+    private final FileDescriptor mZipFileDescriptor;
     private boolean mIsOpen;
     private int mSeenApkFiles = 0;
 
     private ZipInputStream mZipInputStream;
     private ZipEntry mCurrentZipEntry;
-    private File mExtractedFilesDir;
+    private final File mExtractedFilesDir;
     private File mCurrentExtractedZipEntryFile;
 
     public ZipExtractorApkSource(Context c, FileDescriptor zipFileDescriptor) {
@@ -39,6 +39,7 @@ public class ZipExtractorApkSource implements ApkSource {
         mZipFileDescriptor = zipFileDescriptor;
 
         File extractedApksDir = new File(c.getFilesDir(), "extractedApks");
+        //noinspection ResultOfMethodCallIgnored
         extractedApksDir.mkdirs();
         mExtractedFilesDir = new File(extractedApksDir, String.valueOf(System.currentTimeMillis()));
         mExtractedFilesDir.mkdirs();

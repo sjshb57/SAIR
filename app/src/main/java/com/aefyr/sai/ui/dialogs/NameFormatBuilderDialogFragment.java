@@ -63,7 +63,9 @@ public class NameFormatBuilderDialogFragment extends BaseBottomSheetDialogFragme
 
         getNegativeButton().setOnClickListener((v) -> dismiss());
         getPositiveButton().setOnClickListener((v) -> {
-            deliverFormatAndDismiss(mViewModel.getFormat().getValue().build());
+            BackupNameFormatBuilder format = mViewModel.getFormat().getValue();
+            if (format != null)
+                deliverFormatAndDismiss(format.build());
         });
 
         RecyclerView recycler = view.findViewById(R.id.rv_name_builder);

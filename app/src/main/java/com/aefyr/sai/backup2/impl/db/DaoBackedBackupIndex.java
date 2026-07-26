@@ -32,12 +32,12 @@ public class DaoBackedBackupIndex implements BackupIndex {
 
     private static DaoBackedBackupIndex sInstance;
 
-    private Context mContext;
-    private AppDatabase mAppDb;
+    private final Context mContext;
+    private final AppDatabase mAppDb;
 
-    private BackupDao mDao;
+    private final BackupDao mDao;
 
-    private Set<File> mVacuumImmuneFiles = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    private final Set<File> mVacuumImmuneFiles = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     public static synchronized DaoBackedBackupIndex getInstance(Context context) {
         return sInstance != null ? sInstance : new DaoBackedBackupIndex(context);
@@ -177,6 +177,7 @@ public class DaoBackedBackupIndex implements BackupIndex {
         try (InputStream in = iconInputStream; FileOutputStream out = new FileOutputStream(iconFile)) {
             IOUtils.copyStream(in, out);
         } catch (Exception e) {
+            //noinspection ResultOfMethodCallIgnored
             iconFile.delete();
             throw e;
         }
@@ -209,6 +210,7 @@ public class DaoBackedBackupIndex implements BackupIndex {
                 if (mDao.containsIcon(iconFile.getAbsolutePath())) {
                     validFiles++;
                 } else {
+                    //noinspection ResultOfMethodCallIgnored
                     iconFile.delete();
                     filesDeleted++;
                 }

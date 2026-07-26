@@ -73,6 +73,7 @@ public class IOUtils {
                     deleteRecursively(child);
             }
         }
+        //noinspection ResultOfMethodCallIgnored
         f.delete();
     }
 
@@ -102,7 +103,7 @@ public class IOUtils {
             try {
                 char[] buf = new char[1024];
                 int len;
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
                 while ((len = reader.read(buf)) > 0)
                     builder.append(buf, 0, len);
 
@@ -165,11 +166,11 @@ public class IOUtils {
      * @throws IOException
      */
     public static byte[] hashStream(InputStream inputStream, MessageDigest messageDigest) throws IOException {
-        try (DigestInputStream digestInputStream = new DigestInputStream(inputStream, messageDigest);) {
+        try (DigestInputStream digestInputStream = new DigestInputStream(inputStream, messageDigest)) {
             byte[] buffer = new byte[1024 * 64];
-            int read;
-            while ((read = digestInputStream.read(buffer)) > 0) {
-                //Do nothing
+            // Reading is enough; the digest is updated as a side effect.
+            while (digestInputStream.read(buffer) > 0) {
+                // no-op
             }
 
             return messageDigest.digest();

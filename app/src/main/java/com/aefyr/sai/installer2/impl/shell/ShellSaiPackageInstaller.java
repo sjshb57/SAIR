@@ -52,8 +52,6 @@ public abstract class ShellSaiPackageInstaller extends BaseSaiPackageInstaller {
     private final HandlerThread mWorkerThread = new HandlerThread("RootlessSaiPi Worker");
     private final Handler mWorkerHandler;
 
-    private volatile String mCurrentSessionId;
-
     /**
      * Best-effort source for the installed package name. Success is decided by the exit code of
      * pm install-commit, never by this broadcast.
@@ -104,7 +102,7 @@ public abstract class ShellSaiPackageInstaller extends BaseSaiPackageInstaller {
     }
 
     private void install(String sessionId, SaiPiSessionParams params) {
-        lockInstallation(sessionId);
+        lockInstallation();
         String appTempName = params.apkSource().getAppName();
         setSessionState(sessionId, new SaiPiSessionState.Builder(sessionId, SaiPiSessionStatus.INSTALLING)
                 .appTempName(appTempName)
@@ -190,13 +188,13 @@ public abstract class ShellSaiPackageInstaller extends BaseSaiPackageInstaller {
         }
     }
 
-    private void lockInstallation(String sessionId) {
+    private void lockInstallation() {
         try {
             mSharedSemaphore.acquire();
         } catch (InterruptedException e) {
-            throw new RuntimeException("wtf", e);
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException("Interrupted while waiting for the installation lock", e);
         }
-        mCurrentSessionId = sessionId;
     }
 
     private void unlockInstallation() {
@@ -218,7 +216,7 @@ public abstract class ShellSaiPackageInstaller extends BaseSaiPackageInstaller {
         }
         return String.format(Locale.US, "%s: %s %s | %s | Android %s | Using %s ApkSource implementation | SAI %s",
                 getContext().getString(R.string.installer_device), Build.BRAND, Build.MODEL,
-                Build.VERSION.RELEASE, apkSource.getClass().getSimpleName(), saiVersion);
+                Build.DEVICE, Build.VERSION.RELEASE, apkSource.getClass().getSimpleName(), saiVersion);
     }
 
     private int createSession() {

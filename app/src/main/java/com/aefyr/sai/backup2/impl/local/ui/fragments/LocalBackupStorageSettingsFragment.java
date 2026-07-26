@@ -78,11 +78,9 @@ public class LocalBackupStorageSettingsFragment extends PreferenceFragmentCompat
         if (tag == null)
             return;
 
-        switch (tag) {
-            case "backup_dir":
-                mProvider.setBackupDirUri(dirUri);
-                updateBackupDirSummary();
-                break;
+        if (tag.equals("backup_dir")) {
+            mProvider.setBackupDirUri(dirUri);
+            updateBackupDirSummary();
         }
     }
 
@@ -91,11 +89,9 @@ public class LocalBackupStorageSettingsFragment extends PreferenceFragmentCompat
         if (tag == null)
             return;
 
-        switch (tag) {
-            case "backup_name_format_builder":
-                mProvider.setBackupNameFormat(format);
-                updateBackupNameFormatSummary();
-                break;
+        if (tag.equals("backup_name_format_builder")) {
+            mProvider.setBackupNameFormat(format);
+            updateBackupNameFormatSummary();
         }
     }
 }

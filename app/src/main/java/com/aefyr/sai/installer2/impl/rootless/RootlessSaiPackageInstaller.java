@@ -29,6 +29,7 @@ import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import androidx.core.content.ContextCompat;
 
 public class RootlessSaiPackageInstaller extends BaseSaiPackageInstaller implements RootlessSaiPiBroadcastReceiver.EventObserver {
     private static final String TAG = "RootlessSaiPi";
@@ -62,22 +63,9 @@ public class RootlessSaiPackageInstaller extends BaseSaiPackageInstaller impleme
         mBroadcastReceiver = new RootlessSaiPiBroadcastReceiver(getContext());
         mBroadcastReceiver.addEventObserver(this);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            getContext().registerReceiver(
-                    mBroadcastReceiver,
-                    new IntentFilter(RootlessSaiPiBroadcastReceiver.ACTION_DELIVER_PI_EVENT),
-                    null,
-                    mWorkerHandler,
-                    Context.RECEIVER_NOT_EXPORTED
-            );
-        } else {
-            getContext().registerReceiver(
-                    mBroadcastReceiver,
-                    new IntentFilter(RootlessSaiPiBroadcastReceiver.ACTION_DELIVER_PI_EVENT),
-                    null,
-                    mWorkerHandler
-            );
-        }
+        ContextCompat.registerReceiver(getContext(), mBroadcastReceiver,
+                new IntentFilter(RootlessSaiPiBroadcastReceiver.ACTION_DELIVER_PI_EVENT),
+                null, mWorkerHandler, ContextCompat.RECEIVER_NOT_EXPORTED);
 
         sInstance = this;
     }

@@ -52,6 +52,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Locale;
 
 public class Installer2Fragment extends InstallerFragment implements FilePickerDialogFragment.OnFilesSelectedListener, InstallationConfirmationDialogFragment.ConfirmationListener, SaiPiSessionsAdapter.ActionDelegate {
     private static final String TAG = "Installer2Fragment";
@@ -318,7 +319,7 @@ public class Installer2Fragment extends InstallerFragment implements FilePickerD
             return;
         }
 
-        switch (fileExtension.toLowerCase()) {
+        switch (fileExtension.toLowerCase(Locale.ROOT)) {
             case "apks":
                 mViewModel.installPackagesFromContentProviderZip(apksFileUri);
                 break;

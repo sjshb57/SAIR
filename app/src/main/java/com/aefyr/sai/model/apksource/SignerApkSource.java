@@ -12,14 +12,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 public class SignerApkSource implements ApkSource {
     private static final String TAG = "SignerApkSource";
     private static final String FILE_NAME_PAST = "testkey.past";
     private static final String FILE_NAME_PRIVATE_KEY = "testkey.pk8";
 
-    private ApkSource mWrappedApkSource;
-    private Context mContext;
+    private final ApkSource mWrappedApkSource;
+    private final Context mContext;
     private boolean mIsPrepared;
     private PseudoApkSigner mApkSigner;
     private File mTempDir;
@@ -44,7 +45,10 @@ public class SignerApkSource implements ApkSource {
         }
 
         mCurrentSignedApkFile = new File(mTempDir, getApkName());
-        mApkSigner.sign(mWrappedApkSource.openApkInputStream(), new FileOutputStream(mCurrentSignedApkFile));
+        try (InputStream in = mWrappedApkSource.openApkInputStream();
+             OutputStream out = new FileOutputStream(mCurrentSignedApkFile)) {
+            mApkSigner.sign(in, out);
+        }
 
         return true;
     }

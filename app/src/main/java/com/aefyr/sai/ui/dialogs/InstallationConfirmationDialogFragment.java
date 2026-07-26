@@ -51,7 +51,7 @@ public class InstallationConfirmationDialogFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        return new AlertDialog.Builder(getContext())
+        return new AlertDialog.Builder(requireContext())
                 .setMessage(getString(R.string.installer_installation_confirmation, getFileNameFromUri(mApksFileUri)))
                 .setPositiveButton(R.string.yes, (d, w) -> {
                     mListener.onConfirmed(mApksFileUri);
@@ -81,7 +81,7 @@ public class InstallationConfirmationDialogFragment extends DialogFragment {
         String[] pathParts = uri.getPath().split("/");
         String fallbackName = pathParts[pathParts.length - 1];
 
-        try (Cursor cursor = getContext().getContentResolver().query(uri, new String[]{MediaStore.MediaColumns.DISPLAY_NAME}, null, null, null)) {
+        try (Cursor cursor = requireContext().getContentResolver().query(uri, new String[]{MediaStore.MediaColumns.DISPLAY_NAME}, null, null, null)) {
             if (cursor == null)
                 return fallbackName;
 

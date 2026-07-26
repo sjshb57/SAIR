@@ -21,11 +21,11 @@ public class DefaultBillingManager implements BillingManager {
 
     private static DefaultBillingManager sInstance;
 
-    private MutableLiveData<BillingManagerStatus> mStatus = new MutableLiveData<>(BillingManagerStatus.OK);
-    private MutableLiveData<DonationStatus> mDonationStatus = new MutableLiveData<>(DonationStatus.DONATED);
+    private final MutableLiveData<BillingManagerStatus> mStatus = new MutableLiveData<>(BillingManagerStatus.OK);
+    private final MutableLiveData<DonationStatus> mDonationStatus = new MutableLiveData<>(DonationStatus.DONATED);
 
-    private MutableLiveData<List<BillingProduct>> mProducts = new MutableLiveData<>();
-    private MutableLiveData<List<BillingProduct>> mPurchasedProducts = new MutableLiveData<>(Collections.emptyList());
+    private final MutableLiveData<List<BillingProduct>> mProducts = new MutableLiveData<>();
+    private final MutableLiveData<List<BillingProduct>> mPurchasedProducts = new MutableLiveData<>(Collections.emptyList());
 
     public static DefaultBillingManager getInstance(Context context) {
         synchronized (DefaultBillingManager.class) {

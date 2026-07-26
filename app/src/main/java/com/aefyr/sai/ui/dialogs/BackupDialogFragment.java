@@ -107,7 +107,7 @@ public class BackupDialogFragment extends BaseBottomSheetDialogFragment {
         Switch apkExportSwitch = view.findViewById(R.id.switch_backup_dialog_apk_export);
 
         apkExportContainer.setOnClickListener(v -> {
-            mViewModel.setApkExportEnabled(!mViewModel.getIsApkExportEnabled().getValue());
+            mViewModel.setApkExportEnabled(!Boolean.TRUE.equals(mViewModel.getIsApkExportEnabled().getValue()));
         });
 
         mViewModel.getIsApkExportOptionAvailable().observe(this, available -> {

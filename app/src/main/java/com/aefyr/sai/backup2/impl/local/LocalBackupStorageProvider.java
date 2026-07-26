@@ -29,14 +29,14 @@ public class LocalBackupStorageProvider implements BackupStorageProvider, Shared
 
     private static LocalBackupStorageProvider sInstance;
 
-    private Context mContext;
-    private SharedPreferences mPrefs;
-    private LocalBackupStorage mStorage;
+    private final Context mContext;
+    private final SharedPreferences mPrefs;
+    private final LocalBackupStorage mStorage;
 
-    private AtomicBoolean mIsSetup = new AtomicBoolean(false);
-    private MutableLiveData<Boolean> mIsSetupLiveData = new MutableLiveData<>(false);
+    private final AtomicBoolean mIsSetup = new AtomicBoolean(false);
+    private final MutableLiveData<Boolean> mIsSetupLiveData = new MutableLiveData<>(false);
 
-    private Map<OnConfigChangeListener, OnConfigChangeListenerHandlerWrapper> mConfigChangeListeners = new ConcurrentHashMap<>();
+    private final Map<OnConfigChangeListener, OnConfigChangeListenerHandlerWrapper> mConfigChangeListeners = new ConcurrentHashMap<>();
 
     public static synchronized LocalBackupStorageProvider getInstance(Context context) {
         return sInstance != null ? sInstance : new LocalBackupStorageProvider(context);
@@ -154,8 +154,8 @@ public class LocalBackupStorageProvider implements BackupStorageProvider, Shared
 
     private static class OnConfigChangeListenerHandlerWrapper implements OnConfigChangeListener {
 
-        private OnConfigChangeListener mListener;
-        private Handler mHandler;
+        private final OnConfigChangeListener mListener;
+        private final Handler mHandler;
 
 
         private OnConfigChangeListenerHandlerWrapper(OnConfigChangeListener listener, Handler handler) {
@@ -165,7 +165,7 @@ public class LocalBackupStorageProvider implements BackupStorageProvider, Shared
 
         @Override
         public void onBackupDirChanged() {
-            mHandler.post(() -> mListener.onBackupDirChanged());
+            mHandler.post(mListener::onBackupDirChanged);
         }
     }
 }

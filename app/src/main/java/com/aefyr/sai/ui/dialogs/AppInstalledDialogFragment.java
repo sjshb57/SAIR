@@ -48,7 +48,7 @@ public class AppInstalledDialogFragment extends DialogFragment {
         Intent appLaunchIntent = null;
 
         try {
-            PackageManager pm = getContext().getPackageManager();
+            PackageManager pm = requireContext().getPackageManager();
             ApplicationInfo appInfo = pm.getApplicationInfo(mPackage, 0);
             appLabel = pm.getApplicationLabel(appInfo).toString();
             appLaunchIntent = pm.getLaunchIntentForPackage(mPackage);
@@ -57,7 +57,7 @@ public class AppInstalledDialogFragment extends DialogFragment {
             Log.w("SAI", e);
         }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext())
                 .setTitle(R.string.app_name)
                 .setMessage(appLabel == null ? getString(R.string.installer_app_installed) : String.format(getString(R.string.installer_app_installed_full), appLabel))
                 .setNegativeButton(R.string.ok, null);

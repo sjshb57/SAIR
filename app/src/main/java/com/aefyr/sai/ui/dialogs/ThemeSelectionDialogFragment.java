@@ -97,7 +97,7 @@ public class ThemeSelectionDialogFragment extends BaseBottomSheetDialogFragment 
     @Override
     public void onThemeClicked(Theme.ThemeDescriptor theme) {
         DonationStatus donationStatus = mBillingManager.getDonationStatus().getValue();
-        if (theme.isDonationRequired() && !donationStatus.unlocksThemes()) {
+        if (theme.isDonationRequired() && (donationStatus == null || !donationStatus.unlocksThemes())) {
             DonateActivity.start(requireContext());
             return;
         }

@@ -110,7 +110,7 @@ public class Base64 {
      */
     @SuppressWarnings("unused")
     public static byte[] decode(String str, int flags) {
-        return decode(str.getBytes(), flags);
+        return decode(str.getBytes(StandardCharsets.US_ASCII), flags);
     }
 
     /**

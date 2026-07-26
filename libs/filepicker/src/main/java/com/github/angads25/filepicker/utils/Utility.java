@@ -119,9 +119,9 @@ public class Utility {
                         if (item2.getFilename().equals("..."))
                             return 1;
 
-                        return -Long.compare(item1.getTime(), item2.getTime()) * (reversed ? -1 : 1);
+                        return Long.compare(item2.getTime(), item1.getTime()) * (reversed ? -1 : 1);
                     } else if (!item2.isDirectory() && !item1.isDirectory()) {
-                        return -Long.compare(item1.getTime(), item2.getTime()) * (reversed ? -1 : 1);
+                        return Long.compare(item2.getTime(), item1.getTime()) * (reversed ? -1 : 1);
                     } else if (item2.isDirectory() && !item1.isDirectory()) {
                         return 1;
                     } else {
@@ -138,9 +138,9 @@ public class Utility {
                         if (item2.getFilename().equals("..."))
                             return 1;
 
-                        return item1.getFilename().toLowerCase().compareTo(item2.getFilename().toLowerCase(Locale.getDefault())) * (reversed ? -1 : 1);
+                        return item1.getFilename().toLowerCase(Locale.getDefault()).compareTo(item2.getFilename().toLowerCase(Locale.getDefault())) * (reversed ? -1 : 1);
                     } else if (!item2.isDirectory() && !item1.isDirectory()) {
-                        return item1.getFilename().toLowerCase().compareTo(item2.getFilename().toLowerCase(Locale.getDefault())) * (reversed ? -1 : 1);
+                        return item1.getFilename().toLowerCase(Locale.getDefault()).compareTo(item2.getFilename().toLowerCase(Locale.getDefault())) * (reversed ? -1 : 1);
                     } else if (item2.isDirectory() && !item1.isDirectory()) {
                         return 1;
                     } else {
@@ -157,9 +157,9 @@ public class Utility {
                         if (item2.getFilename().equals("..."))
                             return 1;
 
-                        return item1.getFilename().toLowerCase().compareTo(item2.getFilename().toLowerCase(Locale.getDefault()));
+                        return item1.getFilename().toLowerCase(Locale.getDefault()).compareTo(item2.getFilename().toLowerCase(Locale.getDefault()));
                     } else if (!item2.isDirectory() && !item1.isDirectory()) {
-                        return -Long.compare(item1.getSize(), item2.getSize()) * (reversed ? -1 : 1);
+                        return Long.compare(item2.getSize(), item1.getSize()) * (reversed ? -1 : 1);
                     } else if (item2.isDirectory() && !item1.isDirectory()) {
                         return 1;
                     } else {
@@ -174,20 +174,25 @@ public class Utility {
         return comparator;
     }
 
-    private static DecimalFormat sSizeDecimalFormat;
+    /**
+     * DecimalFormat is not thread safe, so each thread gets its own instance instead of sharing
+     * a lazily initialised static one.
+     */
+    private static final ThreadLocal<DecimalFormat> sSizeDecimalFormat = ThreadLocal.withInitial(() -> {
+        DecimalFormat format = new DecimalFormat("#.##");
+        format.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
+        return format;
+    });
 
     public static String formatSize(Context c, long bytes) {
-        if (sSizeDecimalFormat == null) {
-            sSizeDecimalFormat = new DecimalFormat("#.##");
-            sSizeDecimalFormat.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
-        }
+        DecimalFormat sizeFormat = sSizeDecimalFormat.get();
 
         String[] units = c.getResources().getStringArray(R.array.size_units);
 
         for (int i = 0; i < units.length; i++) {
             float size = (float) bytes / (float) Math.pow(1024, i);
             if (size < 1024)
-                return String.format("%s %s", sSizeDecimalFormat.format(size), units[i]);
+                return String.format("%s %s", sizeFormat.format(size), units[i]);
         }
 
         return bytes + " B";

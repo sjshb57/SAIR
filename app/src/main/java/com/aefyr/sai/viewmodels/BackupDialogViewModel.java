@@ -37,10 +37,10 @@ import java.util.List;
 
 public class BackupDialogViewModel extends AndroidViewModel implements Observer<Selection<String>> {
 
-    private MutableLiveData<LoadingState> mLoadingState = new MutableLiveData<>();
-    private MutableLiveData<List<SplitApkPart>> mParts = new MutableLiveData<>();
+    private final MutableLiveData<LoadingState> mLoadingState = new MutableLiveData<>();
+    private final MutableLiveData<List<SplitApkPart>> mParts = new MutableLiveData<>();
 
-    private BackupManager mBackupManager;
+    private final BackupManager mBackupManager;
 
     private PackageMeta mPkgMeta;
     private LoadPackageTask mLoadPackageTask;
@@ -48,10 +48,10 @@ public class BackupDialogViewModel extends AndroidViewModel implements Observer<
     private final SimpleKeyStorage<String> mKeyStorage = new SimpleKeyStorage<>();
     private final Selection<String> mSelection = new Selection<>(mKeyStorage);
 
-    private MutableLiveData<Boolean> mIsApkExportOptionAvailable = new MutableLiveData<>(false);
-    private MutableLiveData<Boolean> mIsApkExportEnabled = new MutableLiveData<>(false);
+    private final MutableLiveData<Boolean> mIsApkExportOptionAvailable = new MutableLiveData<>(false);
+    private final MutableLiveData<Boolean> mIsApkExportEnabled = new MutableLiveData<>(false);
 
-    private PreferencesHelper mPrefsHelper;
+    private final PreferencesHelper mPrefsHelper;
 
     public BackupDialogViewModel(@NonNull Application application) {
         super(application);
@@ -112,7 +112,7 @@ public class BackupDialogViewModel extends AndroidViewModel implements Observer<
     }
 
     public void setApkExportEnabled(boolean enabled) {
-        if (!mIsApkExportOptionAvailable.getValue())
+        if (!Boolean.TRUE.equals(mIsApkExportOptionAvailable.getValue()))
             return;
 
         mPrefsHelper.setSingleApkExportEnabled(enabled);
@@ -123,7 +123,7 @@ public class BackupDialogViewModel extends AndroidViewModel implements Observer<
         List<File> selectedSplitParts = getSelectedSplitParts();
         SingleBackupTaskConfig config = new SingleBackupTaskConfig.Builder(mBackupManager.getDefaultBackupStorageProvider().getId(), mPkgMeta)
                 .addAllApks(selectedSplitParts)
-                .setExportMode(selectedSplitParts.size() == 1 && getIsApkExportEnabled().getValue() && storageSupportsApkExport())
+                .setExportMode(selectedSplitParts.size() == 1 && Boolean.TRUE.equals(getIsApkExportEnabled().getValue()) && storageSupportsApkExport())
                 .build();
 
         mBackupManager.enqueueBackup(config);

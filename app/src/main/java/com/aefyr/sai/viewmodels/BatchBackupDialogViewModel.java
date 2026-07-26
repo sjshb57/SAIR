@@ -21,14 +21,14 @@ import java.util.List;
 public class BatchBackupDialogViewModel extends ViewModel {
     private static final String TAG = "BatchBackupVM";
 
-    private Context mContext;
+    private final Context mContext;
 
-    private BackupManager mBackupManager;
+    private final BackupManager mBackupManager;
 
-    private MutableLiveData<Boolean> mIsPreparing = new MutableLiveData<>();
-    private MutableLiveData<Boolean> mIsBackupEnqueued = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> mIsPreparing = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> mIsBackupEnqueued = new MutableLiveData<>();
 
-    private ArrayList<String> mSelectedPackages;
+    private final ArrayList<String> mSelectedPackages;
 
     public BatchBackupDialogViewModel(@NonNull Context applicationContext, @Nullable ArrayList<String> selectedPackages) {
         mContext = applicationContext;
@@ -49,7 +49,7 @@ public class BatchBackupDialogViewModel extends ViewModel {
     }
 
     public void enqueueBackup() {
-        if (mIsPreparing.getValue())
+        if (Boolean.TRUE.equals(mIsPreparing.getValue()))
             return;
 
         mIsPreparing.setValue(true);

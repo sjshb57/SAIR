@@ -44,19 +44,19 @@ import java.util.Set;
 public class InstallerXDialogViewModel extends ViewModel {
     private static final String TAG = "InstallerXVM";
 
-    private Context mContext;
+    private final Context mContext;
 
     private UriHost mUriHost;
-    private FlexSaiPackageInstaller mInstaller;
-    private PreferencesHelper mPrefsHelper;
+    private final FlexSaiPackageInstaller mInstaller;
+    private final PreferencesHelper mPrefsHelper;
 
-    private MutableLiveData<State> mState = new MutableLiveData<>(State.NO_DATA);
-    private MutableLiveData<SplitApkSourceMeta> mMeta = new MutableLiveData<>();
+    private final MutableLiveData<State> mState = new MutableLiveData<>(State.NO_DATA);
+    private final MutableLiveData<SplitApkSourceMeta> mMeta = new MutableLiveData<>();
     private Warning mWarning;
 
     private LoadMetaTask mLoadMetaTask;
 
-    private Selection<String> mPartsSelection = new Selection<>(new SimpleKeyStorage<>());
+    private final Selection<String> mPartsSelection = new Selection<>(new SimpleKeyStorage<>());
     private List<UriMessResolutionResult> mResolutionResults;
 
     public InstallerXDialogViewModel(@NonNull Context appContext, @Nullable UriHost uriHost) {
@@ -209,7 +209,7 @@ public class InstallerXDialogViewModel extends ViewModel {
         @Override
         protected LoadMetaTaskResult doWork(LoadMetaTaskInput input) {
             List<Uri> apkSourceUris = flattenInputToUris(input);
-            if (apkSourceUris.size() == 0)
+            if (apkSourceUris.isEmpty())
                 throw new IllegalArgumentException("Expected at least 1 file in input");
 
             DefaultSplitApkSourceMetaResolver metaResolver = new DefaultSplitApkSourceMetaResolver(mContext, new DefaultAppMetaExtractor(mContext));
@@ -258,7 +258,7 @@ public class InstallerXDialogViewModel extends ViewModel {
         protected void onWorkDone(LoadMetaTaskResult result) {
             mResolutionResults = result.resolutionResults;
 
-            if (mResolutionResults.size() == 0) {
+            if (mResolutionResults.isEmpty()) {
                 mWarning = new Warning(mContext.getString(R.string.installerx_dialog_warn_no_files), false);
                 mState.setValue(State.WARNING);
             } else if (mResolutionResults.size() == 1) {

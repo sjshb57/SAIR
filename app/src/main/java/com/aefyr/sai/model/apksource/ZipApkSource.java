@@ -15,11 +15,12 @@ import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
+import java.util.Locale;
 
 public class ZipApkSource implements ZipBackedApkSource {
 
-    private Context mContext;
-    private FileDescriptor mZipFileDescriptor;
+    private final Context mContext;
+    private final FileDescriptor mZipFileDescriptor;
     private boolean mIsOpen;
     private int mSeenApkFiles = 0;
 
@@ -45,12 +46,12 @@ public class ZipApkSource implements ZipBackedApkSource {
             try {
                 mCurrentZipEntry = mZipInputStream.getNextEntry();
             } catch (ZipException e) {
-                if (e.getMessage().equals("only DEFLATED entries can have EXT descriptor")) {
+                if ("only DEFLATED entries can have EXT descriptor".equals(e.getMessage())) {
                     throw new ZipException(mContext.getString(R.string.installer_recoverable_error_use_zipfile));
                 }
                 throw e;
             }
-        } while (mCurrentZipEntry != null && (mCurrentZipEntry.isDirectory() || !mCurrentZipEntry.getName().toLowerCase().endsWith(".apk")));
+        } while (mCurrentZipEntry != null && (mCurrentZipEntry.isDirectory() || !mCurrentZipEntry.getName().toLowerCase(Locale.ROOT).endsWith(".apk")));
 
         if (mCurrentZipEntry == null) {
             mZipInputStream.close();
@@ -113,7 +114,7 @@ public class ZipApkSource implements ZipBackedApkSource {
      **/
     private static class ZipInputStreamWrapper extends InputStream {
 
-        private ZipInputStream mWrappedStream;
+        private final ZipInputStream mWrappedStream;
 
         private ZipInputStreamWrapper(ZipInputStream inputStream) {
             mWrappedStream = inputStream;

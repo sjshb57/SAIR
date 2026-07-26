@@ -8,7 +8,6 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
@@ -38,7 +37,6 @@ import com.aefyr.sai.model.apksource.ApkSource;
 import com.aefyr.sai.model.common.PackageMeta;
 import com.aefyr.sai.utils.PreferencesHelper;
 import com.aefyr.sai.utils.Stopwatch;
-import com.aefyr.sai.utils.Utils;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -52,31 +50,32 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import androidx.core.content.pm.PackageInfoCompat;
+import androidx.core.content.ContextCompat;
 
 public class DefaultBackupManager implements BackupManager, BackupStorage.Observer, BackupIndex.BackupIconProvider {
     private static final String TAG = "DefaultBackupManager";
 
     private static DefaultBackupManager sInstance;
 
-    private Context mContext;
-    private BackupStorageProvider mStorageProvider;
-    private BackupStorage mStorage;
-    private BackupIndex mIndex;
-    private PreferencesHelper mPrefsHelper;
-    private FlexSaiPackageInstaller mInstaller;
+    private final Context mContext;
+    private final BackupStorageProvider mStorageProvider;
+    private final BackupStorage mStorage;
+    private final BackupIndex mIndex;
+    private final PreferencesHelper mPrefsHelper;
+    private final FlexSaiPackageInstaller mInstaller;
 
     private Map<String, PackageMeta> mInstalledApps;
-    private MutableLiveData<List<PackageMeta>> mInstalledAppsLiveData = new MutableLiveData<>(Collections.emptyList());
-    private Handler mWorkerHandler;
+    private final MutableLiveData<List<PackageMeta>> mInstalledAppsLiveData = new MutableLiveData<>(Collections.emptyList());
+    private final Handler mWorkerHandler;
 
     private Map<String, BackupApp> mApps;
-    private MutableLiveData<List<BackupApp>> mAppsLiveData = new MutableLiveData<>(Collections.emptyList());
+    private final MutableLiveData<List<BackupApp>> mAppsLiveData = new MutableLiveData<>(Collections.emptyList());
 
-    private MutableLiveData<IndexingStatus> mIndexingStatus = new MutableLiveData<>(new IndexingStatus());
+    private final MutableLiveData<IndexingStatus> mIndexingStatus = new MutableLiveData<>(new IndexingStatus());
 
     private final Set<AppsObserver> mAppsObservers = new HashSet<>();
 
-    private ExecutorService mMiscExecutor = Executors.newCachedThreadPool();
+    private final ExecutorService mMiscExecutor = Executors.newCachedThreadPool();
 
     public static synchronized DefaultBackupManager getInstance(Context context) {
         return sInstance != null ? sInstance : new DefaultBackupManager(context);
@@ -100,12 +99,12 @@ public class DefaultBackupManager implements BackupManager, BackupStorage.Observ
         packagesStuffIntentFilter.addAction(Intent.ACTION_PACKAGE_CHANGED);
         packagesStuffIntentFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
         packagesStuffIntentFilter.addDataScheme("package");
-        mContext.registerReceiver(new BroadcastReceiver() {
+        ContextCompat.registerReceiver(mContext, new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 updateAppInAppList(Objects.requireNonNull(intent.getData()).getSchemeSpecificPart());
             }
-        }, packagesStuffIntentFilter, null, mWorkerHandler);
+        }, packagesStuffIntentFilter, null, mWorkerHandler, ContextCompat.RECEIVER_NOT_EXPORTED);
 
         mWorkerHandler.post(this::fetchPackages);
 
@@ -252,6 +251,8 @@ public class DefaultBackupManager implements BackupManager, BackupStorage.Observ
         Map<String, PackageMeta> packages = new HashMap<>();
         for (PackageInfo packageInfo : packageInfos) {
             ApplicationInfo applicationInfo = packageInfo.applicationInfo;
+            if (applicationInfo == null)
+                continue;
 
             PackageMeta packageMeta = new PackageMeta.Builder(applicationInfo.packageName)
                     .setLabel(applicationInfo.loadLabel(pm).toString())
@@ -446,9 +447,9 @@ public class DefaultBackupManager implements BackupManager, BackupStorage.Observ
 
     private static class BackupAppImpl implements BackupApp {
 
-        private PackageMeta mPackageMeta;
-        private boolean mIsInstalled;
-        private BackupStatus mBackupStatus;
+        private final PackageMeta mPackageMeta;
+        private final boolean mIsInstalled;
+        private final BackupStatus mBackupStatus;
 
         private BackupAppImpl(PackageMeta packageMeta, boolean isInstalled, BackupStatus backupStatus) {
             mPackageMeta = packageMeta;
@@ -485,9 +486,9 @@ public class DefaultBackupManager implements BackupManager, BackupStorage.Observ
 
     private static class BackupAppDetailsImpl implements BackupAppDetails {
 
-        private State mState;
-        private BackupApp mApp;
-        private List<Backup> mBackups;
+        private final State mState;
+        private final BackupApp mApp;
+        private final List<Backup> mBackups;
 
         private BackupAppDetailsImpl(State state, BackupApp app, List<Backup> backups) {
             mState = state;
@@ -513,7 +514,7 @@ public class DefaultBackupManager implements BackupManager, BackupStorage.Observ
 
     private class LiveAppDetails extends LiveData<BackupAppDetails> implements Observer<List<Backup>>, AppsObserver {
 
-        private String mPkg;
+        private final String mPkg;
         private LiveData<List<Backup>> mMetasLiveData;
 
         private LiveAppDetails(String pkg) {

@@ -87,7 +87,7 @@
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:layout_gravity="center"
-            android:tint="?colorAccent"
+            app:tint="?colorAccent"
             app:srcCompat="@drawable/ic_warning" />
 
         <TextView
@@ -112,7 +112,7 @@
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:layout_gravity="center"
-            android:tint="?colorAccent"
+            app:tint="?colorAccent"
             app:srcCompat="@drawable/ic_warning" />
 
         <TextView

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import java.nio.charset.StandardCharsets;
 
 public class ZipAlignZipOutputStream extends ZipOutputStream {
 
@@ -35,7 +36,7 @@ public class ZipAlignZipOutputStream extends ZipOutputStream {
     public void putNextEntry(ZipEntry zipEntry) throws IOException {
         if (zipEntry.getMethod() == ZipEntry.STORED) {
             int headerSize = 30;
-            headerSize += zipEntry.getName().getBytes().length;
+            headerSize += zipEntry.getName().getBytes(StandardCharsets.UTF_8).length;
 
             int requiredPadding = (int) (mAlignment - ((mBytesCounter.getBytesWritten() + headerSize) % mAlignment));
             zipEntry.setExtra(new byte[requiredPadding]);

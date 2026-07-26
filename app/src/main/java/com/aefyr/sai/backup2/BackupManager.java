@@ -43,7 +43,7 @@ public interface BackupManager {
     BackupStorageProvider getDefaultBackupStorageProvider();
 
     class IndexingStatus {
-        private boolean mInProgress;
+        private final boolean mInProgress;
         private int mProgress;
         private int mGoal;
 

@@ -21,7 +21,9 @@
 
     <!-- Android 11+ 包可见性过滤:安装器需要枚举/查询任意包,
          否则 getInstalledPackages 几乎返回空、PACKAGE_ADDED 广播被过滤。 -->
-    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+    <uses-permission
+        android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="QueryAllPackagesPermission" />
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />

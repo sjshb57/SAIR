@@ -27,7 +27,7 @@ public class SaiExportedAppMeta2 {
 
     @SerializedName("meta_version")
     @Expose
-    private Long mMetaVersion = 2L;
+    private final Long mMetaVersion = 2L;
 
     @SerializedName("package")
     @Expose
@@ -78,7 +78,9 @@ public class SaiExportedAppMeta2 {
 
         SaiExportedAppMeta2 appMeta = new SaiExportedAppMeta2();
         appMeta.mPackage = packageInfo.packageName;
-        appMeta.mLabel = packageInfo.applicationInfo.loadLabel(pm).toString();
+        appMeta.mLabel = packageInfo.applicationInfo != null
+                ? packageInfo.applicationInfo.loadLabel(pm).toString()
+                : packageInfo.packageName;
         appMeta.mVersionName = packageInfo.versionName;
 
         if (Utils.apiIsAtLeast(Build.VERSION_CODES.P)) {
@@ -162,11 +164,11 @@ public class SaiExportedAppMeta2 {
 
         @SerializedName("type")
         @Expose
-        private String mType;
+        private final String mType;
 
         @SerializedName("size")
         @Expose
-        private Long mSize;
+        private final Long mSize;
 
         private BackupComponent(String type, long size) {
             mType = type;

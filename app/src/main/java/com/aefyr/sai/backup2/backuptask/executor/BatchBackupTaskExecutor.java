@@ -12,7 +12,6 @@ import com.aefyr.sai.backup2.backuptask.config.SingleBackupTaskConfig;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Stack;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -20,21 +19,21 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class BatchBackupTaskExecutor implements CancellableBackupTaskExecutor {
 
-    private Context mContext;
-    private BatchBackupTaskConfig mConfig;
-    private SingleBackupTaskExecutorFactory mSingleBackupTaskExecutorFactory;
+    private final Context mContext;
+    private final BatchBackupTaskConfig mConfig;
+    private final SingleBackupTaskExecutorFactory mSingleBackupTaskExecutorFactory;
 
-    private Stack<SingleBackupTaskConfig> mRemainingConfigs;
+    private final Stack<SingleBackupTaskConfig> mRemainingConfigs;
 
     private HandlerThread mWorkerHandlerThread;
     private Handler mWorkerHandler;
-    private ExecutorService mExecutor = Executors.newSingleThreadExecutor();
+    private final ExecutorService mExecutor = Executors.newSingleThreadExecutor();
 
     private Listener mListener;
     private Handler mListenerHandler;
 
-    private AtomicBoolean mIsStarted = new AtomicBoolean(false);
-    private AtomicBoolean mIsCancelled = new AtomicBoolean(false);
+    private final AtomicBoolean mIsStarted = new AtomicBoolean(false);
+    private final AtomicBoolean mIsCancelled = new AtomicBoolean(false);
 
     public BatchBackupTaskExecutor(Context context, BatchBackupTaskConfig config, SingleBackupTaskExecutorFactory singleBackupTaskExecutorFactory) {
         mContext = context.getApplicationContext();
@@ -107,7 +106,8 @@ public class BatchBackupTaskExecutor implements CancellableBackupTaskExecutor {
 
             @Override
             public void onSuccess(@Nullable Backup backup) {
-                notifyAppBackedUp(config, Objects.requireNonNull(backup));
+                if (backup != null)
+                    notifyAppBackedUp(config, backup);
                 nextTask();
             }
 

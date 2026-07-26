@@ -51,10 +51,8 @@ public class LocalBackupStorageSetupFragment extends SaiBaseFragment implements 
         if (tag == null)
             return;
 
-        switch (tag) {
-            case "backup_dir":
-                mViewModel.setBackupDir(dirUri);
-                break;
+        if (tag.equals("backup_dir")) {
+            mViewModel.setBackupDir(dirUri);
         }
     }
 }

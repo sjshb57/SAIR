@@ -143,7 +143,7 @@ public class Utils {
         return typedValue.data;
     }
 
-    private static Handler sMainThreadHandler = new Handler(Looper.getMainLooper());
+    private static final Handler sMainThreadHandler = new Handler(Looper.getMainLooper());
 
     public static void onMainThread(Runnable r) {
         sMainThreadHandler.post(r);
@@ -268,25 +268,31 @@ public class Utils {
         }
     }
 
+    private static final int FALLBACK_ICON_SIZE_PX = 192;
+
     public static void saveDrawableAsPng(Drawable drawable, File pngFile) throws Exception {
+        // Drawables without an intrinsic size report -1, which would blow up createBitmap.
+        int width = drawable.getIntrinsicWidth();
+        int height = drawable.getIntrinsicHeight();
+        if (width <= 0 || height <= 0) {
+            width = FALLBACK_ICON_SIZE_PX;
+            height = FALLBACK_ICON_SIZE_PX;
+        }
 
         Bitmap bitmap = null;
         try {
-            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+            bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(bitmap);
-            drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+            drawable.setBounds(0, 0, width, height);
             drawable.draw(canvas);
 
             try (FileOutputStream outputStream = new FileOutputStream(pngFile)) {
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
             }
-
         } finally {
             if (bitmap != null)
                 bitmap.recycle();
-            ;
         }
-
     }
 
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();

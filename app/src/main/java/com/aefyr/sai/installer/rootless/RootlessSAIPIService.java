@@ -55,6 +55,7 @@ public class RootlessSAIPIService extends Service {
 
     private void sendStatusChangeBroadcast(int sessionID, int status, String packageName) {
         Intent statusIntent = new Intent(ACTION_INSTALLATION_STATUS_NOTIFICATION);
+        statusIntent.setPackage(getPackageName());
         statusIntent.putExtra(EXTRA_INSTALLATION_STATUS, status);
         statusIntent.putExtra(EXTRA_SESSION_ID, sessionID);
 
@@ -66,6 +67,7 @@ public class RootlessSAIPIService extends Service {
 
     private void sendErrorBroadcast(int sessionID, String error) {
         Intent statusIntent = new Intent(ACTION_INSTALLATION_STATUS_NOTIFICATION);
+        statusIntent.setPackage(getPackageName());
         statusIntent.putExtra(EXTRA_INSTALLATION_STATUS, STATUS_FAILURE);
         statusIntent.putExtra(EXTRA_SESSION_ID, sessionID);
         statusIntent.putExtra(EXTRA_ERROR_DESCRIPTION, error);

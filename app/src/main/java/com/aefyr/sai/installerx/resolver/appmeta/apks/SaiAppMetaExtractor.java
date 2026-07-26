@@ -23,7 +23,7 @@ import java.io.OutputStream;
 public class SaiAppMetaExtractor implements AppMetaExtractor {
     private static final String TAG = "SaiMetaExtractor";
 
-    private Context mContext;
+    private final Context mContext;
 
     public SaiAppMetaExtractor(Context context) {
         mContext = context.getApplicationContext();
@@ -63,7 +63,7 @@ public class SaiAppMetaExtractor implements AppMetaExtractor {
                     } catch (Exception e) {
                         Log.w(TAG, "Unable to extract meta", e);
                     }
-                } else if (entry.getLocalPath().equals(SaiExportedAppMeta.ICON_FILE) || entry.getLocalPath().equals(SaiExportedAppMeta2.ICON_FILE)) {
+                } else if (entry.getLocalPath().equals(SaiExportedAppMeta.ICON_FILE)) {
                     File iconFile = Utils.createTempFileInCache(mContext, "SaiZipAppMetaExtractor", "png");
                     if (iconFile == null)
                         continue;

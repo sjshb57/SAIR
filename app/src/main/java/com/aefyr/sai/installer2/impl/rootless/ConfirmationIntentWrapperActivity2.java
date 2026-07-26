@@ -69,6 +69,8 @@ public class ConfirmationIntentWrapperActivity2 extends AppCompatActivity {
 
     private void sendErrorBroadcast(int sessionID, int status) {
         Intent statusIntent = new Intent(RootlessSaiPiBroadcastReceiver.ACTION_DELIVER_PI_EVENT);
+        // The receiver is registered as not-exported, so the broadcast has to be explicit.
+        statusIntent.setPackage(getPackageName());
         statusIntent.putExtra(PackageInstaller.EXTRA_STATUS, status);
         statusIntent.putExtra(PackageInstaller.EXTRA_SESSION_ID, sessionID);
 

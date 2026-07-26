@@ -28,7 +28,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
-                    android:tint="?attr/colorAccent"
+                    app:tint="?attr/colorAccent"
                     app:srcCompat="@drawable/logo" />
 
                 <TextView

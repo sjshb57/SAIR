@@ -67,6 +67,7 @@ public class ConfirmationIntentWrapperActivity extends AppCompatActivity {
 
     private void sendErrorBroadcast(int sessionID, String error) {
         Intent statusIntent = new Intent(RootlessSAIPIService.ACTION_INSTALLATION_STATUS_NOTIFICATION);
+        statusIntent.setPackage(getPackageName());
         statusIntent.putExtra(RootlessSAIPIService.EXTRA_INSTALLATION_STATUS, RootlessSAIPIService.STATUS_FAILURE);
         statusIntent.putExtra(RootlessSAIPIService.EXTRA_SESSION_ID, sessionID);
         statusIntent.putExtra(RootlessSAIPIService.EXTRA_ERROR_DESCRIPTION, error);

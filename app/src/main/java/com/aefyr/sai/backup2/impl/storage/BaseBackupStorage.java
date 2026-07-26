@@ -13,8 +13,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class BaseBackupStorage implements BackupStorage {
 
-    private Map<BackupProgressListener, ProgressListenerHandlerWrapper> mProgressListeners = new ConcurrentHashMap<>();
-    private Map<Observer, ObserverHandlerWrapper> mObservers = new ConcurrentHashMap<>();
+    private final Map<BackupProgressListener, ProgressListenerHandlerWrapper> mProgressListeners = new ConcurrentHashMap<>();
+    private final Map<Observer, ObserverHandlerWrapper> mObservers = new ConcurrentHashMap<>();
 
 
     @Override
@@ -69,8 +69,8 @@ public abstract class BaseBackupStorage implements BackupStorage {
 
     private static class ProgressListenerHandlerWrapper implements BackupProgressListener {
 
-        private BackupProgressListener mWrappedListener;
-        private Handler mHandler;
+        private final BackupProgressListener mWrappedListener;
+        private final Handler mHandler;
 
         private ProgressListenerHandlerWrapper(BackupProgressListener wrappedListener, Handler handler) {
             mWrappedListener = wrappedListener;
@@ -90,8 +90,8 @@ public abstract class BaseBackupStorage implements BackupStorage {
 
     private static class ObserverHandlerWrapper implements Observer {
 
-        private Observer mWrappedObserver;
-        private Handler mHandler;
+        private final Observer mWrappedObserver;
+        private final Handler mHandler;
 
         private ObserverHandlerWrapper(Observer wrappedObserver, Handler handler) {
             mWrappedObserver = wrappedObserver;

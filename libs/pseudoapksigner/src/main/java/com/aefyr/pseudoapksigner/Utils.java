@@ -11,6 +11,7 @@ import java.security.PrivateKey;
 import java.security.Signature;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.io.DataInputStream;
 
 public class Utils {
 
@@ -66,9 +67,11 @@ public class Utils {
     static byte[] readFile(File file) throws IOException {
         byte[] fileBytes = new byte[(int) file.length()];
 
-        FileInputStream inputStream = new FileInputStream(file);
-        inputStream.read(fileBytes);
-        inputStream.close();
+        try (DataInputStream inputStream = new DataInputStream(new FileInputStream(file))) {
+            // A plain read() may return fewer bytes than requested, which would silently
+            // zero-fill the tail of the signing template and corrupt the signature.
+            inputStream.readFully(fileBytes);
+        }
 
         return fileBytes;
     }

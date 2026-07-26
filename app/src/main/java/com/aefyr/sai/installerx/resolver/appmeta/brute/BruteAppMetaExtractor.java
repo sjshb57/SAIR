@@ -30,6 +30,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import androidx.core.content.pm.PackageInfoCompat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Extracts AppMeta from an APK directly, currently not very efficient since it copies the APK to a temp file
@@ -38,8 +41,11 @@ import androidx.core.content.pm.PackageInfoCompat;
 public class BruteAppMetaExtractor implements AppMetaExtractor {
     private static final String TAG = "BruteAppMetaExtractor";
     private static final String HASH_ALGORITHM = "SHA-256";
+    private static final String[] DENSITY_SPLIT_MARKERS = {
+            "xxxhdpi", "xxhdpi", "xhdpi", "hdpi", "mdpi", "ldpi", "tvdpi", "nodpi", "anydpi"
+    };
 
-    private Context mContext;
+    private final Context mContext;
 
     private static final Map<String, Object> mHashLocks = new HashMap<>();
 
@@ -84,6 +90,7 @@ public class BruteAppMetaExtractor implements AppMetaExtractor {
                 saiExportedAppMeta = SaiExportedAppMeta.deserialize(IOUtils.readFile(metaFile));
             } catch (Exception e) {
                 Log.w(TAG, String.format("Unable to read meta for hash %s, deleting meta files", apkHash));
+                //noinspection ResultOfMethodCallIgnored
                 metaFile.delete();
                 iconFile.delete();
                 return null;
@@ -119,6 +126,9 @@ public class BruteAppMetaExtractor implements AppMetaExtractor {
             PackageInfo packageInfo = Objects.requireNonNull(pm.getPackageArchiveInfo(apkFile.getAbsolutePath(), 0));
 
             ApplicationInfo applicationInfo = packageInfo.applicationInfo;
+            if (applicationInfo == null)
+                throw new IOException("APK has no application info");
+
             applicationInfo.sourceDir = apkFile.getAbsolutePath();
             applicationInfo.publicSourceDir = apkFile.getAbsolutePath();
 
@@ -127,13 +137,16 @@ public class BruteAppMetaExtractor implements AppMetaExtractor {
             Uri iconUri = null;
             synchronized (getLockForHash(apkHash)) {
                 File iconFile = getIconFileForHash(apkHash);
-                if (!iconFile.exists()) {
+                if (iconFile.exists()) {
+                    iconUri = Uri.fromFile(iconFile);
+                } else {
                     try {
-                        Drawable iconDrawable = applicationInfo.loadIcon(pm);
+                        Drawable iconDrawable = loadIcon(pm, applicationInfo, apkSourceFile, baseApkEntry);
                         Utils.saveDrawableAsPng(iconDrawable, iconFile);
                         iconUri = Uri.fromFile(iconFile);
                     } catch (Exception e) {
                         Log.w(TAG, "Unable to save icon to a file", e);
+                        //noinspection ResultOfMethodCallIgnored
                         iconFile.delete();
                     }
                 }
@@ -180,6 +193,7 @@ public class BruteAppMetaExtractor implements AppMetaExtractor {
 
             } catch (Exception e) {
                 Log.w(TAG, "Unable to cache AppMeta for apkHash " + apkHash, e);
+                //noinspection ResultOfMethodCallIgnored
                 appMetaFile.delete();
             }
         }
@@ -218,4 +232,83 @@ public class BruteAppMetaExtractor implements AppMetaExtractor {
     }
 
 
+
+    /**
+     * Loads the launcher icon of an APK that has been staged on disk.
+     * <p>
+     * In an app bundle the icon bitmaps often live only in a density config split, so resolving
+     * against the base APK alone yields the framework's default icon. When that happens the
+     * density splits are attached via splitSourceDirs and the lookup is retried.
+     */
+    private Drawable loadIcon(PackageManager pm, ApplicationInfo applicationInfo,
+                              ApkSourceFile apkSourceFile, ApkSourceFile.Entry baseApkEntry) throws Exception {
+        Drawable icon = applicationInfo.loadIcon(pm);
+        if (!isDefaultIcon(pm, icon))
+            return icon;
+
+        List<File> splitFiles = new ArrayList<>();
+        try {
+            for (ApkSourceFile.Entry entry : apkSourceFile.listEntries()) {
+                if (entry == baseApkEntry || !isDensitySplit(entry))
+                    continue;
+
+                File splitFile = Utils.createTempFileInCache(mContext, "BruteAppMetaExtractor.split", "apk");
+                if (splitFile == null)
+                    continue;
+
+                try (InputStream in = apkSourceFile.openEntryInputStream(entry);
+                     OutputStream out = IOUtils.buffer(new FileOutputStream(splitFile))) {
+                    IOUtils.copyStream(in, out);
+                }
+                splitFiles.add(splitFile);
+            }
+
+            if (splitFiles.isEmpty())
+                return icon;
+
+            String[] splitDirs = new String[splitFiles.size()];
+            for (int i = 0; i < splitFiles.size(); i++)
+                splitDirs[i] = splitFiles.get(i).getAbsolutePath();
+
+            applicationInfo.splitSourceDirs = splitDirs;
+            applicationInfo.splitPublicSourceDirs = splitDirs;
+
+            Drawable fromSplits = applicationInfo.loadIcon(pm);
+            return isDefaultIcon(pm, fromSplits) ? icon : fromSplits;
+        } finally {
+            for (File splitFile : splitFiles) {
+                //noinspection ResultOfMethodCallIgnored
+                splitFile.delete();
+            }
+        }
+    }
+
+    private boolean isDensitySplit(ApkSourceFile.Entry entry) {
+        String name = entry.getName().toLowerCase(Locale.ROOT);
+        if (!name.endsWith(".apk"))
+            return false;
+
+        for (String density : DENSITY_SPLIT_MARKERS) {
+            if (name.contains(density))
+                return true;
+        }
+        return false;
+    }
+
+    /**
+     * ApplicationInfo.loadIcon falls back to the framework's default app icon when the real one
+     * cannot be resolved, and that fallback would otherwise be cached as if it were the app icon.
+     */
+    private boolean isDefaultIcon(PackageManager pm, @Nullable Drawable icon) {
+        if (icon == null)
+            return true;
+
+        Drawable defaultIcon = pm.getDefaultActivityIcon();
+        if (icon.getClass() != defaultIcon.getClass())
+            return false;
+
+        Drawable.ConstantState state = icon.getConstantState();
+        Drawable.ConstantState defaultState = defaultIcon.getConstantState();
+        return state != null && state.equals(defaultState);
+    }
 }

@@ -114,13 +114,13 @@ public interface BackupStorage {
 
     class BackupTaskStatus {
 
-        private String mToken;
-        private SingleBackupTaskConfig mConfig;
-        private BackupTaskState mState;
-        private long mCurrentProgress;
-        private long mGoal;
-        private Backup mBackup;
-        private Exception mException;
+        private final String mToken;
+        private final SingleBackupTaskConfig mConfig;
+        private final BackupTaskState mState;
+        private final long mCurrentProgress;
+        private final long mGoal;
+        private final Backup mBackup;
+        private final Exception mException;
 
         private BackupTaskStatus(String token, SingleBackupTaskConfig config, BackupTaskState state, long currentProgress, long goal, @Nullable Backup backup, @Nullable Exception exception) {
             mToken = token;
@@ -192,8 +192,8 @@ public interface BackupStorage {
 
     class BatchBackupTaskStatus {
 
-        private String mToken;
-        private BackupTaskState mState;
+        private final String mToken;
+        private final BackupTaskState mState;
 
         private SingleBackupTaskConfig mCurrentConfig;
 

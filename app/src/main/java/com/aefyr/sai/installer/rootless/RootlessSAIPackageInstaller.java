@@ -21,6 +21,7 @@ import com.aefyr.sai.utils.Utils;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import androidx.core.content.ContextCompat;
 
 public class RootlessSAIPackageInstaller extends SAIPackageInstaller {
     private static final String TAG = "RootlessSAIPI";
@@ -28,7 +29,7 @@ public class RootlessSAIPackageInstaller extends SAIPackageInstaller {
     @SuppressLint("StaticFieldLeak")//This is application context, lul
     private static RootlessSAIPackageInstaller sInstance;
 
-    private BroadcastReceiver mFurtherInstallationEventsReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver mFurtherInstallationEventsReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             long sessionId = mSessionsMap.get(intent.getIntExtra(RootlessSAIPIService.EXTRA_SESSION_ID, -1), -1);
@@ -49,12 +50,12 @@ public class RootlessSAIPackageInstaller extends SAIPackageInstaller {
         }
     };
 
-    private PackageInstaller mPackageInstaller;
+    private final PackageInstaller mPackageInstaller;
 
     /**
      * Maps Android PackageInstaller session id to SAIPackageInstaller QueuedInstallation id
      */
-    private SparseLongArray mSessionsMap = new SparseLongArray();
+    private final SparseLongArray mSessionsMap = new SparseLongArray();
 
 
     public static RootlessSAIPackageInstaller getInstance(Context c) {
@@ -65,18 +66,9 @@ public class RootlessSAIPackageInstaller extends SAIPackageInstaller {
         super(c);
         mPackageInstaller = getContext().getPackageManager().getPackageInstaller();
     
-        // Legacy installer support for Android 14+
-        int flags = Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE 
-                    ? Context.RECEIVER_NOT_EXPORTED 
-                    : 0;
-    
-        if (flags != 0) {
-            getContext().registerReceiver(mFurtherInstallationEventsReceiver, 
-                new IntentFilter(RootlessSAIPIService.ACTION_INSTALLATION_STATUS_NOTIFICATION), flags);
-        } else {
-            getContext().registerReceiver(mFurtherInstallationEventsReceiver, 
-                new IntentFilter(RootlessSAIPIService.ACTION_INSTALLATION_STATUS_NOTIFICATION));
-        }
+        ContextCompat.registerReceiver(getContext(), mFurtherInstallationEventsReceiver,
+                new IntentFilter(RootlessSAIPIService.ACTION_INSTALLATION_STATUS_NOTIFICATION),
+                ContextCompat.RECEIVER_NOT_EXPORTED);
 
         sInstance = this;
     }

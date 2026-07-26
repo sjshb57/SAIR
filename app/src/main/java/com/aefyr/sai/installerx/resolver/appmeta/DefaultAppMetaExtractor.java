@@ -11,11 +11,12 @@ import com.aefyr.sai.installerx.resolver.appmeta.brute.BruteAppMetaExtractor;
 import com.aefyr.sai.installerx.resolver.appmeta.xapk.XapkAppMetaExtractor;
 import com.aefyr.sai.installerx.resolver.meta.ApkSourceFile;
 import com.aefyr.sai.utils.Utils;
+import java.util.Locale;
 
 public class DefaultAppMetaExtractor implements AppMetaExtractor {
     private static final String TAG = "DefaultAppMetaExtractor";
 
-    private Context mContext;
+    private final Context mContext;
 
     public DefaultAppMetaExtractor(Context context) {
         mContext = context.getApplicationContext();
@@ -46,7 +47,7 @@ public class DefaultAppMetaExtractor implements AppMetaExtractor {
         if (archiveExtension == null)
             return null;
 
-        switch (archiveExtension.toLowerCase()) {
+        switch (archiveExtension.toLowerCase(Locale.ROOT)) {
             case "xapk":
                 return new XapkAppMetaExtractor(mContext);
             case "apks":

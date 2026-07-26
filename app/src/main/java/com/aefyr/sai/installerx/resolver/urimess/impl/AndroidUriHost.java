@@ -104,6 +104,7 @@ public class AndroidUriHost implements UriHost {
 
         @Override
         public void close() {
+            //noinspection ResultOfMethodCallIgnored
             mTempFile.delete();
         }
     }

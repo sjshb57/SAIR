@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import androidx.core.content.ContextCompat;
 
 /**
  * Base class for installers that install packages via pm shell command, child classes must provide a Shell{@link com.aefyr.sai.shell.Shell}
@@ -64,7 +65,8 @@ public abstract class ShellSAIPackageInstaller extends SAIPackageInstaller {
         super(c);
         IntentFilter packageAddedFilter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
         packageAddedFilter.addDataScheme("package");
-        getContext().registerReceiver(mPackageInstalledBroadcastReceiver, packageAddedFilter);
+        ContextCompat.registerReceiver(getContext(), mPackageInstalledBroadcastReceiver,
+                packageAddedFilter, ContextCompat.RECEIVER_NOT_EXPORTED);
     }
 
     @SuppressLint("DefaultLocale")
@@ -127,7 +129,7 @@ public abstract class ShellSAIPackageInstaller extends SAIPackageInstaller {
         }
         return String.format("%s: %s %s | %s | Android %s | Using %s ApkSource implementation | SAI %s",
                 getContext().getString(R.string.installer_device), Build.BRAND, Build.MODEL,
-                Build.VERSION.RELEASE, apkSource.getClass().getSimpleName(), saiVersion);
+                Build.DEVICE, Build.VERSION.RELEASE, apkSource.getClass().getSimpleName(), saiVersion);
     }
 
     private int createSession() {

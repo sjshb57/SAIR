@@ -33,7 +33,10 @@ public class PseudoApkSigner {
     }
 
     public void sign(File apkFile, File output) throws Exception {
-        sign(new FileInputStream(apkFile), new FileOutputStream(output));
+        try (InputStream in = new FileInputStream(apkFile);
+             OutputStream out = new FileOutputStream(output)) {
+            sign(in, out);
+        }
     }
 
     public void sign(InputStream apkInputStream, OutputStream output) throws Exception {

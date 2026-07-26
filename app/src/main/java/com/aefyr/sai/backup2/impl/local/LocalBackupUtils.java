@@ -49,7 +49,7 @@ public class LocalBackupUtils {
     @Nullable
     private static Uri createBackupUriViaFileIO(Context c, File backupsDir, PackageMeta packageMeta, String extension) {
         if (!backupsDir.exists() && !backupsDir.mkdir()) {
-            Log.e(TAG, "Unable to mkdir:" + backupsDir.toString());
+            Log.e(TAG, "Unable to mkdir:" + backupsDir);
             return null;
         }
 

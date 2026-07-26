@@ -34,29 +34,30 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 
 //TODO applier should have setConfig or something
 public class BackupViewModel extends AndroidViewModel {
     private static final String TAG = "BackupVM";
 
-    private SharedPreferences mFilterPrefs;
+    private final SharedPreferences mFilterPrefs;
 
-    private BackupManager mBackupManager;
-    private Observer<List<BackupApp>> mBackupRepoPackagesObserver;
+    private final BackupManager mBackupManager;
+    private final Observer<List<BackupApp>> mBackupRepoPackagesObserver;
 
     private ComplexFilterConfig mComplexFilterConfig;
     private final BackupCustomFilterFactory mFilterFactory = new BackupCustomFilterFactory();
 
     private String mCurrentSearchQuery = "";
 
-    private MutableLiveData<List<BackupApp>> mPackagesLiveData = new MutableLiveData<>();
+    private final MutableLiveData<List<BackupApp>> mPackagesLiveData = new MutableLiveData<>();
 
-    private MutableLiveData<BackupPackagesFilterConfig> mBackupFilterConfig = new MutableLiveData<>();
+    private final MutableLiveData<BackupPackagesFilterConfig> mBackupFilterConfig = new MutableLiveData<>();
 
     private final SimpleKeyStorage<String> mKeyStorage = new SimpleKeyStorage<>();
     private final Selection<String> mSelection = new Selection<>(mKeyStorage);
 
-    private LiveFilterApplier<BackupApp> mLiveFilterApplier = new LiveFilterApplier<>();
+    private final LiveFilterApplier<BackupApp> mLiveFilterApplier = new LiveFilterApplier<>();
     private final Observer<List<BackupApp>> mLiveFilterObserver = (apps) -> {
         mPackagesLiveData.setValue(apps);
 
@@ -108,7 +109,9 @@ public class BackupViewModel extends AndroidViewModel {
 
     public void search(String query) {
         mCurrentSearchQuery = query;
-        mLiveFilterApplier.apply(createComplexFilter(query), new ArrayList<>(mBackupManager.getApps().getValue()));
+        List<BackupApp> apps = mBackupManager.getApps().getValue();
+        mLiveFilterApplier.apply(createComplexFilter(query),
+                apps != null ? new ArrayList<>(apps) : new ArrayList<>());
     }
 
     public Selection<String> getSelection() {
@@ -176,7 +179,7 @@ public class BackupViewModel extends AndroidViewModel {
 
     private static class SearchFilter implements CustomFilter<BackupApp> {
 
-        private String mQuery;
+        private final String mQuery;
 
         SearchFilter(String query) {
             mQuery = query;
@@ -184,13 +187,13 @@ public class BackupViewModel extends AndroidViewModel {
 
         @Override
         public boolean filterSimple(BackupApp app) {
-            String query = mQuery.toLowerCase();
+            String query = mQuery.toLowerCase(Locale.ROOT);
 
             if (query.length() == 0)
                 return false;
 
             //Check if app label matches
-            String[] wordsInLabel = app.packageMeta().label.toLowerCase().split(" ");
+            String[] wordsInLabel = app.packageMeta().label.toLowerCase(Locale.ROOT).split(" ");
             boolean labelMatches = false;
             for (String word : wordsInLabel) {
                 if (word.startsWith(query)) {
@@ -200,7 +203,7 @@ public class BackupViewModel extends AndroidViewModel {
             }
 
             //Check if app packages matches
-            boolean packagesMatches = app.packageMeta().packageName.toLowerCase().startsWith(query);
+            boolean packagesMatches = app.packageMeta().packageName.toLowerCase(Locale.ROOT).startsWith(query);
 
             return !labelMatches && !packagesMatches;
         }

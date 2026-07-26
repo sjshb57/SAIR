@@ -18,33 +18,21 @@ public enum BackupStatus {
 
     @DrawableRes
     public int getIconRes() {
-        switch (this) {
-            case NO_BACKUP:
-                return R.drawable.ic_backup_status_no_backup;
-            case SAME_VERSION:
-                return R.drawable.ic_backup_status_same_version;
-            case HIGHER_VERSION:
-                return R.drawable.ic_backup_status_higher_version;
-            case LOWER_VERSION:
-                return R.drawable.ic_backup_status_lower_version;
-            case APP_NOT_INSTALLED:
-                return R.drawable.ic_backup_status_not_installed;
-        }
+        return switch (this) {
+            case NO_BACKUP -> R.drawable.ic_backup_status_no_backup;
+            case SAME_VERSION -> R.drawable.ic_backup_status_same_version;
+            case HIGHER_VERSION -> R.drawable.ic_backup_status_higher_version;
+            case LOWER_VERSION -> R.drawable.ic_backup_status_lower_version;
+            case APP_NOT_INSTALLED -> R.drawable.ic_backup_status_not_installed;
+        };
 
-        throw new RuntimeException("wtf");
     }
 
     public boolean canBeInstalledOverExistingApp() {
-        switch (this) {
-            case SAME_VERSION:
-            case HIGHER_VERSION:
-            case APP_NOT_INSTALLED:
-                return true;
-            case LOWER_VERSION:
-            case NO_BACKUP:
-                return false;
-        }
+        return switch (this) {
+            case SAME_VERSION, HIGHER_VERSION, APP_NOT_INSTALLED -> true;
+            case LOWER_VERSION, NO_BACKUP -> false;
+        };
 
-        throw new RuntimeException("wtf");
     }
 }

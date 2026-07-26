@@ -14,9 +14,9 @@ import java.util.Map;
 public abstract class SplitMeta {
     protected static final String ANDROID_XML_NAMESPACE = "http://schemas.android.com/apk/res/android";
 
-    private String mPackageName;
-    private long mVersionCode;
-    private String mSplitName;
+    private final String mPackageName;
+    private final long mVersionCode;
+    private final String mSplitName;
 
     public SplitMeta(Map<String, String> manifestAttrs) {
         mPackageName = TextUtils.requireNonEmpty(manifestAttrs.get("package"));
@@ -47,7 +47,8 @@ public abstract class SplitMeta {
             return new FeatureSplitMeta(manifestAttrs);
         }
 
-        if (manifestAttrs.containsKey("configForSplit") || manifestAttrs.get("split").startsWith("config.")) {
+        if (manifestAttrs.containsKey("configForSplit")
+                || (manifestAttrs.get("split") != null && manifestAttrs.get("split").startsWith("config."))) {
             String splitName = TextUtils.requireNonEmpty(manifestAttrs.get("split"));
 
             if (AbiConfigSplitMeta.isAbiSplit(splitName))

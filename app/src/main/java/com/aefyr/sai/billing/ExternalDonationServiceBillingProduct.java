@@ -5,11 +5,11 @@ import androidx.annotation.Nullable;
 
 public class ExternalDonationServiceBillingProduct implements BillingProduct {
 
-    private String mId;
-    private String mTitle;
-    private String mDesc;
-    private String mIconUrl;
-    private String mTargetUrl;
+    private final String mId;
+    private final String mTitle;
+    private final String mDesc;
+    private final String mIconUrl;
+    private final String mTargetUrl;
 
     public ExternalDonationServiceBillingProduct(String id, String title, String description, String iconUri, String targetUrl) {
         mId = id;

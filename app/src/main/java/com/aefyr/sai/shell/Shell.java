@@ -19,7 +19,7 @@ public interface Shell {
     String makeLiteral(String arg);
 
     class Command {
-        private ArrayList<String> mArgs = new ArrayList<>();
+        private final ArrayList<String> mArgs = new ArrayList<>();
 
         public Command(String command, String... args) {
             mArgs.add(command);
@@ -51,7 +51,7 @@ public interface Shell {
         }
 
         public static class Builder {
-            private Command mCommand;
+            private final Command mCommand;
 
             public Builder(String command, String... args) {
                 mCommand = new Command(command, args);
@@ -89,7 +89,7 @@ public interface Shell {
         @NonNull
         @Override
         public String toString() {
-            return String.format("Command: %s\nExit code: %d\nOut:\n%s\n=============\nErr:\n%s", cmd, exitCode, out, err);
+            return String.format("Command: %s%nExit code: %d%nOut:%n%s%n=============%nErr:%n%s", cmd, exitCode, out, err);
         }
     }
 
