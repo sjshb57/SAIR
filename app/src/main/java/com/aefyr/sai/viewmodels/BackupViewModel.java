@@ -177,37 +177,31 @@ public class BackupViewModel extends AndroidViewModel {
         mLiveFilterApplier.asLiveData().removeObserver(mLiveFilterObserver);
     }
 
-    private static class SearchFilter implements CustomFilter<BackupApp> {
-
-        private final String mQuery;
-
-        SearchFilter(String query) {
-            mQuery = query;
-        }
+    private record SearchFilter(String mQuery) implements CustomFilter<BackupApp> {
 
         @Override
-        public boolean filterSimple(BackupApp app) {
-            String query = mQuery.toLowerCase(Locale.ROOT);
+            public boolean filterSimple(BackupApp app) {
+                String query = mQuery.toLowerCase(Locale.ROOT);
 
-            if (query.length() == 0)
-                return false;
+                if (query.length() == 0)
+                    return false;
 
-            //Check if app label matches
-            String[] wordsInLabel = app.packageMeta().label.toLowerCase(Locale.ROOT).split(" ");
-            boolean labelMatches = false;
-            for (String word : wordsInLabel) {
-                if (word.startsWith(query)) {
-                    labelMatches = true;
-                    break;
+                //Check if app label matches
+                String[] wordsInLabel = app.packageMeta().label.toLowerCase(Locale.ROOT).split(" ");
+                boolean labelMatches = false;
+                for (String word : wordsInLabel) {
+                    if (word.startsWith(query)) {
+                        labelMatches = true;
+                        break;
+                    }
                 }
+
+                //Check if app packages matches
+                boolean packagesMatches = app.packageMeta().packageName.toLowerCase(Locale.ROOT).startsWith(query);
+
+                return !labelMatches && !packagesMatches;
             }
-
-            //Check if app packages matches
-            boolean packagesMatches = app.packageMeta().packageName.toLowerCase(Locale.ROOT).startsWith(query);
-
-            return !labelMatches && !packagesMatches;
         }
-    }
 
     //TODO clean this up
     private static class BackupCustomFilterFactory implements DefaultCustomFilterFactory<BackupApp> {

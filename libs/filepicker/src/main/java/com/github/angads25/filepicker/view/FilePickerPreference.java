@@ -94,11 +94,10 @@ public class FilePickerPreference extends Preference implements
 
     @Override
     protected void onRestoreInstanceState(@Nullable Parcelable state) {
-        if (!(state instanceof SavedState)) {
+        if (!(state instanceof SavedState myState)) {
             super.onRestoreInstanceState(state);
             return;
         }
-        SavedState myState = (SavedState) state;
         super.onRestoreInstanceState(myState.getSuperState());
         showDialog(myState.dialogBundle);
     }

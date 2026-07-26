@@ -29,7 +29,7 @@ class Coordinates {
         int[] location = new int[2];
         view.getLocationOnScreen(location);
         left = location[0];
-        right = left + view.getWidth();;
+        right = left + view.getWidth();
         top = location[1];
         bottom = top + view.getHeight();
     }

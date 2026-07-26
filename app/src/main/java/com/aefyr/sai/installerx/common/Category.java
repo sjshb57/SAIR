@@ -10,7 +10,7 @@ public enum Category {
 
     private final String mId;
 
-    private Category(String id) {
+    Category(String id) {
         mId = id;
     }
 

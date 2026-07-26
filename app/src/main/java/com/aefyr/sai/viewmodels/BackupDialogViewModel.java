@@ -169,7 +169,7 @@ public class BackupDialogViewModel extends AndroidViewModel implements Observer<
             metaResolver.addPostprocessor(new SortPostprocessor());
             metaResolver.addPostprocessor(parserContext -> {
                 MutableSplitCategory baseApkCategory = parserContext.getCategory(Category.BASE_APK);
-                if (baseApkCategory == null || baseApkCategory.getPartsList().size() == 0)
+                if (baseApkCategory == null || baseApkCategory.getPartsList().isEmpty())
                     return;
 
                 baseApkCategory.getPartsList().get(0).setName(parserContext.getAppMeta().appName);

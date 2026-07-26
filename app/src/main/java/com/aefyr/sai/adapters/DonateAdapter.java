@@ -93,7 +93,6 @@ public class DonateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
         if (holder instanceof ProductViewHolder) {
             ((ProductViewHolder) holder).recycle();
-            return;
         }
     }
 

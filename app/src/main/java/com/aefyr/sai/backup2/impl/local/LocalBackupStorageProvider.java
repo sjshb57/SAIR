@@ -152,20 +152,12 @@ public class LocalBackupStorageProvider implements BackupStorageProvider, Shared
 
     }
 
-    private static class OnConfigChangeListenerHandlerWrapper implements OnConfigChangeListener {
-
-        private final OnConfigChangeListener mListener;
-        private final Handler mHandler;
-
-
-        private OnConfigChangeListenerHandlerWrapper(OnConfigChangeListener listener, Handler handler) {
-            mListener = listener;
-            mHandler = handler;
-        }
+    private record OnConfigChangeListenerHandlerWrapper(OnConfigChangeListener mListener,
+                                                        Handler mHandler) implements OnConfigChangeListener {
 
         @Override
-        public void onBackupDirChanged() {
-            mHandler.post(mListener::onBackupDirChanged);
+            public void onBackupDirChanged() {
+                mHandler.post(mListener::onBackupDirChanged);
+            }
         }
-    }
 }

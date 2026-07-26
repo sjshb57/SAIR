@@ -85,7 +85,7 @@ public class BaseBottomSheetDialogFragment extends BottomSheetDialogFragment {
 
     @SuppressWarnings("rawtypes")
     protected void revealBottomSheet() {
-        FrameLayout bottomSheet = (FrameLayout) mDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+        FrameLayout bottomSheet = mDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
         BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }

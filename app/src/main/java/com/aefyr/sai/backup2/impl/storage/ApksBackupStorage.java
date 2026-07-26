@@ -173,7 +173,7 @@ public abstract class ApksBackupStorage extends BaseBackupStorage {
             }
         }
 
-        throw new IOException("Icon gone for icon uri " + iconUri.toString());
+        throw new IOException("Icon gone for icon uri " + iconUri);
     }
 
     /**
@@ -198,7 +198,7 @@ public abstract class ApksBackupStorage extends BaseBackupStorage {
      */
     private Pair<File, Uri> unwrapIconUri(Uri iconUri) {
         if (!"absi".equals(iconUri.getScheme()) || !(BuildConfig.APPLICATION_ID + "." + getStorageId()).equals(iconUri.getAuthority()))
-            throw new IllegalArgumentException("Invalid icon uri - " + iconUri.toString());
+            throw new IllegalArgumentException("Invalid icon uri - " + iconUri);
 
         String cachedIcon = iconUri.getQueryParameter("cached_icon");
         String backup = iconUri.getQueryParameter("backup");

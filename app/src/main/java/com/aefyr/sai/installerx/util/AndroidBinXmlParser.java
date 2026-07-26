@@ -18,6 +18,7 @@ package com.aefyr.sai.installerx.util;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -409,181 +410,152 @@ public class AndroidBinXmlParser {
         }
     }
 
-    private static class Attribute {
-        private static final int TYPE_REFERENCE = 1;
-        private static final int TYPE_STRING = 3;
-        private static final int TYPE_FLOAT = 0x4;
-        private static final int TYPE_INT_DEC = 0x10;
-        private static final int TYPE_INT_HEX = 0x11;
-        private static final int TYPE_INT_BOOLEAN = 0x12;
-        private final long mNsId;
-        private final long mNameId;
-        private final int mValueType;
-        private final int mValueData;
-        private final StringPool mStringPool;
-        private final ResourceMap mResourceMap;
-
-        private Attribute(
-                long nsId,
-                long nameId,
-                int valueType,
-                int valueData,
-                StringPool stringPool,
-                ResourceMap resourceMap) {
-            mNsId = nsId;
-            mNameId = nameId;
-            mValueType = valueType;
-            mValueData = valueData;
-            mStringPool = stringPool;
-            mResourceMap = resourceMap;
-        }
+    private record Attribute(long mNsId, long mNameId, int mValueType, int mValueData,
+                             StringPool mStringPool, ResourceMap mResourceMap) {
+            private static final int TYPE_REFERENCE = 1;
+            private static final int TYPE_STRING = 3;
+            private static final int TYPE_FLOAT = 0x4;
+            private static final int TYPE_INT_DEC = 0x10;
+            private static final int TYPE_INT_HEX = 0x11;
+            private static final int TYPE_INT_BOOLEAN = 0x12;
 
         public int getNameResourceId() {
-            return (mResourceMap != null) ? mResourceMap.getResourceId(mNameId) : 0;
-        }
+                return (mResourceMap != null) ? mResourceMap.getResourceId(mNameId) : 0;
+            }
 
-        public String getName() throws XmlParserException {
-            return mStringPool.getString(mNameId);
-        }
+            public String getName() throws XmlParserException {
+                return mStringPool.getString(mNameId);
+            }
 
-        public String getNamespace() throws XmlParserException {
-            return (mNsId != NO_NAMESPACE) ? mStringPool.getString(mNsId) : "";
-        }
+            public String getNamespace() throws XmlParserException {
+                return (mNsId != NO_NAMESPACE) ? mStringPool.getString(mNsId) : "";
+            }
 
-        public int getValueType() {
-            return mValueType;
-        }
+            public int getValueType() {
+                return mValueType;
+            }
 
-        public int getIntValue() throws XmlParserException {
-            switch (mValueType) {
-                case TYPE_REFERENCE:
-                case TYPE_INT_DEC:
-                case TYPE_INT_HEX:
-                case TYPE_INT_BOOLEAN:
-                    return mValueData;
-                default:
-                    throw new XmlParserException("Cannot coerce to int: value type " + mValueType);
+            public int getIntValue() throws XmlParserException {
+                switch (mValueType) {
+                    case TYPE_REFERENCE:
+                    case TYPE_INT_DEC:
+                    case TYPE_INT_HEX:
+                    case TYPE_INT_BOOLEAN:
+                        return mValueData;
+                    default:
+                        throw new XmlParserException("Cannot coerce to int: value type " + mValueType);
+                }
+            }
+
+            public float getFloatValue() throws XmlParserException {
+                switch (mValueType) {
+                    case TYPE_FLOAT:
+                        return Float.intBitsToFloat(mValueData);
+                    default:
+                        throw new XmlParserException("Cannot coerce to float: value type " + mValueType);
+                }
+            }
+
+            public boolean getBooleanValue() throws XmlParserException {
+                switch (mValueType) {
+                    case TYPE_INT_BOOLEAN:
+                        return mValueData != 0;
+                    default:
+                        throw new XmlParserException(
+                                "Cannot coerce to boolean: value type " + mValueType);
+                }
+            }
+
+            public String getStringValue() throws XmlParserException {
+                switch (mValueType) {
+                    case TYPE_STRING:
+                        return mStringPool.getString(mValueData & 0xffffffffL);
+                    case TYPE_INT_DEC:
+                        return Integer.toString(mValueData);
+                    case TYPE_INT_HEX:
+                        return "0x" + Integer.toHexString(mValueData);
+                    case TYPE_INT_BOOLEAN:
+                        return Boolean.toString(mValueData != 0);
+                    case TYPE_REFERENCE:
+                        return "@" + Integer.toHexString(mValueData);
+                    case TYPE_FLOAT:
+                        return Float.toString(Float.intBitsToFloat(mValueData));
+                    default:
+                        throw new XmlParserException(
+                                "Cannot coerce to string: value type " + mValueType);
+                }
             }
         }
-
-        public float getFloatValue() throws XmlParserException {
-            switch (mValueType) {
-                case TYPE_FLOAT:
-                    return Float.intBitsToFloat(mValueData);
-                default:
-                    throw new XmlParserException("Cannot coerce to float: value type " + mValueType);
-            }
-        }
-
-        public boolean getBooleanValue() throws XmlParserException {
-            switch (mValueType) {
-                case TYPE_INT_BOOLEAN:
-                    return mValueData != 0;
-                default:
-                    throw new XmlParserException(
-                            "Cannot coerce to boolean: value type " + mValueType);
-            }
-        }
-
-        public String getStringValue() throws XmlParserException {
-            switch (mValueType) {
-                case TYPE_STRING:
-                    return mStringPool.getString(mValueData & 0xffffffffL);
-                case TYPE_INT_DEC:
-                    return Integer.toString(mValueData);
-                case TYPE_INT_HEX:
-                    return "0x" + Integer.toHexString(mValueData);
-                case TYPE_INT_BOOLEAN:
-                    return Boolean.toString(mValueData != 0);
-                case TYPE_REFERENCE:
-                    return "@" + Integer.toHexString(mValueData);
-                case TYPE_FLOAT:
-                    return Float.toString(Float.intBitsToFloat(mValueData));
-                default:
-                    throw new XmlParserException(
-                            "Cannot coerce to string: value type " + mValueType);
-            }
-        }
-    }
 
     /**
-     * Chunk of a document. Each chunk is tagged with a type and consists of a header followed by
-     * contents.
-     */
-    private static class Chunk {
-        public static final int TYPE_STRING_POOL = 1;
-        public static final int TYPE_RES_XML = 3;
-        public static final int RES_XML_TYPE_START_ELEMENT = 0x0102;
-        public static final int RES_XML_TYPE_END_ELEMENT = 0x0103;
-        public static final int RES_XML_TYPE_RESOURCE_MAP = 0x0180;
-        static final int HEADER_MIN_SIZE_BYTES = 8;
-        private final int mType;
-        private final ByteBuffer mHeader;
-        private final ByteBuffer mContents;
-
-        public Chunk(int type, ByteBuffer header, ByteBuffer contents) {
-            mType = type;
-            mHeader = header;
-            mContents = contents;
-        }
+         * Chunk of a document. Each chunk is tagged with a type and consists of a header followed by
+         * contents.
+         */
+        private record Chunk(int mType, ByteBuffer mHeader, ByteBuffer mContents) {
+            public static final int TYPE_STRING_POOL = 1;
+            public static final int TYPE_RES_XML = 3;
+            public static final int RES_XML_TYPE_START_ELEMENT = 0x0102;
+            public static final int RES_XML_TYPE_END_ELEMENT = 0x0103;
+            public static final int RES_XML_TYPE_RESOURCE_MAP = 0x0180;
+            static final int HEADER_MIN_SIZE_BYTES = 8;
 
         public ByteBuffer getContents() {
-            ByteBuffer result = mContents.slice();
-            result.order(mContents.order());
-            return result;
-        }
-
-        public ByteBuffer getHeader() {
-            ByteBuffer result = mHeader.slice();
-            result.order(mHeader.order());
-            return result;
-        }
-
-        public int getType() {
-            return mType;
-        }
-
-        /**
-         * Consumes the chunk located at the current position of the input and returns the chunk
-         * or {@code null} if there is no chunk left in the input.
-         *
-         * @throws XmlParserException if the chunk is malformed
-         */
-        public static Chunk get(ByteBuffer input) throws XmlParserException {
-            if (input.remaining() < HEADER_MIN_SIZE_BYTES) {
-                // Android ignores the last chunk if its header is too big to fit into the file
-                input.position(input.limit());
-                return null;
+                ByteBuffer result = mContents.slice();
+                result.order(mContents.order());
+                return result;
             }
-            int originalPosition = input.position();
-            int type = getUnsignedInt16(input);
-            int headerSize = getUnsignedInt16(input);
-            long chunkSize = getUnsignedInt32(input);
-            long chunkRemaining = chunkSize - 8;
-            if (chunkRemaining > input.remaining()) {
-                // Android ignores the last chunk if it's too big to fit into the file
-                input.position(input.limit());
-                return null;
+
+            public ByteBuffer getHeader() {
+                ByteBuffer result = mHeader.slice();
+                result.order(mHeader.order());
+                return result;
             }
-            if (headerSize < HEADER_MIN_SIZE_BYTES) {
-                throw new XmlParserException(
-                        "Malformed chunk: header too short: " + headerSize + " bytes");
-            } else if (headerSize > chunkSize) {
-                throw new XmlParserException(
-                        "Malformed chunk: header too long: " + headerSize + " bytes. Chunk size: "
-                                + chunkSize + " bytes");
+
+            public int getType() {
+                return mType;
             }
-            int contentStartPosition = originalPosition + headerSize;
-            long chunkEndPosition = originalPosition + chunkSize;
-            Chunk chunk =
-                    new Chunk(
-                            type,
-                            sliceFromTo(input, originalPosition, contentStartPosition),
-                            sliceFromTo(input, contentStartPosition, chunkEndPosition));
-            input.position((int) chunkEndPosition);
-            return chunk;
+
+            /**
+             * Consumes the chunk located at the current position of the input and returns the chunk
+             * or {@code null} if there is no chunk left in the input.
+             *
+             * @throws XmlParserException if the chunk is malformed
+             */
+            public static Chunk get(ByteBuffer input) throws XmlParserException {
+                if (input.remaining() < HEADER_MIN_SIZE_BYTES) {
+                    // Android ignores the last chunk if its header is too big to fit into the file
+                    input.position(input.limit());
+                    return null;
+                }
+                int originalPosition = input.position();
+                int type = getUnsignedInt16(input);
+                int headerSize = getUnsignedInt16(input);
+                long chunkSize = getUnsignedInt32(input);
+                long chunkRemaining = chunkSize - 8;
+                if (chunkRemaining > input.remaining()) {
+                    // Android ignores the last chunk if it's too big to fit into the file
+                    input.position(input.limit());
+                    return null;
+                }
+                if (headerSize < HEADER_MIN_SIZE_BYTES) {
+                    throw new XmlParserException(
+                            "Malformed chunk: header too short: " + headerSize + " bytes");
+                } else if (headerSize > chunkSize) {
+                    throw new XmlParserException(
+                            "Malformed chunk: header too long: " + headerSize + " bytes. Chunk size: "
+                                    + chunkSize + " bytes");
+                }
+                int contentStartPosition = originalPosition + headerSize;
+                long chunkEndPosition = originalPosition + chunkSize;
+                Chunk chunk =
+                        new Chunk(
+                                type,
+                                sliceFromTo(input, originalPosition, contentStartPosition),
+                                sliceFromTo(input, contentStartPosition, chunkEndPosition));
+                input.position((int) chunkEndPosition);
+                return chunk;
+            }
         }
-    }
 
     /**
      * String pool of a document. Strings are referenced by their {@code 0}-based index in the pool.
@@ -712,11 +684,7 @@ public class AndroidBinXmlParser {
                     || (arr[arrOffset + lengthBytes + 1] != 0)) {
                 throw new XmlParserException("UTF-16 encoded form of string not NULL terminated");
             }
-            try {
-                return new String(arr, arrOffset, lengthBytes, "UTF-16LE");
-            } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException("UTF-16LE character encoding not supported", e);
-            }
+            return new String(arr, arrOffset, lengthBytes, StandardCharsets.UTF_16LE);
         }
 
         private static String getLengthPrefixedUtf8EncodedString(ByteBuffer encoded)
@@ -750,11 +718,7 @@ public class AndroidBinXmlParser {
             if (arr[arrOffset + lengthBytes] != 0) {
                 throw new XmlParserException("UTF-8 encoded form of string not NULL terminated");
             }
-            try {
-                return new String(arr, arrOffset, lengthBytes, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException("UTF-8 character encoding not supported", e);
-            }
+            return new String(arr, arrOffset, lengthBytes, StandardCharsets.UTF_8);
         }
     }
 

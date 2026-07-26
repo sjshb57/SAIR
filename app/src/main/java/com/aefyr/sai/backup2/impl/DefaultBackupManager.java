@@ -445,33 +445,24 @@ public class DefaultBackupManager implements BackupManager, BackupStorage.Observ
         return mStorage.getBackupIcon(backup.iconUri());
     }
 
-    private static class BackupAppImpl implements BackupApp {
-
-        private final PackageMeta mPackageMeta;
-        private final boolean mIsInstalled;
-        private final BackupStatus mBackupStatus;
-
-        private BackupAppImpl(PackageMeta packageMeta, boolean isInstalled, BackupStatus backupStatus) {
-            mPackageMeta = packageMeta;
-            mIsInstalled = isInstalled;
-            mBackupStatus = backupStatus;
-        }
+    private record BackupAppImpl(PackageMeta mPackageMeta, boolean mIsInstalled,
+                                 BackupStatus mBackupStatus) implements BackupApp {
 
         @Override
-        public PackageMeta packageMeta() {
-            return mPackageMeta;
-        }
+            public PackageMeta packageMeta() {
+                return mPackageMeta;
+            }
 
-        @Override
-        public boolean isInstalled() {
-            return mIsInstalled;
-        }
+            @Override
+            public boolean isInstalled() {
+                return mIsInstalled;
+            }
 
-        @Override
-        public BackupStatus backupStatus() {
-            return mBackupStatus;
+            @Override
+            public BackupStatus backupStatus() {
+                return mBackupStatus;
+            }
         }
-    }
 
     /**
      * Observers are called on {@link #mWorkerHandler}
@@ -484,33 +475,24 @@ public class DefaultBackupManager implements BackupManager, BackupStorage.Observ
 
     }
 
-    private static class BackupAppDetailsImpl implements BackupAppDetails {
-
-        private final State mState;
-        private final BackupApp mApp;
-        private final List<Backup> mBackups;
-
-        private BackupAppDetailsImpl(State state, BackupApp app, List<Backup> backups) {
-            mState = state;
-            mApp = app;
-            mBackups = backups;
-        }
+    private record BackupAppDetailsImpl(State mState, BackupApp mApp,
+                                        List<Backup> mBackups) implements BackupAppDetails {
 
         @Override
-        public State state() {
-            return mState;
-        }
+            public State state() {
+                return mState;
+            }
 
-        @Override
-        public BackupApp app() {
-            return mApp;
-        }
+            @Override
+            public BackupApp app() {
+                return mApp;
+            }
 
-        @Override
-        public List<Backup> backups() {
-            return mBackups;
+            @Override
+            public List<Backup> backups() {
+                return mBackups;
+            }
         }
-    }
 
     private class LiveAppDetails extends LiveData<BackupAppDetails> implements Observer<List<Backup>>, AppsObserver {
 

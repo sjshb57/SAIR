@@ -91,46 +91,39 @@ public class DefaultUriMessResolver implements UriMessResolver {
         return results;
     }
 
-    private static class MultipleApkFilesApkSourceFile implements ApkSourceFile {
-
-        private final List<Uri> mUris;
-        private final UriHost mUriHost;
-
-        private MultipleApkFilesApkSourceFile(List<Uri> uris, UriHost uriHost) {
-            mUris = uris;
-            mUriHost = uriHost;
-        }
+    private record MultipleApkFilesApkSourceFile(List<Uri> mUris,
+                                                 UriHost mUriHost) implements ApkSourceFile {
 
         @Override
-        public List<Entry> listEntries() {
-            List<Entry> entries = new ArrayList<>();
-            for (Uri uri : mUris) {
-                String name = mUriHost.getFileNameFromUri(uri);
-                entries.add(new InternalEntry(uri, name, name, mUriHost.getFileSizeFromUri(uri)));
+            public List<Entry> listEntries() {
+                List<Entry> entries = new ArrayList<>();
+                for (Uri uri : mUris) {
+                    String name = mUriHost.getFileNameFromUri(uri);
+                    entries.add(new InternalEntry(uri, name, name, mUriHost.getFileSizeFromUri(uri)));
+                }
+
+                return entries;
             }
 
-            return entries;
-        }
+            @Override
+            public InputStream openEntryInputStream(Entry entry) throws Exception {
+                return mUriHost.openUriInputStream(((InternalEntry) entry).mUri);
+            }
 
-        @Override
-        public InputStream openEntryInputStream(Entry entry) throws Exception {
-            return mUriHost.openUriInputStream(((InternalEntry) entry).mUri);
-        }
+            @Override
+            public String getName() {
+                return "whatever.whatever";
+            }
 
-        @Override
-        public String getName() {
-            return "whatever.whatever";
-        }
+            private static class InternalEntry extends Entry {
 
-        private static class InternalEntry extends Entry {
+                private final Uri mUri;
 
-            private final Uri mUri;
-
-            private InternalEntry(Uri uri, String name, String localPath, long size) {
-                super(name, localPath, size);
-                mUri = uri;
+                private InternalEntry(Uri uri, String name, String localPath, long size) {
+                    super(name, localPath, size);
+                    mUri = uri;
+                }
             }
         }
-    }
 
 }

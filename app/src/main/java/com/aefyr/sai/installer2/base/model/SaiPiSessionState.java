@@ -96,9 +96,7 @@ public class SaiPiSessionState implements Comparable<SaiPiSessionState> {
     @NonNull
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(String.format("SaiPiSessionState: sessionId=%s, status=%s", sessionId(), status()));
-        return sb.toString();
+        return String.format("SaiPiSessionState: sessionId=%s, status=%s", sessionId(), status());
     }
 
     @Override
