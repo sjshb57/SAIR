@@ -140,7 +140,7 @@ public class InstallerXDialogViewModel extends ViewModel {
                         .setReadZipViaZipFileEnabled(mPrefsHelper.shouldUseZipFileApi())
                         .setSigningEnabled(mPrefsHelper.shouldSignApks());
 
-                install(apkSourceBuilder.build());
+                install(apkSourceBuilder.build(), packageNameOf(resolutionResult));
             }
         }
     }
@@ -165,13 +165,22 @@ public class InstallerXDialogViewModel extends ViewModel {
             if (result.isSuccessful())
                 apkSourceBuilder.filterApksByLocalPath(new HashSet<>(mPartsSelection.getSelectedKeys()), false);
 
-            install(apkSourceBuilder.build());
+            install(apkSourceBuilder.build(), packageNameOf(result));
         }
 
     }
 
-    private void install(ApkSource apkSource) {
-        mInstaller.enqueueSession(mInstaller.createSessionOnInstaller(mPrefsHelper.getInstaller(), new SaiPiSessionParams(apkSource)));
+    private void install(ApkSource apkSource, @Nullable String packageName) {
+        mInstaller.enqueueSession(mInstaller.createSessionOnInstaller(mPrefsHelper.getInstaller(),
+                new SaiPiSessionParams(apkSource, packageName)));
+    }
+
+    @Nullable
+    private static String packageNameOf(UriMessResolutionResult result) {
+        if (!result.isSuccessful() || result.meta() == null || result.meta().appMeta() == null)
+            return null;
+
+        return result.meta().appMeta().packageName;
     }
 
     public enum State {

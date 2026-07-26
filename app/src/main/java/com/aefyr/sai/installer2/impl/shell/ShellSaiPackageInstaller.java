@@ -158,10 +158,10 @@ public abstract class ShellSaiPackageInstaller extends BaseSaiPackageInstaller {
                 return;
             }
 
-            // install-commit 已同步确认成功,不再等 PACKAGE_ADDED 广播:
-            // Android 11+ 的包可见性过滤会让广播丢失或包名查询失败,
-            // 旧实现在那种情况下永远不会 unlockInstallation,导致后续安装全部死锁。
             String installedPackage = mBroadcastPackageName.getAndSet(null);
+            if (installedPackage == null)
+                installedPackage = params.packageName();
+
             SaiPiSessionState.Builder success = new SaiPiSessionState.Builder(sessionId, SaiPiSessionStatus.INSTALLATION_SUCCEED)
                     .appTempName(appTempName);
             if (installedPackage != null)
