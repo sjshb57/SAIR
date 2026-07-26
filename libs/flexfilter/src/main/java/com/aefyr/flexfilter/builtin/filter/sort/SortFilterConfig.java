@@ -32,7 +32,7 @@ public class SortFilterConfig implements FilterConfig {
         }
     }
 
-    public static final Creator<SortFilterConfig> CREATOR = new Creator<SortFilterConfig>() {
+    public static final Creator<SortFilterConfig> CREATOR = new Creator<>() {
         @Override
         public SortFilterConfig createFromParcel(Parcel in) {
             return new SortFilterConfig(in);
@@ -97,7 +97,7 @@ public class SortFilterConfig implements FilterConfig {
         for (SortFilterConfigOption option : mOptions) {
             clone.addOption(option.id(), option.name());
 
-            SortFilterConfigOption cloneOption = clone.options().get(clone.options().size() - 1);
+            SortFilterConfigOption cloneOption = clone.options().getLast();
             if (option.isSelected())
                 cloneOption.setSelectedInternal(true);
 

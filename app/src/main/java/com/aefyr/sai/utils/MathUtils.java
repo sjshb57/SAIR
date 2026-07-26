@@ -6,10 +6,8 @@ public class MathUtils {
         if (a < min)
             return min;
 
-        if (a > max)
-            return max;
+        return Math.min(a, max);
 
-        return a;
     }
 
     public static int closest(int x, int a, int b) {

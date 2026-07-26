@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import androidx.core.os.ConfigurationCompat;
+import androidx.annotation.NonNull;
 
 public class DeviceInfoAwarePostprocessor implements Postprocessor {
     private static final String NO_MODULE = "DeviceInfoAwarePostprocessor.NO_MODULE";
@@ -55,11 +56,7 @@ public class DeviceInfoAwarePostprocessor implements Postprocessor {
             if (module == null)
                 module = NO_MODULE;
 
-            List<MutableSplitPart> moduleParts = moduleToParts.get(module);
-            if (moduleParts == null) {
-                moduleParts = new ArrayList<>();
-                moduleToParts.put(module, moduleParts);
-            }
+            List<MutableSplitPart> moduleParts = moduleToParts.computeIfAbsent(module, k -> new ArrayList<>());
 
             moduleParts.add(part);
         }
@@ -124,7 +121,7 @@ public class DeviceInfoAwarePostprocessor implements Postprocessor {
         if (localeCategory == null)
             return;
 
-        localeCategory.setDescription(mContext.getString(R.string.installerx_category_config_locale_desc, ConfigurationCompat.getLocales(mContext.getResources().getConfiguration()).get(0).getDisplayLanguage()));
+        localeCategory.setDescription(mContext.getString(R.string.installerx_category_config_locale_desc, primaryLocale().getDisplayLanguage()));
 
         scopeToModuleAndProcess(parserContext, localeCategory.getPartsList(), this::processLocaleParts);
     }
@@ -159,19 +156,17 @@ public class DeviceInfoAwarePostprocessor implements Postprocessor {
     }
 
     private Map<String, Integer> getPreferredLanguagesRanking() {
+        HashMap<String, Integer> localeRanking = new HashMap<>();
         if (!Utils.apiIsAtLeast(Build.VERSION_CODES.N)) {
-            HashMap<String, Integer> localeRanking = new HashMap<>();
-            localeRanking.put(ConfigurationCompat.getLocales(mContext.getResources().getConfiguration()).get(0).getLanguage(), 0);
-            return localeRanking;
+            localeRanking.put(primaryLocale().getLanguage(), 0);
         } else {
-            HashMap<String, Integer> localeRanking = new HashMap<>();
             LocaleList localeList = mContext.getResources().getConfiguration().getLocales();
             for (int i = 0; i < localeList.size(); i++) {
                 localeRanking.put(localeList.get(i).getLanguage(), i);
             }
 
-            return localeRanking;
         }
+        return localeRanking;
     }
 
     private void processScreenDensityCategory(ParserContext parserContext, @Nullable MutableSplitCategory dpiCategory) {
@@ -214,4 +209,13 @@ public class DeviceInfoAwarePostprocessor implements Postprocessor {
         unknownCategory.setDescription(mContext.getString(R.string.installerx_category_unknown_desc));
     }
 
+
+    /**
+     * ConfigurationCompat.getLocales() can return an empty list, in which case get(0) is null.
+     */
+    @NonNull
+    private Locale primaryLocale() {
+        Locale locale = ConfigurationCompat.getLocales(mContext.getResources().getConfiguration()).get(0);
+        return locale != null ? locale : Locale.getDefault();
+    }
 }

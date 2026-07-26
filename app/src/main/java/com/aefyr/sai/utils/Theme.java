@@ -154,7 +154,7 @@ public class Theme {
     }
 
     private ThemeDescriptor getThemeDescriptorById(int themeId) {
-        return themeId >= mThemes.size() ? mThemes.get(0) : mThemes.get(themeId);
+        return themeId >= mThemes.size() ? mThemes.getFirst() : mThemes.get(themeId);
     }
 
     private int getThemeId(String themeTag, int defaultThemeId) {

@@ -10,6 +10,7 @@ import com.aefyr.sai.utils.IOUtils;
 import com.aefyr.sai.utils.saf.SafUtils;
 
 import java.io.InputStream;
+import java.io.Serial;
 
 public class ContentUriFileDescriptor implements FileDescriptor {
 
@@ -49,6 +50,7 @@ public class ContentUriFileDescriptor implements FileDescriptor {
     }
 
     private static class BadContentProviderException extends Exception {
+    @Serial
     private static final long serialVersionUID = 1L;
 
 

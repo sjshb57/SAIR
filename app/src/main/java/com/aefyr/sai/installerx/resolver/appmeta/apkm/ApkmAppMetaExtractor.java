@@ -45,12 +45,13 @@ public class ApkmAppMetaExtractor implements AppMetaExtractor {
                 if (entry.getLocalPath().equals(META_FILE)) {
                     JSONObject metaJson = new JSONObject(IOUtils.readStream(apkSourceFile.openEntryInputStream(entry), StandardCharsets.UTF_8));
 
-                    switch (metaJson.getInt("apkm_version")) {
-                        case 5:
+                    seenMetaFile = switch (metaJson.getInt("apkm_version")) {
+                        case 5 -> {
                             extractMetaV5(metaJson, appMeta);
-                            seenMetaFile = true;
-                            break;
-                    }
+                            yield true;
+                        }
+                        default -> seenMetaFile;
+                    };
 
                 } else if (entry.getLocalPath().equals(ICON_FILE)) {
                     File iconFile = Utils.createTempFileInCache(mContext, "ApkmAppMetaExtractor", "png");

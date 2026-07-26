@@ -46,7 +46,7 @@ public class BackupAppFeatureAdapter extends RecyclerView.Adapter<BackupAppFeatu
         return mFeatures == null ? 0 : mFeatures.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
 
         private final Chip mChip;
 

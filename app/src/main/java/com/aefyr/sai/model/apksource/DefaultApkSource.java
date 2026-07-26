@@ -23,7 +23,7 @@ public class DefaultApkSource implements ApkSource {
         if (mApkFileDescriptors.isEmpty())
             return false;
 
-        mCurrentApk = mApkFileDescriptors.remove(0);
+        mCurrentApk = mApkFileDescriptors.removeFirst();
         return true;
     }
 
@@ -51,7 +51,7 @@ public class DefaultApkSource implements ApkSource {
     @Override
     public String getAppName() {
         try {
-            return mApkFileDescriptors.size() == 1 ? mApkFileDescriptors.get(0).name() : null;
+            return mApkFileDescriptors.size() == 1 ? mApkFileDescriptors.getFirst().name() : null;
         } catch (Exception e) {
             Log.w("DefaultApkSource", "Unable to get app name", e);
             return null;

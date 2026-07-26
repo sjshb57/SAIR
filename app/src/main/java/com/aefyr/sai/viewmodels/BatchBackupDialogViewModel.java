@@ -96,7 +96,7 @@ public class BatchBackupDialogViewModel extends ViewModel {
         }
 
         if (configs.size() == 1) {
-            mBackupManager.enqueueBackup(configs.get(0));
+            mBackupManager.enqueueBackup(configs.getFirst());
         } else {
             mBackupManager.enqueueBackup(new BatchBackupTaskConfig(storageId, configs));
         }

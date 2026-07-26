@@ -106,16 +106,13 @@ public class MainActivity extends ThemedActivity implements NavigationBarView.On
 
     @Override
     public Fragment createFragment(String tag) {
-        switch (tag) {
-            case "installer":
-                return getInstallerFragment();
-            case "backup":
-                return new BackupFragment();
-            case "settings":
-                return new PreferencesFragment();
-        }
+        return switch (tag) {
+            case "installer" -> getInstallerFragment();
+            case "backup" -> new BackupFragment();
+            case "settings" -> new PreferencesFragment();
+            default -> throw new IllegalArgumentException("Unknown fragment tag: " + tag);
+        };
 
-        throw new IllegalArgumentException("Unknown fragment tag: " + tag);
     }
 
     @Override

@@ -38,41 +38,45 @@ public class SaiAppMetaExtractor implements AppMetaExtractor {
 
             for (ApkSourceFile.Entry entry : apkSourceFile.listEntries()) {
 
-                if (entry.getLocalPath().equals(SaiExportedAppMeta.META_FILE)) {
-                    if (seenMetaFile)
-                        continue;
+                switch (entry.getLocalPath()) {
+                    case SaiExportedAppMeta.META_FILE -> {
+                        if (seenMetaFile)
+                            continue;
 
-                    try {
-                        SaiExportedAppMeta meta = SaiExportedAppMeta.deserialize(IOUtils.readStream(apkSourceFile.openEntryInputStream(entry)));
-                        appMeta.packageName = meta.packageName();
-                        appMeta.appName = meta.label();
-                        appMeta.versionName = meta.versionName();
-                        appMeta.versionCode = meta.versionCode();
-                        seenMetaFile = true;
-                    } catch (Exception e) {
-                        Log.w(TAG, "Unable to extract meta", e);
+                        try {
+                            SaiExportedAppMeta meta = SaiExportedAppMeta.deserialize(IOUtils.readStream(apkSourceFile.openEntryInputStream(entry)));
+                            appMeta.packageName = meta.packageName();
+                            appMeta.appName = meta.label();
+                            appMeta.versionName = meta.versionName();
+                            appMeta.versionCode = meta.versionCode();
+                            seenMetaFile = true;
+                        } catch (Exception e) {
+                            Log.w(TAG, "Unable to extract meta", e);
+                        }
                     }
-                } else if (entry.getLocalPath().equals(SaiExportedAppMeta2.META_FILE)) {
-                    try {
-                        SaiExportedAppMeta2 meta = SaiExportedAppMeta2.deserialize(IOUtils.readStream(apkSourceFile.openEntryInputStream(entry)));
-                        appMeta.packageName = meta.packageName();
-                        appMeta.appName = meta.label();
-                        appMeta.versionName = meta.versionName();
-                        appMeta.versionCode = meta.versionCode();
-                        seenMetaFile = true;
-                    } catch (Exception e) {
-                        Log.w(TAG, "Unable to extract meta", e);
+                    case SaiExportedAppMeta2.META_FILE -> {
+                        try {
+                            SaiExportedAppMeta2 meta = SaiExportedAppMeta2.deserialize(IOUtils.readStream(apkSourceFile.openEntryInputStream(entry)));
+                            appMeta.packageName = meta.packageName();
+                            appMeta.appName = meta.label();
+                            appMeta.versionName = meta.versionName();
+                            appMeta.versionCode = meta.versionCode();
+                            seenMetaFile = true;
+                        } catch (Exception e) {
+                            Log.w(TAG, "Unable to extract meta", e);
+                        }
                     }
-                } else if (entry.getLocalPath().equals(SaiExportedAppMeta.ICON_FILE)) {
-                    File iconFile = Utils.createTempFileInCache(mContext, "SaiZipAppMetaExtractor", "png");
-                    if (iconFile == null)
-                        continue;
+                    case SaiExportedAppMeta.ICON_FILE -> {
+                        File iconFile = Utils.createTempFileInCache(mContext, "SaiZipAppMetaExtractor", "png");
+                        if (iconFile == null)
+                            continue;
 
-                    try (InputStream in = apkSourceFile.openEntryInputStream(entry); OutputStream out = new FileOutputStream(iconFile)) {
-                        IOUtils.copyStream(in, out);
-                        appMeta.iconUri = Uri.fromFile(iconFile);
-                    } catch (IOException e) {
-                        Log.w(TAG, "Unable to extract icon", e);
+                        try (InputStream in = apkSourceFile.openEntryInputStream(entry); OutputStream out = new FileOutputStream(iconFile)) {
+                            IOUtils.copyStream(in, out);
+                            appMeta.iconUri = Uri.fromFile(iconFile);
+                        } catch (IOException e) {
+                            Log.w(TAG, "Unable to extract icon", e);
+                        }
                     }
                 }
             }

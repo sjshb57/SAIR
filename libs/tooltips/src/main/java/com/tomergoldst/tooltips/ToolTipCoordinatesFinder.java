@@ -37,24 +37,17 @@ class ToolTipCoordinatesFinder {
 
         tipView.measure(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        switch (tooltip.getPosition()) {
-            case ToolTip.POSITION_ABOVE:
-                point = getPositionAbove(tipView, tooltip,
-                        anchorViewCoordinates, rootCoordinates);
-                break;
-            case ToolTip.POSITION_BELOW:
-                point = getPositionBelow(tipView, tooltip,
-                        anchorViewCoordinates, rootCoordinates);
-                break;
-            case ToolTip.POSITION_LEFT_TO:
-                point = getPositionLeftTo(tipView, tooltip,
-                        anchorViewCoordinates, rootCoordinates);
-                break;
-            case ToolTip.POSITION_RIGHT_TO:
-                point = getPositionRightTo(tipView, tooltip,
-                        anchorViewCoordinates, rootCoordinates);
-                break;
-        }
+        point = switch (tooltip.getPosition()) {
+            case ToolTip.POSITION_ABOVE -> getPositionAbove(tipView, tooltip,
+                    anchorViewCoordinates, rootCoordinates);
+            case ToolTip.POSITION_BELOW -> getPositionBelow(tipView, tooltip,
+                    anchorViewCoordinates, rootCoordinates);
+            case ToolTip.POSITION_LEFT_TO -> getPositionLeftTo(tipView, tooltip,
+                    anchorViewCoordinates, rootCoordinates);
+            case ToolTip.POSITION_RIGHT_TO -> getPositionRightTo(tipView, tooltip,
+                    anchorViewCoordinates, rootCoordinates);
+            default -> point;
+        };
 
         // add user defined offset values
         point.x += UiUtils.isRtl() ? -tooltip.getOffsetX() : tooltip.getOffsetX();
@@ -193,22 +186,14 @@ class ToolTipCoordinatesFinder {
      * @return int
      */
     private static int getXOffset(View tipView, ToolTip toolTip) {
-        int offset;
-
-        switch (toolTip.getAlign()) {
-            case ToolTip.ALIGN_CENTER:
-                offset = ((toolTip.getAnchorView().getWidth() - tipView.getMeasuredWidth()) / 2);
-                break;
-            case ToolTip.ALIGN_LEFT:
-                offset = 0;
-                break;
-            case ToolTip.ALIGN_RIGHT:
-                offset = toolTip.getAnchorView().getWidth() - tipView.getMeasuredWidth();
-                break;
-            default:
-                offset = 0;
-                break;
-        }
+        int offset = switch (toolTip.getAlign()) {
+            case ToolTip.ALIGN_CENTER ->
+                    ((toolTip.getAnchorView().getWidth() - tipView.getMeasuredWidth()) / 2);
+            case ToolTip.ALIGN_LEFT -> 0;
+            case ToolTip.ALIGN_RIGHT ->
+                    toolTip.getAnchorView().getWidth() - tipView.getMeasuredWidth();
+            default -> 0;
+        };
 
         return offset;
     }

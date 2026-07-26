@@ -3,8 +3,8 @@ package com.aefyr.sai.installerx.resolver.meta;
 public class ApkSourceMetaResolutionError {
 
 
-    String mMessage;
-    boolean mDoesTryingToInstallNonethelessMakeSense;
+    final String mMessage;
+    final boolean mDoesTryingToInstallNonethelessMakeSense;
 
     public ApkSourceMetaResolutionError(String message, boolean doesTryingToInstallNonethelessMakeSense) {
         mMessage = message;

@@ -95,9 +95,6 @@ public class InstallerXAdapterDividerItemDecoration extends RecyclerView.ItemDec
      * @param drawable Drawable that should be used as a divider.
      */
     public void setDrawable(@NonNull Drawable drawable) {
-        if (drawable == null) {
-            throw new IllegalArgumentException("Drawable cannot be null.");
-        }
         mDivider = drawable;
     }
 
@@ -110,7 +107,7 @@ public class InstallerXAdapterDividerItemDecoration extends RecyclerView.ItemDec
     }
 
     @Override
-    public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+    public void onDraw(@NonNull Canvas c, RecyclerView parent, @NonNull RecyclerView.State state) {
         if (parent.getLayoutManager() == null || mDivider == null) {
             return;
         }
@@ -173,7 +170,11 @@ public class InstallerXAdapterDividerItemDecoration extends RecyclerView.ItemDec
         final int childCount = parent.getChildCount();
         for (int i = 0; i < childCount; i++) {
             final View child = parent.getChildAt(i);
-            parent.getLayoutManager().getDecoratedBoundsWithMargins(child, mBounds);
+            RecyclerView.LayoutManager layoutManager = parent.getLayoutManager();
+            if (layoutManager == null)
+                return;
+
+            layoutManager.getDecoratedBoundsWithMargins(child, mBounds);
             final int right = mBounds.right + Math.round(child.getTranslationX());
             final int left = right - mDivider.getIntrinsicWidth();
             mDivider.setBounds(left, top, right, bottom);
@@ -183,8 +184,8 @@ public class InstallerXAdapterDividerItemDecoration extends RecyclerView.ItemDec
     }
 
     @Override
-    public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
-                               RecyclerView.State state) {
+    public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent,
+                               @NonNull RecyclerView.State state) {
         if (mDivider == null) {
             outRect.set(0, 0, 0, 0);
             return;

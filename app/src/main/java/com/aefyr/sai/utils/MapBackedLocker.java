@@ -1,6 +1,5 @@
 package com.aefyr.sai.utils;
 
-import android.annotation.TargetApi;
 import android.os.Build;
 
 import java.util.HashMap;
@@ -26,11 +25,7 @@ public abstract class MapBackedLocker<T> implements Locker<T> {
         @Override
         public Object getLockFor(T t) {
             synchronized (mLocks) {
-                Object lock = mLocks.get(t);
-                if (lock == null) {
-                    lock = new Object();
-                    mLocks.put(t, lock);
-                }
+                Object lock = mLocks.computeIfAbsent(t, k -> new Object());
 
                 return lock;
             }
@@ -44,7 +39,6 @@ public abstract class MapBackedLocker<T> implements Locker<T> {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.N)
     private static class ConcurrentHashMapLocker<T> extends MapBackedLocker<T> {
 
         private final ConcurrentHashMap<T, Object> mLocks = new ConcurrentHashMap<>();

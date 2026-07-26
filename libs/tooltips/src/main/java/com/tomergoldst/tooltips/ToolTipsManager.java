@@ -23,7 +23,6 @@ import android.graphics.Outline;
 import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.Build;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewOutlineProvider;
 import android.widget.TextView;
@@ -65,29 +64,18 @@ public class ToolTipsManager {
         mListener = listener;
     }
 
-    public View show(ToolTip toolTip) {
+    public void show(ToolTip toolTip) {
         View tipView = create(toolTip);
         if (tipView == null) {
-            return null;
+            return;
         }
 
         // animate tip visibility
         mToolTipAnimator.popup(tipView, mAnimationDuration).start();
 
-        return tipView;
     }
 
     private View create(ToolTip toolTip) {
-
-        if (toolTip.getAnchorView() == null) {
-            Log.e(TAG, "Unable to create a tip, anchor view is null");
-            return null;
-        }
-
-        if (toolTip.getRootView() == null) {
-            Log.e(TAG, "Unable to create a tip, root layout is null");
-            return null;
-        }
 
         // only one tip is allowed near an anchor view at the same time, thus
         // reuse tip if already exist
@@ -116,12 +104,7 @@ public class ToolTipsManager {
         moveTipToCorrectPosition(tipView, p);
 
         // set dismiss on click
-        tipView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dismiss(view, true);
-            }
-        });
+        tipView.setOnClickListener(view -> dismiss(view, true));
 
         // bind tipView with anchorView id
         int anchorViewId = toolTip.getAnchorView().getId();

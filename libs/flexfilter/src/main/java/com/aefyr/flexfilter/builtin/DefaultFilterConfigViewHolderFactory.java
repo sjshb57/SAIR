@@ -16,6 +16,7 @@ import com.aefyr.flexfilter.config.core.FilterConfig;
 import com.aefyr.flexfilter.ui.adapter.FilterConfigViewHolder;
 import com.aefyr.flexfilter.ui.adapter.FilterConfigViewHolderFactory;
 
+@SuppressWarnings("ALL")
 public class DefaultFilterConfigViewHolderFactory implements FilterConfigViewHolderFactory {
 
     protected final int VIEW_TYPE_SINGLE_CHOICE_FILTER = 0;
@@ -34,16 +35,17 @@ public class DefaultFilterConfigViewHolderFactory implements FilterConfigViewHol
         throw new IllegalArgumentException("Unsupported FilterConfig: " + config.getClass().getCanonicalName());
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     public FilterConfigViewHolder createViewHolder(@NonNull ViewGroup parent, int viewType) {
-        switch (viewType) {
-            case VIEW_TYPE_SINGLE_CHOICE_FILTER:
-                return new SingleChoiceFilterConfigViewHolder(getInflater(parent).inflate(R.layout.item_single_choice_filter, parent, false));
-            case VIEW_TYPE_SORT_FILTER:
-                return new SortFilterConfigViewHolder(getInflater(parent).inflate(R.layout.item_sort_filter, parent, false));
-        }
+        return switch (viewType) {
+            case VIEW_TYPE_SINGLE_CHOICE_FILTER ->
+                    new SingleChoiceFilterConfigViewHolder(getInflater(parent).inflate(R.layout.item_single_choice_filter, parent, false));
+            case VIEW_TYPE_SORT_FILTER ->
+                    new SortFilterConfigViewHolder(getInflater(parent).inflate(R.layout.item_sort_filter, parent, false));
+            default -> throw new IllegalArgumentException("Unsupported viewType: " + viewType);
+        };
 
-        throw new IllegalArgumentException("Unsupported viewType: " + viewType);
     }
 
     protected LayoutInflater getInflater(View v) {

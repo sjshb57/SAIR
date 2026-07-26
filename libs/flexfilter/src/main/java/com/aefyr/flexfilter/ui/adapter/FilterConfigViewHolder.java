@@ -58,16 +58,16 @@ public abstract class FilterConfigViewHolder<F extends FilterConfig> extends Rec
     }
 
     @Nullable
-    protected final <T> T getSharedObject(String id) {
+    protected final <T> T getSharedObject() {
         if (mSharedObjects == null)
             return null;
 
-        return (T) mSharedObjects.get(getNamespacedSharedObjectId(id));
+        return (T) mSharedObjects.get(getNamespacedSharedObjectId("pool"));
     }
 
-    protected final void putSharedObject(String id, Object object) {
+    protected final void putSharedObject(Object object) {
         if (mSharedObjects != null)
-            mSharedObjects.put(getNamespacedSharedObjectId(id), object);
+            mSharedObjects.put(getNamespacedSharedObjectId("pool"), object);
     }
 
     private String getNamespacedSharedObjectId(String id) {

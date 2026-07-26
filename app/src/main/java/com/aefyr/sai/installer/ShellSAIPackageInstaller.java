@@ -35,36 +35,35 @@ public abstract class ShellSAIPackageInstaller extends SAIPackageInstaller {
 
     private final AtomicBoolean mIsAwaitingBroadcast = new AtomicBoolean(false);
 
-    private final BroadcastReceiver mPackageInstalledBroadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.d(TAG, intent.toString());
-            if (!mIsAwaitingBroadcast.get())
-                return;
-
-            String installedPackage;
-            try {
-                installedPackage = intent.getDataString() != null ?
-                        intent.getDataString().replace("package:", "") : "";
-                String installerPackage = getInstallerPackage(getContext(), installedPackage);
-                Log.d(TAG, "installerPackage=" + installerPackage);
-                if (!context.getPackageName().equals(installerPackage))
-                    return;
-            } catch (Exception e) {
-                Log.wtf(TAG, e);
-                return;
-            }
-
-            mIsAwaitingBroadcast.set(false);
-            dispatchCurrentSessionUpdate(InstallationStatus.INSTALLATION_SUCCEED, installedPackage);
-            installationCompleted();
-        }
-    };
-
     protected ShellSAIPackageInstaller(Context c) {
         super(c);
         IntentFilter packageAddedFilter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
         packageAddedFilter.addDataScheme("package");
+        BroadcastReceiver mPackageInstalledBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.d(TAG, intent.toString());
+                if (!mIsAwaitingBroadcast.get())
+                    return;
+
+                String installedPackage;
+                try {
+                    installedPackage = intent.getDataString() != null ?
+                            intent.getDataString().replace("package:", "") : "";
+                    String installerPackage = getInstallerPackage(getContext(), installedPackage);
+                    Log.d(TAG, "installerPackage=" + installerPackage);
+                    if (!context.getPackageName().equals(installerPackage))
+                        return;
+                } catch (Exception e) {
+                    Log.wtf(TAG, e);
+                    return;
+                }
+
+                mIsAwaitingBroadcast.set(false);
+                dispatchCurrentSessionUpdate(InstallationStatus.INSTALLATION_SUCCEED, installedPackage);
+                installationCompleted();
+            }
+        };
         ContextCompat.registerReceiver(getContext(), mPackageInstalledBroadcastReceiver,
                 packageAddedFilter, ContextCompat.RECEIVER_NOT_EXPORTED);
     }
@@ -73,7 +72,7 @@ public abstract class ShellSAIPackageInstaller extends SAIPackageInstaller {
     @Override
     protected void installApkFiles(ApkSource aApkSource) {
         try (ApkSource apkSource = aApkSource) {
-            if (!getShell().isAvailable()) {
+            if (getShell().isAvailable()) {
                 dispatchCurrentSessionUpdate(InstallationStatus.INSTALLATION_FAILED,
                         getContext().getString(R.string.installer_error_shell, getInstallerName(), getShellUnavailableMessage()));
                 installationCompleted();
@@ -139,7 +138,7 @@ public abstract class ShellSAIPackageInstaller extends SAIPackageInstaller {
         String customInstallCreateCommand = DbgPreferencesHelper.getInstance(getContext()).getCustomInstallCreateCommand();
         if (customInstallCreateCommand != null) {
             ArrayList<String> args = new ArrayList<>(Arrays.asList(customInstallCreateCommand.split(" ")));
-            String command = args.remove(0);
+            String command = args.removeFirst();
             commandsToAttempt.add(new Shell.Command(command, args.toArray(new String[0])));
             Logs.d(TAG, "Using custom install-create command: " + customInstallCreateCommand);
         } else {

@@ -67,7 +67,7 @@ public class SingleChoiceFilterConfig implements FilterConfig {
         }
     }
 
-    public static final Parcelable.Creator<SingleChoiceFilterConfig> CREATOR = new Parcelable.Creator<SingleChoiceFilterConfig>() {
+    public static final Parcelable.Creator<SingleChoiceFilterConfig> CREATOR = new Parcelable.Creator<>() {
         @Override
         public SingleChoiceFilterConfig createFromParcel(Parcel in) {
             return new SingleChoiceFilterConfig(in);
@@ -97,7 +97,7 @@ public class SingleChoiceFilterConfig implements FilterConfig {
         for (SingleChoiceFilterConfigOption option : mOptions) {
             clone.addOption(option.id(), option.name());
             if (option.isSelected())
-                clone.options().get(clone.options().size() - 1).setSelectedInternal(true);
+                clone.options().getLast().setSelectedInternal(true);
         }
         return clone;
     }

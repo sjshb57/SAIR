@@ -46,11 +46,11 @@ public class SortFilterConfigViewHolder extends FilterConfigViewHolder<SortFilte
     }
 
     private RecyclerView.RecycledViewPool getViewPool() {
-        RecyclerView.RecycledViewPool pool = getSharedObject("pool");
+        RecyclerView.RecycledViewPool pool = getSharedObject();
         if (pool == null) {
             pool = new RecyclerView.RecycledViewPool();
             pool.setMaxRecycledViews(0, 16);
-            putSharedObject("pool", pool);
+            putSharedObject(pool);
         }
 
         return pool;

@@ -20,10 +20,10 @@ import android.view.View;
 
 class Coordinates {
 
-    int left;
-    int top;
-    int right;
-    int bottom;
+    final int left;
+    final int top;
+    final int right;
+    final int bottom;
 
     Coordinates(View view) {
         int[] location = new int[2];

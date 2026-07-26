@@ -45,7 +45,7 @@ public class ApksSingleBackupTaskExecutor extends SingleBackupTaskExecutor {
 
             if (getConfig().exportMode()) {
                 if (apkFiles.size() == 1) {
-                    executeWithoutPacking(apkFiles.get(0));
+                    executeWithoutPacking(apkFiles.getFirst());
                     notifySucceeded(null);
                 } else {
                     throw new IllegalArgumentException("Config has exportMode set to true, but there are multiple apk files");

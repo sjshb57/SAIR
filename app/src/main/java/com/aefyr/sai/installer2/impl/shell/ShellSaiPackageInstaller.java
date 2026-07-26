@@ -49,45 +49,44 @@ public abstract class ShellSaiPackageInstaller extends BaseSaiPackageInstaller {
     private final AtomicBoolean mAwaitingBroadcast = new AtomicBoolean(false);
     private final AtomicReference<String> mBroadcastPackageName = new AtomicReference<>();
     private final ExecutorService mExecutor = Executors.newFixedThreadPool(4);
-    private final HandlerThread mWorkerThread = new HandlerThread("RootlessSaiPi Worker");
-    private final Handler mWorkerHandler;
-
-    /**
-     * Best-effort source for the installed package name. Success is decided by the exit code of
-     * pm install-commit, never by this broadcast.
-     */
-    private final BroadcastReceiver mPackageInstalledBroadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (!mAwaitingBroadcast.get())
-                return;
-
-            String dataString = intent.getDataString();
-            if (dataString == null)
-                return;
-
-            String installedPackage = dataString.replace("package:", "");
-            try {
-                String installerPackage = getInstallerPackage(getContext(), installedPackage);
-                if (!context.getPackageName().equals(installerPackage))
-                    return;
-            } catch (Exception e) {
-                // Package visibility may hide the installer info; keep the name anyway.
-                Log.d(tag(), "Unable to verify installer package for " + installedPackage, e);
-            }
-
-            mBroadcastPackageName.set(installedPackage);
-        }
-    };
 
     protected ShellSaiPackageInstaller(Context c) {
         super(c);
 
+        HandlerThread mWorkerThread = new HandlerThread("RootlessSaiPi Worker");
         mWorkerThread.start();
-        mWorkerHandler = new Handler(mWorkerThread.getLooper());
+        Handler mWorkerHandler = new Handler(mWorkerThread.getLooper());
 
         IntentFilter packageAddedFilter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
         packageAddedFilter.addDataScheme("package");
+        /**
+         * Best-effort source for the installed package name. Success is decided by the exit code of
+         * pm install-commit, never by this broadcast.
+         */
+        // Package visibility may hide the installer info; keep the name anyway.
+        BroadcastReceiver mPackageInstalledBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (!mAwaitingBroadcast.get())
+                    return;
+
+                String dataString = intent.getDataString();
+                if (dataString == null)
+                    return;
+
+                String installedPackage = dataString.replace("package:", "");
+                try {
+                    String installerPackage = getInstallerPackage(getContext(), installedPackage);
+                    if (!context.getPackageName().equals(installerPackage))
+                        return;
+                } catch (Exception e) {
+                    // Package visibility may hide the installer info; keep the name anyway.
+                    Log.d(tag(), "Unable to verify installer package for " + installedPackage, e);
+                }
+
+                mBroadcastPackageName.set(installedPackage);
+            }
+        };
         ContextCompat.registerReceiver(getContext(), mPackageInstalledBroadcastReceiver, packageAddedFilter,
                 null, mWorkerHandler, ContextCompat.RECEIVER_NOT_EXPORTED);
     }
@@ -110,7 +109,7 @@ public abstract class ShellSaiPackageInstaller extends BaseSaiPackageInstaller {
 
         Integer androidSessionId = null;
         try (ApkSource apkSource = params.apkSource()) {
-            if (!getShell().isAvailable()) {
+            if (getShell().isAvailable()) {
                 setSessionState(sessionId, new SaiPiSessionState.Builder(sessionId, SaiPiSessionStatus.INSTALLATION_FAILED)
                         .error(getContext().getString(R.string.installer_error_shell, getInstallerName(), getShellUnavailableMessage()), null)
                         .build());
@@ -226,7 +225,7 @@ public abstract class ShellSaiPackageInstaller extends BaseSaiPackageInstaller {
         String customInstallCreateCommand = DbgPreferencesHelper.getInstance(getContext()).getCustomInstallCreateCommand();
         if (customInstallCreateCommand != null) {
             ArrayList<String> args = new ArrayList<>(Arrays.asList(customInstallCreateCommand.split(" ")));
-            String command = args.remove(0);
+            String command = args.removeFirst();
             commandsToAttempt.add(new Shell.Command(command, args.toArray(new String[0])));
             Logs.d(tag(), "Using custom install-create command: " + customInstallCreateCommand);
         } else {

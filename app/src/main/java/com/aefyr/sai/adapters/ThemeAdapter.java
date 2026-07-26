@@ -20,13 +20,11 @@ public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> 
     private List<Theme.ThemeDescriptor> mThemes;
     private DonationStatus mDonationStatus;
 
-    private final Context mContext;
     private final LayoutInflater mInflater;
 
     private OnThemeInteractionListener mListener;
 
     public ThemeAdapter(Context c) {
-        mContext = c;
         mInflater = LayoutInflater.from(c);
         setHasStableIds(true);
     }
@@ -89,7 +87,7 @@ public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> 
         private void bindTo(Theme.ThemeDescriptor theme) {
             mThemeView.setTheme(theme);
 
-            if (theme.isDonationRequired() && !mDonationStatus.unlocksThemes()) {
+            if (theme.isDonationRequired() && mDonationStatus.unlocksThemes()) {
                 mThemeView.setMessage(R.string.donate_donate_only_theme);
             } else {
                 mThemeView.setMessage(null);

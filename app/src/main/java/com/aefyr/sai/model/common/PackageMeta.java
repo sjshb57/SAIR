@@ -16,7 +16,7 @@ import androidx.core.content.pm.PackageInfoCompat;
 
 public class PackageMeta implements Parcelable {
 
-    public String packageName;
+    public final String packageName;
     public String label;
     public boolean hasSplits;
     public boolean isSystemApp;
@@ -43,7 +43,7 @@ public class PackageMeta implements Parcelable {
         updateTime = in.readLong();
     }
 
-    public static final Creator<PackageMeta> CREATOR = new Creator<PackageMeta>() {
+    public static final Creator<PackageMeta> CREATOR = new Creator<>() {
         @Override
         public PackageMeta createFromParcel(Parcel in) {
             return new PackageMeta(in);

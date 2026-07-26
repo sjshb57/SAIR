@@ -29,27 +29,6 @@ public class RootlessSAIPackageInstaller extends SAIPackageInstaller {
     @SuppressLint("StaticFieldLeak")//This is application context, lul
     private static RootlessSAIPackageInstaller sInstance;
 
-    private final BroadcastReceiver mFurtherInstallationEventsReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            long sessionId = mSessionsMap.get(intent.getIntExtra(RootlessSAIPIService.EXTRA_SESSION_ID, -1), -1);
-            if (sessionId == -1)
-                return;
-            switch (intent.getIntExtra(RootlessSAIPIService.EXTRA_INSTALLATION_STATUS, -1)) {
-                case RootlessSAIPIService.STATUS_SUCCESS:
-                    dispatchSessionUpdate(sessionId, SAIPackageInstaller.InstallationStatus.INSTALLATION_SUCCEED, intent.getStringExtra(RootlessSAIPIService.EXTRA_PACKAGE_NAME));
-                    if (getOngoingInstallation() != null && sessionId == getOngoingInstallation().getId())
-                        installationCompleted();
-                    break;
-                case RootlessSAIPIService.STATUS_FAILURE:
-                    dispatchSessionUpdate(sessionId, SAIPackageInstaller.InstallationStatus.INSTALLATION_FAILED, intent.getStringExtra(RootlessSAIPIService.EXTRA_ERROR_DESCRIPTION));
-                    if (getOngoingInstallation() != null && sessionId == getOngoingInstallation().getId())
-                        installationCompleted();
-                    break;
-            }
-        }
-    };
-
     private final PackageInstaller mPackageInstaller;
 
     /**
@@ -65,7 +44,27 @@ public class RootlessSAIPackageInstaller extends SAIPackageInstaller {
     private RootlessSAIPackageInstaller(Context c) {
         super(c);
         mPackageInstaller = getContext().getPackageManager().getPackageInstaller();
-    
+
+        BroadcastReceiver mFurtherInstallationEventsReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                long sessionId = mSessionsMap.get(intent.getIntExtra(RootlessSAIPIService.EXTRA_SESSION_ID, -1), -1);
+                if (sessionId == -1)
+                    return;
+                switch (intent.getIntExtra(RootlessSAIPIService.EXTRA_INSTALLATION_STATUS, -1)) {
+                    case RootlessSAIPIService.STATUS_SUCCESS:
+                        dispatchSessionUpdate(sessionId, InstallationStatus.INSTALLATION_SUCCEED, intent.getStringExtra(RootlessSAIPIService.EXTRA_PACKAGE_NAME));
+                        if (getOngoingInstallation() != null && sessionId == getOngoingInstallation().getId())
+                            installationCompleted();
+                        break;
+                    case RootlessSAIPIService.STATUS_FAILURE:
+                        dispatchSessionUpdate(sessionId, InstallationStatus.INSTALLATION_FAILED, intent.getStringExtra(RootlessSAIPIService.EXTRA_ERROR_DESCRIPTION));
+                        if (getOngoingInstallation() != null && sessionId == getOngoingInstallation().getId())
+                            installationCompleted();
+                        break;
+                }
+            }
+        };
         ContextCompat.registerReceiver(getContext(), mFurtherInstallationEventsReceiver,
                 new IntentFilter(RootlessSAIPIService.ACTION_INSTALLATION_STATUS_NOTIFICATION),
                 ContextCompat.RECEIVER_NOT_EXPORTED);

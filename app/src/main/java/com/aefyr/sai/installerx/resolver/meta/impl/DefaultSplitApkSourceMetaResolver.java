@@ -65,14 +65,9 @@ public class DefaultSplitApkSourceMetaResolver implements SplitApkSourceMetaReso
     public ApkSourceMetaResolutionResult resolveFor(ApkSourceFile apkSourceFile) throws Exception {
         Stopwatch sw = new Stopwatch();
 
-        try {
-            ApkSourceMetaResolutionResult result = parseViaParsingManifests(apkSourceFile);
-            Log.d(TAG, String.format("Resolved meta for %s via parsing manifests in %d ms.", apkSourceFile.getName(), sw.millisSinceStart()));
-            return result;
-        } catch (Exception e) {
-            //TODO alt parse
-            throw e;
-        }
+        ApkSourceMetaResolutionResult result = parseViaParsingManifests(apkSourceFile);
+        Log.d(TAG, String.format("Resolved meta for %s via parsing manifests in %d ms.", apkSourceFile.getName(), sw.millisSinceStart()));
+        return result;
     }
 
     private ApkSourceMetaResolutionResult parseViaParsingManifests(ApkSourceFile aApkSourceFile) throws Exception {
@@ -110,7 +105,7 @@ public class DefaultSplitApkSourceMetaResolver implements SplitApkSourceMetaReso
 
                 ByteBuffer manifestBytes = stealManifestFromApk(apkSourceFile.openEntryInputStream(entry));
                 if (manifestBytes == null)
-                    return createErrorResult(R.string.installerx_dsas_meta_resolver_error_no_manifest, true);
+                    return createErrorResult(R.string.installerx_dsas_meta_resolver_error_no_manifest);
 
                 AndroidBinXmlParser parser = new AndroidBinXmlParser(manifestBytes);
                 int eventType = parser.getEventType();
@@ -119,7 +114,7 @@ public class DefaultSplitApkSourceMetaResolver implements SplitApkSourceMetaReso
                     if (eventType == AndroidBinXmlParser.EVENT_START_ELEMENT) {
                         if (parser.getName().equals("manifest") && parser.getDepth() == 1 && parser.getNamespace().isEmpty()) {
                             if (seenManifestElement)
-                                return createErrorResult(R.string.installerx_dsas_meta_resolver_error_dup_manifest_entry, true);
+                                return createErrorResult(R.string.installerx_dsas_meta_resolver_error_dup_manifest_entry);
 
                             seenManifestElement = true;
 
@@ -139,83 +134,83 @@ public class DefaultSplitApkSourceMetaResolver implements SplitApkSourceMetaReso
                 }
 
                 if (!seenManifestElement)
-                    return createErrorResult(R.string.installerx_dsas_meta_resolver_error_no_manifest_entry, true);
+                    return createErrorResult(R.string.installerx_dsas_meta_resolver_error_no_manifest_entry);
 
                 SplitMeta splitMeta = SplitMeta.from(manifestAttrs);
                 if (packageName == null) {
                     packageName = splitMeta.packageName();
                 } else {
                     if (!packageName.equals(splitMeta.packageName()))
-                        return createErrorResult(R.string.installerx_dsas_meta_resolver_error_pkg_mismatch, true);
+                        return createErrorResult(R.string.installerx_dsas_meta_resolver_error_pkg_mismatch);
                 }
                 if (versionCode == null) {
                     versionCode = splitMeta.versionCode();
                 } else {
                     if (!versionCode.equals(splitMeta.versionCode()))
-                        return createErrorResult(R.string.installerx_dsas_meta_resolver_error_version_mismatch, true);
+                        return createErrorResult(R.string.installerx_dsas_meta_resolver_error_version_mismatch);
                 }
 
-                if (splitMeta instanceof BaseSplitMeta baseSplitMeta) {
-                    if (seenBaseApk)
-                        return createErrorResult(R.string.installerx_dsas_meta_resolver_error_multiple_base_apks, true);
+                switch (splitMeta) {
+                    case BaseSplitMeta baseSplitMeta -> {
+                        if (seenBaseApk)
+                            return createErrorResult(R.string.installerx_dsas_meta_resolver_error_multiple_base_apks);
 
-                    seenBaseApk = true;
-                    baseApkEntry = entry;
+                        seenBaseApk = true;
+                        baseApkEntry = entry;
 
-                    versionName = baseSplitMeta.versionName();
-                    parserContext.getOrCreateCategory(Category.BASE_APK, getString(R.string.installerx_category_base_apk), null)
-                            .addPart(new MutableSplitPart(splitMeta, entry.getName(), entry.getLocalPath(), baseSplitMeta.packageName(), entry.getSize(), Utils.formatSize(mContext, entry.getSize()), true, true));
+                        versionName = baseSplitMeta.versionName();
+                        parserContext.getOrCreateCategory(Category.BASE_APK, getString(R.string.installerx_category_base_apk), null)
+                                .addPart(new MutableSplitPart(splitMeta, entry.getName(), entry.getLocalPath(), baseSplitMeta.packageName(), entry.getSize(), Utils.formatSize(mContext, entry.getSize()), true, true));
 
-                    continue;
-                }
-
-                if (splitMeta instanceof FeatureSplitMeta featureSplitMeta) {
-
-                    parserContext.getOrCreateCategory(Category.FEATURE, getString(R.string.installerx_category_dynamic_features), null)
-                            .addPart(new MutableSplitPart(splitMeta, entry.getName(), entry.getLocalPath(), getString(R.string.installerx_dynamic_feature, featureSplitMeta.module()), entry.getSize(), Utils.formatSize(mContext, entry.getSize()), false, true));
-                    continue;
-                }
-
-                if (splitMeta instanceof AbiConfigSplitMeta abiConfigSplitMeta) {
-
-                    String name;
-                    if (abiConfigSplitMeta.isForModule()) {
-                        name = getString(R.string.installerx_split_config_abi_for_module, abiConfigSplitMeta.abi(), abiConfigSplitMeta.module());
-                    } else {
-                        name = getString(R.string.installerx_split_config_abi_for_base, abiConfigSplitMeta.abi());
+                        continue;
                     }
+                    case FeatureSplitMeta featureSplitMeta -> {
 
-                    parserContext.getOrCreateCategory(Category.CONFIG_ABI, getString(R.string.installerx_category_config_abi), null)
-                            .addPart(new MutableSplitPart(splitMeta, entry.getName(), entry.getLocalPath(), name, entry.getSize(), Utils.formatSize(mContext, entry.getSize()), false, false));
-                    continue;
-                }
-
-                if (splitMeta instanceof LocaleConfigSplitMeta localeConfigSplitMeta) {
-
-                    String name;
-                    if (localeConfigSplitMeta.isForModule()) {
-                        name = getString(R.string.installerx_split_config_locale_for_module, localeConfigSplitMeta.locale().getDisplayName(), localeConfigSplitMeta.module());
-                    } else {
-                        name = getString(R.string.installerx_split_config_locale_for_base, localeConfigSplitMeta.locale().getDisplayName());
+                        parserContext.getOrCreateCategory(Category.FEATURE, getString(R.string.installerx_category_dynamic_features), null)
+                                .addPart(new MutableSplitPart(splitMeta, entry.getName(), entry.getLocalPath(), getString(R.string.installerx_dynamic_feature, featureSplitMeta.module()), entry.getSize(), Utils.formatSize(mContext, entry.getSize()), false, true));
+                        continue;
                     }
+                    case AbiConfigSplitMeta abiConfigSplitMeta -> {
 
-                    parserContext.getOrCreateCategory(Category.CONFIG_LOCALE, getString(R.string.installerx_category_config_locale), null)
-                            .addPart(new MutableSplitPart(splitMeta, entry.getName(), entry.getLocalPath(), name, entry.getSize(), Utils.formatSize(mContext, entry.getSize()), false, false));
-                    continue;
-                }
+                        String name;
+                        if (abiConfigSplitMeta.isForModule()) {
+                            name = getString(R.string.installerx_split_config_abi_for_module, abiConfigSplitMeta.abi(), abiConfigSplitMeta.module());
+                        } else {
+                            name = getString(R.string.installerx_split_config_abi_for_base, abiConfigSplitMeta.abi());
+                        }
 
-                if (splitMeta instanceof ScreenDestinyConfigSplitMeta screenDestinyConfigSplitMeta) {
-
-                    String name;
-                    if (screenDestinyConfigSplitMeta.isForModule()) {
-                        name = getString(R.string.installerx_split_config_dpi_for_module, screenDestinyConfigSplitMeta.densityName(), screenDestinyConfigSplitMeta.density(), screenDestinyConfigSplitMeta.module());
-                    } else {
-                        name = getString(R.string.installerx_split_config_dpi_for_base, screenDestinyConfigSplitMeta.densityName(), screenDestinyConfigSplitMeta.density());
+                        parserContext.getOrCreateCategory(Category.CONFIG_ABI, getString(R.string.installerx_category_config_abi), null)
+                                .addPart(new MutableSplitPart(splitMeta, entry.getName(), entry.getLocalPath(), name, entry.getSize(), Utils.formatSize(mContext, entry.getSize()), false, false));
+                        continue;
                     }
+                    case LocaleConfigSplitMeta localeConfigSplitMeta -> {
 
-                    parserContext.getOrCreateCategory(Category.CONFIG_DENSITY, getString(R.string.installerx_category_config_dpi), null)
-                            .addPart(new MutableSplitPart(splitMeta, entry.getName(), entry.getLocalPath(), name, entry.getSize(), Utils.formatSize(mContext, entry.getSize()), false, false));
-                    continue;
+                        String name;
+                        if (localeConfigSplitMeta.isForModule()) {
+                            name = getString(R.string.installerx_split_config_locale_for_module, localeConfigSplitMeta.locale().getDisplayName(), localeConfigSplitMeta.module());
+                        } else {
+                            name = getString(R.string.installerx_split_config_locale_for_base, localeConfigSplitMeta.locale().getDisplayName());
+                        }
+
+                        parserContext.getOrCreateCategory(Category.CONFIG_LOCALE, getString(R.string.installerx_category_config_locale), null)
+                                .addPart(new MutableSplitPart(splitMeta, entry.getName(), entry.getLocalPath(), name, entry.getSize(), Utils.formatSize(mContext, entry.getSize()), false, false));
+                        continue;
+                    }
+                    case ScreenDestinyConfigSplitMeta screenDestinyConfigSplitMeta -> {
+
+                        String name;
+                        if (screenDestinyConfigSplitMeta.isForModule()) {
+                            name = getString(R.string.installerx_split_config_dpi_for_module, screenDestinyConfigSplitMeta.densityName(), screenDestinyConfigSplitMeta.density(), screenDestinyConfigSplitMeta.module());
+                        } else {
+                            name = getString(R.string.installerx_split_config_dpi_for_base, screenDestinyConfigSplitMeta.densityName(), screenDestinyConfigSplitMeta.density());
+                        }
+
+                        parserContext.getOrCreateCategory(Category.CONFIG_DENSITY, getString(R.string.installerx_category_config_dpi), null)
+                                .addPart(new MutableSplitPart(splitMeta, entry.getName(), entry.getLocalPath(), name, entry.getSize(), Utils.formatSize(mContext, entry.getSize()), false, false));
+                        continue;
+                    }
+                    default -> {
+                    }
                 }
 
                 parserContext.getOrCreateCategory(Category.UNKNOWN, getString(R.string.installerx_category_unknown), null)
@@ -224,10 +219,10 @@ public class DefaultSplitApkSourceMetaResolver implements SplitApkSourceMetaReso
             }
 
             if (!seenApk)
-                return createErrorResult(R.string.installerx_dsas_meta_resolver_error_no_apks, true);
+                return createErrorResult(R.string.installerx_dsas_meta_resolver_error_no_apks);
 
             if (!seenBaseApk)
-                return createErrorResult(R.string.installerx_dsas_meta_resolver_error_no_base_apk, true);
+                return createErrorResult(R.string.installerx_dsas_meta_resolver_error_no_base_apk);
 
 
             AppMeta appMeta = mAppMetaExtractor.extract(apkSourceFile, baseApkEntry);
@@ -249,8 +244,8 @@ public class DefaultSplitApkSourceMetaResolver implements SplitApkSourceMetaReso
         }
     }
 
-    private ApkSourceMetaResolutionResult createErrorResult(@StringRes int message, boolean shouldTryToInstallAnyway) {
-        return ApkSourceMetaResolutionResult.failure(new ApkSourceMetaResolutionError(getString(message), shouldTryToInstallAnyway));
+    private ApkSourceMetaResolutionResult createErrorResult(@StringRes int message) {
+        return ApkSourceMetaResolutionResult.failure(new ApkSourceMetaResolutionError(getString(message), true));
     }
 
     private String getString(@StringRes int id) {

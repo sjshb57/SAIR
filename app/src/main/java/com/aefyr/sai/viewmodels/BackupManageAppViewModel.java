@@ -13,18 +13,14 @@ import com.aefyr.sai.backup2.impl.DefaultBackupManager;
 
 public class BackupManageAppViewModel extends ViewModel {
 
-    private final Context mContext;
     private final String mPackage;
-
-    private final BackupManager mBackupManager;
 
     private final LiveData<BackupAppDetails> mDetailsLiveData;
 
     public BackupManageAppViewModel(Context appContext, String pkg) {
-        mContext = appContext;
         mPackage = pkg;
 
-        mBackupManager = DefaultBackupManager.getInstance(mContext);
+        BackupManager mBackupManager = DefaultBackupManager.getInstance(appContext);
 
         mDetailsLiveData = mBackupManager.getAppDetails(pkg);
     }
@@ -43,8 +39,8 @@ public class BackupManageAppViewModel extends ViewModel {
         if (details == null)
             return null;
 
-        if (details.backups().size() > 0)
-            return details.backups().get(0);
+        if (!details.backups().isEmpty())
+            return details.backups().getFirst();
 
         return null;
     }

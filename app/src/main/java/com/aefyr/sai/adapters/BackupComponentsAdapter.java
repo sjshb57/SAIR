@@ -89,12 +89,13 @@ public class BackupComponentsAdapter extends RecyclerView.Adapter<BackupComponen
 
         @Override
         public String render(BackupComponent component) {
-            switch (component.type()) {
-                case StandardComponentTypes.TYPE_APK_FILES:
-                    return formatWithSize(R.string.backup_component_apk_files, component.size());
-            }
+            return switch (component.type()) {
+                case StandardComponentTypes.TYPE_APK_FILES ->
+                        formatWithSize(R.string.backup_component_apk_files, component.size());
+                default ->
+                        formatWithSize(mContext.getString(R.string.backup_component_unknown, component.type()), component.size());
+            };
 
-            return formatWithSize(mContext.getString(R.string.backup_component_unknown, component.type()), component.size());
         }
 
         private String formatWithSize(@StringRes int stringId, long size) {

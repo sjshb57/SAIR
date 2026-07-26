@@ -38,14 +38,10 @@ public class RootlessSaiPackageInstaller extends BaseSaiPackageInstaller impleme
 
     private final PackageInstaller mPackageInstaller;
     private final ExecutorService mExecutor = Executors.newFixedThreadPool(4);
-    private final HandlerThread mWorkerThread = new HandlerThread("RootlessSaiPi Worker");
-    private final Handler mWorkerHandler;
 
     private final ConcurrentHashMap<Integer, String> mAndroidPiSessionIdToSaiPiSessionId = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, String> mSessionIdToAppTempName = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, Long> mSessionIdToCommitStartedAt = new ConcurrentHashMap<>();
-
-    private final RootlessSaiPiBroadcastReceiver mBroadcastReceiver;
 
     public static RootlessSaiPackageInstaller getInstance(Context c) {
         synchronized (RootlessSaiPackageInstaller.class) {
@@ -57,10 +53,11 @@ public class RootlessSaiPackageInstaller extends BaseSaiPackageInstaller impleme
         super(c);
         mPackageInstaller = getContext().getPackageManager().getPackageInstaller();
 
+        HandlerThread mWorkerThread = new HandlerThread("RootlessSaiPi Worker");
         mWorkerThread.start();
-        mWorkerHandler = new Handler(mWorkerThread.getLooper());
+        Handler mWorkerHandler = new Handler(mWorkerThread.getLooper());
 
-        mBroadcastReceiver = new RootlessSaiPiBroadcastReceiver(getContext());
+        RootlessSaiPiBroadcastReceiver mBroadcastReceiver = new RootlessSaiPiBroadcastReceiver(getContext());
         mBroadcastReceiver.addEventObserver(this);
 
         ContextCompat.registerReceiver(getContext(), mBroadcastReceiver,
@@ -141,7 +138,7 @@ public class RootlessSaiPackageInstaller extends BaseSaiPackageInstaller impleme
         if (sessionId == null)
             return;
 
-        logSystemPhaseDuration(sessionId, "succeeded");
+        logSystemPhaseDuration(sessionId);
         setSessionState(sessionId, new SaiPiSessionState.Builder(sessionId, SaiPiSessionStatus.INSTALLATION_SUCCEED).packageName(packageName).resolvePackageMeta(getContext()).build());
     }
 
@@ -158,11 +155,11 @@ public class RootlessSaiPackageInstaller extends BaseSaiPackageInstaller impleme
 
     }
 
-    private void logSystemPhaseDuration(String sessionId, String outcome) {
+    private void logSystemPhaseDuration(String sessionId) {
         Long commitStartedAt = mSessionIdToCommitStartedAt.remove(sessionId);
         if (commitStartedAt != null) {
             Log.i(TAG, String.format(Locale.US, "System-side install phase took %d ms (%s)",
-                    SystemClock.elapsedRealtime() - commitStartedAt, outcome));
+                    SystemClock.elapsedRealtime() - commitStartedAt, "succeeded"));
         }
     }
 

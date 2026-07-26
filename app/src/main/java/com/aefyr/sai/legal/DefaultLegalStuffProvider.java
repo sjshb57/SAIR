@@ -6,14 +6,12 @@ public class DefaultLegalStuffProvider implements LegalStuffProvider {
 
     private static DefaultLegalStuffProvider sInstance;
 
-    private final Context mContext;
-
     public static synchronized DefaultLegalStuffProvider getInstance(Context context) {
         return sInstance != null ? sInstance : new DefaultLegalStuffProvider(context);
     }
 
     private DefaultLegalStuffProvider(Context context) {
-        mContext = context.getApplicationContext();
+        Context mContext = context.getApplicationContext();
 
         sInstance = this;
     }

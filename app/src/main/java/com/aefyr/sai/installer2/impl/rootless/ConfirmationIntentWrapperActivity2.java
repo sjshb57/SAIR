@@ -43,7 +43,7 @@ public class ConfirmationIntentWrapperActivity2 extends AppCompatActivity {
                 mConfirmationLauncher.launch(mConfirmationIntent);
             } catch (Exception e) {
                 Logs.logException(e);
-                sendErrorBroadcast(mSessionId, RootlessSaiPiBroadcastReceiver.STATUS_BAD_ROM);
+                sendErrorBroadcast(mSessionId);
                 finish();
             }
         }
@@ -67,11 +67,11 @@ public class ConfirmationIntentWrapperActivity2 extends AppCompatActivity {
         c.startActivity(intent);
     }
 
-    private void sendErrorBroadcast(int sessionID, int status) {
+    private void sendErrorBroadcast(int sessionID) {
         Intent statusIntent = new Intent(RootlessSaiPiBroadcastReceiver.ACTION_DELIVER_PI_EVENT);
         // The receiver is registered as not-exported, so the broadcast has to be explicit.
         statusIntent.setPackage(getPackageName());
-        statusIntent.putExtra(PackageInstaller.EXTRA_STATUS, status);
+        statusIntent.putExtra(PackageInstaller.EXTRA_STATUS, RootlessSaiPiBroadcastReceiver.STATUS_BAD_ROM);
         statusIntent.putExtra(PackageInstaller.EXTRA_SESSION_ID, sessionID);
 
         sendBroadcast(statusIntent);

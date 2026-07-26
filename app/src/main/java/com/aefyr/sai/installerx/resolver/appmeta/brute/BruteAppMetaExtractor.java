@@ -201,11 +201,7 @@ public class BruteAppMetaExtractor implements AppMetaExtractor {
 
     private Object getLockForHash(String hash) {
         synchronized (mHashLocks) {
-            Object lock = mHashLocks.get(hash);
-            if (lock == null) {
-                lock = new Object();
-                mHashLocks.put(hash, lock);
-            }
+            Object lock = mHashLocks.computeIfAbsent(hash, k -> new Object());
 
             return lock;
         }

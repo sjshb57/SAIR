@@ -54,7 +54,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Fil
     private Preference mFilePickerSortPref;
     private Preference mInstallerPref;
     private Preference mThemePref;
-    private SwitchPreference mAutoThemeSwitch;
     private Preference mAutoThemePicker;
     private FilePickerDialogFragment mPendingFilePicker;
 
@@ -179,7 +178,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Fil
             }
         }
 
-        mAutoThemeSwitch = findPreference(PreferencesKeys.AUTO_THEME);
+        SwitchPreference mAutoThemeSwitch = findPreference(PreferencesKeys.AUTO_THEME);
         mAutoThemePicker = findPreference(PreferencesKeys.AUTO_THEME_PICKER);
         if (mAutoThemeSwitch != null && mAutoThemePicker != null) {
             updateAutoThemePickerSummary();
@@ -285,7 +284,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Fil
     @Override
     public void onFilesSelected(String tag, List<File> files) {
         if ("home".equals(tag) && !files.isEmpty()) {
-            mHelper.setHomeDirectory(files.get(0).getAbsolutePath());
+            mHelper.setHomeDirectory(files.getFirst().getAbsolutePath());
             updateHomeDirPrefSummary();
         }
     }

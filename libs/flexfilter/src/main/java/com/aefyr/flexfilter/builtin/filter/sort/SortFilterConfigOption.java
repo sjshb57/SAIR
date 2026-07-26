@@ -71,7 +71,7 @@ public class SortFilterConfigOption implements Parcelable {
         return 0;
     }
 
-    public static final Creator<SortFilterConfigOption> CREATOR = new Creator<SortFilterConfigOption>() {
+    public static final Creator<SortFilterConfigOption> CREATOR = new Creator<>() {
         @Override
         public SortFilterConfigOption createFromParcel(Parcel in) {
             return new SortFilterConfigOption(in);

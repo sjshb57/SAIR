@@ -81,9 +81,7 @@ public class NameFormatBuilderDialogFragment extends BaseBottomSheetDialogFragme
         TextView preview = view.findViewById(R.id.tv_name_builder_sample);
 
         mViewModel.getSelection().asLiveData().observe(this, (selection) -> getPositiveButton().setEnabled(selection.hasSelection()));
-        mViewModel.getFormat().observe(this, (format) -> {
-            preview.setText(format.getParts().isEmpty() ? getString(R.string.name_format_builder_preview_empty) : getString(R.string.name_format_builder_preview, BackupNameFormat.format(format.build(), mViewModel.getOwnMeta())));
-        });
+        mViewModel.getFormat().observe(this, (format) -> preview.setText(format.getParts().isEmpty() ? getString(R.string.name_format_builder_preview_empty) : getString(R.string.name_format_builder_preview, BackupNameFormat.format(format.build(), mViewModel.getOwnMeta()))));
     }
 
     private void deliverFormatAndDismiss(String format) {

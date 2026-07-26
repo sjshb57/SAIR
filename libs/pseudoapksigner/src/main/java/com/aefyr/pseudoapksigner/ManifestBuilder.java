@@ -53,8 +53,8 @@ class ManifestBuilder {
             mAttributes.put(attribute, value);
         }
 
-        String getAttribute(String attribute) {
-            return mAttributes.get(attribute);
+        String getAttribute() {
+            return mAttributes.get("Name");
         }
 
         @NonNull

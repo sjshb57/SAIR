@@ -50,7 +50,7 @@ public class AndroidUriHost implements UriHost {
             return new ProcSelfFdUriAsFile(uri);
         } catch (Exception e) {
             Logs.logException(new IOException("Failed to access file descriptor"));
-            return new CopyFileUriAsFile(uri, MAX_FILE_LENGTH_FOR_COPY);
+            return new CopyFileUriAsFile(uri);
         }
     }
 
@@ -85,8 +85,8 @@ public class AndroidUriHost implements UriHost {
 
         private final File mTempFile;
 
-        private CopyFileUriAsFile(Uri uri, long maxFileLength) throws Exception {
-            if (SafUtils.getFileLengthFromContentUri(mContext, uri) > maxFileLength) {
+        private CopyFileUriAsFile(Uri uri) throws Exception {
+            if (SafUtils.getFileLengthFromContentUri(mContext, uri) > AndroidUriHost.MAX_FILE_LENGTH_FOR_COPY) {
                 throw new IOException(mContext.getString(R.string.installerx_android_uri_host_file_too_big));
             }
 

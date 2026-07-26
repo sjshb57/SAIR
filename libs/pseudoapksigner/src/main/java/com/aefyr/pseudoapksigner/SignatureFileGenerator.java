@@ -18,7 +18,7 @@ class SignatureFileGenerator {
 
         for (ManifestBuilder.ManifestEntry manifestEntry : mManifest.getEntries()) {
             ManifestBuilder.ManifestEntry sfEntry = new ManifestBuilder.ManifestEntry();
-            sfEntry.setAttribute("Name", manifestEntry.getAttribute("Name"));
+            sfEntry.setAttribute("Name", manifestEntry.getAttribute());
             sfEntry.setAttribute(mHashingAlgorithm + "-Digest", Utils.base64Encode(Utils.hash(manifestEntry.toString().getBytes(StandardCharsets.UTF_8), mHashingAlgorithm)));
             stringBuilder.append(sfEntry);
         }

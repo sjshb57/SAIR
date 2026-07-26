@@ -54,8 +54,6 @@ public class DeleteBackupConfirmationDialog extends DialogFragment {
         return new AlertDialog.Builder(requireContext())
                 .setMessage(getString(R.string.backup_delete_backup_prompt, mBackupTimeSdf.format(new Date(mTimestamp))))
                 .setNegativeButton(R.string.cancel, null)
-                .setPositiveButton(R.string.ok, (dialog, which) -> {
-                    DefaultBackupManager.getInstance(requireContext()).deleteBackup(mBackupUri, null, null);
-                }).create();
+                .setPositiveButton(R.string.ok, (dialog, which) -> DefaultBackupManager.getInstance(requireContext()).deleteBackup(mBackupUri, null, null)).create();
     }
 }

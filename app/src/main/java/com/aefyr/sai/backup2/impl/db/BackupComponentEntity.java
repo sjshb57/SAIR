@@ -21,11 +21,9 @@ import com.aefyr.sai.backup2.BackupComponent;
 )
 public class BackupComponentEntity implements BackupComponent {
 
-    @NonNull
     @ColumnInfo(name = "backup_uri")
     String backupUri;
 
-    @NonNull
     @ColumnInfo(name = "type")
     String type;
 

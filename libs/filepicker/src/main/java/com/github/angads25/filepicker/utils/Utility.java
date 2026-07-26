@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * <p>
@@ -96,7 +97,7 @@ public class Utility {
                         internalList.add(item);
                     }
                 }
-                Collections.sort(internalList, sorter);
+                internalList.sort(sorter);
             }
         } catch (NullPointerException e) {
             Log.e(TAG, "Error while preparing file list entries", e);
@@ -185,7 +186,7 @@ public class Utility {
     });
 
     public static String formatSize(Context c, long bytes) {
-        DecimalFormat sizeFormat = sSizeDecimalFormat.get();
+        DecimalFormat sizeFormat = Objects.requireNonNull(sSizeDecimalFormat.get());
 
         String[] units = c.getResources().getStringArray(R.array.size_units);
 

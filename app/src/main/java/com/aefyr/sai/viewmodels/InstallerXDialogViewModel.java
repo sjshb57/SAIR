@@ -116,7 +116,7 @@ public class InstallerXDialogViewModel extends ViewModel {
             return;
 
         if (mResolutionResults.size() == 1) {
-            enqueueSingleFiltered(mResolutionResults.get(0));
+            enqueueSingleFiltered(mResolutionResults.getFirst());
             return;
         }
 
@@ -128,7 +128,7 @@ public class InstallerXDialogViewModel extends ViewModel {
 
             if (resolutionResult.sourceType().equals(SourceType.ZIP)) {
                 apkSourceBuilder = new ApkSourceBuilder(mContext)
-                        .fromZipContentUri(resolutionResult.uris().get(0));
+                        .fromZipContentUri(resolutionResult.uris().getFirst());
 
             } else if (resolutionResult.sourceType().equals(SourceType.APK_FILES)) {
                 apkSourceBuilder = new ApkSourceBuilder(mContext)
@@ -150,7 +150,7 @@ public class InstallerXDialogViewModel extends ViewModel {
 
         if (result.sourceType() == SourceType.ZIP) {
             apkSourceBuilder = new ApkSourceBuilder(mContext)
-                    .fromZipContentUri(result.uris().get(0));
+                    .fromZipContentUri(result.uris().getFirst());
 
         } else if (result.sourceType() == SourceType.APK_FILES) {
             apkSourceBuilder = new ApkSourceBuilder(mContext)
@@ -179,8 +179,8 @@ public class InstallerXDialogViewModel extends ViewModel {
     }
 
     private static class LoadMetaTaskInput {
-        List<File> apkSourceFiles;
-        List<Uri> apkSourceContentUris;
+        final List<File> apkSourceFiles;
+        final List<Uri> apkSourceContentUris;
 
         private LoadMetaTaskInput(@Nullable List<File> apkSourceFiles, @Nullable List<Uri> apkSourceContentUris) {
             this.apkSourceFiles = apkSourceFiles;
@@ -189,9 +189,9 @@ public class InstallerXDialogViewModel extends ViewModel {
     }
 
     private static class LoadMetaTaskResult {
-        SplitApkSourceMeta meta;
-        Set<String> splitsToSelect;
-        List<UriMessResolutionResult> resolutionResults;
+        final SplitApkSourceMeta meta;
+        final Set<String> splitsToSelect;
+        final List<UriMessResolutionResult> resolutionResults;
 
         private LoadMetaTaskResult(@Nullable SplitApkSourceMeta meta, @Nullable Set<String> splitsToSelect, @NonNull List<UriMessResolutionResult> resolutionResults) {
             this.meta = meta;
@@ -224,7 +224,7 @@ public class InstallerXDialogViewModel extends ViewModel {
                 return new LoadMetaTaskResult(null, null, resolutionResults);
             }
 
-            UriMessResolutionResult resolutionResult = resolutionResults.get(0);
+            UriMessResolutionResult resolutionResult = resolutionResults.getFirst();
             if (resolutionResult.isSuccessful()) {
                 SplitApkSourceMeta meta = resolutionResult.meta();
                 HashSet<String> splitsToSelect = new HashSet<>();
@@ -262,7 +262,7 @@ public class InstallerXDialogViewModel extends ViewModel {
                 mWarning = new Warning(mContext.getString(R.string.installerx_dialog_warn_no_files), false);
                 mState.setValue(State.WARNING);
             } else if (mResolutionResults.size() == 1) {
-                UriMessResolutionResult uriMessResolutionResult = mResolutionResults.get(0);
+                UriMessResolutionResult uriMessResolutionResult = mResolutionResults.getFirst();
                 if (uriMessResolutionResult.isSuccessful()) {
                     mState.setValue(State.LOADED);
                     mMeta.setValue(result.meta);
@@ -294,8 +294,8 @@ public class InstallerXDialogViewModel extends ViewModel {
     }
 
     public static class Warning {
-        String mMessage;
-        boolean mCanInstallAnyway;
+        final String mMessage;
+        final boolean mCanInstallAnyway;
 
         private Warning(String message, boolean canInstallAnyway) {
             mMessage = message;

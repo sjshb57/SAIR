@@ -48,7 +48,7 @@ public class SingleChoiceFilterConfigOption implements Parcelable {
         mName = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(in);
     }
 
-    public static final Creator<SingleChoiceFilterConfigOption> CREATOR = new Creator<SingleChoiceFilterConfigOption>() {
+    public static final Creator<SingleChoiceFilterConfigOption> CREATOR = new Creator<>() {
         @Override
         public SingleChoiceFilterConfigOption createFromParcel(Parcel in) {
             return new SingleChoiceFilterConfigOption(in);

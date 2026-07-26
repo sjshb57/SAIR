@@ -10,6 +10,7 @@ import com.aefyr.sai.utils.TextUtils;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public abstract class SplitMeta {
     protected static final String ANDROID_XML_NAMESPACE = "http://schemas.android.com/apk/res/android";
@@ -48,7 +49,7 @@ public abstract class SplitMeta {
         }
 
         if (manifestAttrs.containsKey("configForSplit")
-                || (manifestAttrs.get("split") != null && manifestAttrs.get("split").startsWith("config."))) {
+                || (manifestAttrs.get("split") != null && Objects.requireNonNull(manifestAttrs.get("split")).startsWith("config."))) {
             String splitName = TextUtils.requireNonEmpty(manifestAttrs.get("split"));
 
             if (AbiConfigSplitMeta.isAbiSplit(splitName))

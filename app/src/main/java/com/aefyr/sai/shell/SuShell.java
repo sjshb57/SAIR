@@ -38,7 +38,7 @@ public class SuShell implements Shell {
 
     @Override
     public boolean isAvailable() {
-        return requestRoot();
+        return !requestRoot();
     }
 
     @Override

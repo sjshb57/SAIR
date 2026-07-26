@@ -210,7 +210,7 @@ public class SingleChoiceListDialogFragment extends BaseBottomSheetDialogFragmen
             checkedItem = in.readInt();
         }
 
-        public static final Creator<DialogParams> CREATOR = new Creator<DialogParams>() {
+        public static final Creator<DialogParams> CREATOR = new Creator<>() {
             @Override
             public DialogParams createFromParcel(Parcel in) {
                 return new DialogParams(in);

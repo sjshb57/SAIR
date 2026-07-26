@@ -80,13 +80,17 @@ public class BaseBottomSheetDialogFragment extends BottomSheetDialogFragment {
     }
 
     public void setTitle(CharSequence title) {
-        ((TextView) mDialog.findViewById(R.id.tv_bottom_sheet_dialog_base_title)).setText(title);
+        TextView titleView = mDialog.findViewById(R.id.tv_bottom_sheet_dialog_base_title);
+        if (titleView != null)
+            titleView.setText(title);
     }
 
-    @SuppressWarnings("rawtypes")
     protected void revealBottomSheet() {
         FrameLayout bottomSheet = mDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
-        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        if (bottomSheet == null)
+            return;
+
+        BottomSheetBehavior<FrameLayout> bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 

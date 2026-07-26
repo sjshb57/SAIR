@@ -27,18 +27,15 @@ public class LocalBackupStorage extends ApksBackupStorage implements LocalBackup
 
     private final Context mContext;
 
-    private final HandlerThread mWorkerHandlerThread;
-    private final Handler mWorkerHandler;
-
     LocalBackupStorage(LocalBackupStorageProvider provider, Context context) {
         super();
 
         mProvider = provider;
         mContext = context.getApplicationContext();
 
-        mWorkerHandlerThread = new HandlerThread("LocalBackupStorage.Worker");
+        HandlerThread mWorkerHandlerThread = new HandlerThread("LocalBackupStorage.Worker");
         mWorkerHandlerThread.start();
-        mWorkerHandler = new Handler(mWorkerHandlerThread.getLooper());
+        Handler mWorkerHandler = new Handler(mWorkerHandlerThread.getLooper());
 
         mProvider.addOnConfigChangeListener(this, mWorkerHandler);
     }

@@ -22,6 +22,7 @@ import com.github.angads25.filepicker.model.DialogProperties;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * <p>
@@ -36,11 +37,7 @@ public class ExtensionFilter implements FileFilter {
     private final DialogProperties properties;
 
     public ExtensionFilter(DialogProperties properties) {
-        if (properties.extensions != null) {
-            this.validExtensions = properties.extensions;
-        } else {
-            this.validExtensions = new String[]{""};
-        }
+        this.validExtensions = Objects.requireNonNullElseGet(properties.extensions, () -> new String[]{""});
         this.properties = properties;
     }
 

@@ -53,7 +53,7 @@ public class SafUtils {
      **/
     public static boolean isTreeUri(Uri uri) {
         final List<String> paths = uri.getPathSegments();
-        return (paths.size() >= 2 && PATH_TREE.equals(paths.get(0)));
+        return (paths.size() >= 2 && PATH_TREE.equals(paths.getFirst()));
     }
 
     @Nullable
@@ -105,7 +105,6 @@ public class SafUtils {
      * @param contentUri
      * @return file length or 0 if it's unknown
      */
-    @Nullable
     public static long getFileLengthFromContentUri(Context context, Uri contentUri) {
         DocumentFile documentFile = docFileFromSingleUriOrFileUri(context, contentUri);
 

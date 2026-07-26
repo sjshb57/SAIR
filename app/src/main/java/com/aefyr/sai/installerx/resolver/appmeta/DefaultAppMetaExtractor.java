@@ -47,15 +47,11 @@ public class DefaultAppMetaExtractor implements AppMetaExtractor {
         if (archiveExtension == null)
             return null;
 
-        switch (archiveExtension.toLowerCase(Locale.ROOT)) {
-            case "xapk":
-                return new XapkAppMetaExtractor(mContext);
-            case "apks":
-                return new SaiAppMetaExtractor(mContext);
-            case "apkm":
-                return new ApkmAppMetaExtractor(mContext);
-            default:
-                return null;
-        }
+        return switch (archiveExtension.toLowerCase(Locale.ROOT)) {
+            case "xapk" -> new XapkAppMetaExtractor(mContext);
+            case "apks" -> new SaiAppMetaExtractor(mContext);
+            case "apkm" -> new ApkmAppMetaExtractor(mContext);
+            default -> null;
+        };
     }
 }

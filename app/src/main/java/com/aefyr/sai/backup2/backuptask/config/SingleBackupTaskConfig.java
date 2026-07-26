@@ -13,7 +13,7 @@ import androidx.core.os.ParcelCompat;
 
 public class SingleBackupTaskConfig implements Parcelable, BackupTaskConfig {
 
-    public static final Parcelable.Creator<SingleBackupTaskConfig> CREATOR = new Parcelable.Creator<SingleBackupTaskConfig>() {
+    public static final Parcelable.Creator<SingleBackupTaskConfig> CREATOR = new Parcelable.Creator<>() {
         @Override
         public SingleBackupTaskConfig createFromParcel(Parcel in) {
             return new SingleBackupTaskConfig(in);

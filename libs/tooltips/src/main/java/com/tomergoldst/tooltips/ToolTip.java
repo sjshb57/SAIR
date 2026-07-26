@@ -178,20 +178,12 @@ public class ToolTip {
         return mTypeface;
     }
 
-    @NonNull
     public int getTextGravity(){
-        int gravity;
-        switch (mTextGravity){
-            case GRAVITY_LEFT:
-                gravity = android.view.Gravity.START;
-                break;
-            case GRAVITY_RIGHT:
-                gravity = android.view.Gravity.END;
-                break;
-            case GRAVITY_CENTER:
-            default:
-                gravity = android.view.Gravity.CENTER;
-        }
+        int gravity = switch (mTextGravity) {
+            case GRAVITY_LEFT -> android.view.Gravity.START;
+            case GRAVITY_RIGHT -> android.view.Gravity.END;
+            default -> android.view.Gravity.CENTER;
+        };
         return gravity;
     }
 

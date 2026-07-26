@@ -391,7 +391,7 @@ public class BackupService2 extends Service implements BackupStorage.BackupProgr
     }
 
     private void appendWithNewLine(StringBuilder sb, CharSequence text) {
-        if (sb.length() > 0)
+        if (!sb.isEmpty())
             sb.append("\n");
 
         sb.append(text);
@@ -416,12 +416,12 @@ public class BackupService2 extends Service implements BackupStorage.BackupProgr
     }
 
     private static class BackupTaskInfo {
-        String storageId;
-        PackageMeta packageMeta;
-        String taskToken;
-        String notificationTag;
+        final String storageId;
+        final PackageMeta packageMeta;
+        final String taskToken;
+        final String notificationTag;
         long lastProgressUpdate = 0;
-        long creationTime = System.currentTimeMillis();
+        final long creationTime = System.currentTimeMillis();
         PendingIntent cachedCancelPendingIntent;
         boolean firstProgressNotificationFired = false;
 
@@ -434,11 +434,11 @@ public class BackupService2 extends Service implements BackupStorage.BackupProgr
     }
 
     private static class BatchBackupTaskInfo {
-        String storageId;
-        String taskToken;
-        String notificationTag;
+        final String storageId;
+        final String taskToken;
+        final String notificationTag;
         long lastProgressUpdate = 0;
-        long creationTime = System.currentTimeMillis();
+        final long creationTime = System.currentTimeMillis();
         PendingIntent cachedCancelPendingIntent;
         boolean firstProgressNotificationFired = false;
 

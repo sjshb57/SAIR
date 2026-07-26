@@ -21,8 +21,8 @@ public class Logs {
         return Log.d(tag, message, tr);
     }
 
-    public static int d(String tag, String message) {
-        return d(tag, message, null);
+    public static void d(String tag, String message) {
+        d(tag, message, null);
     }
 
     //Log.i
@@ -43,8 +43,8 @@ public class Logs {
         return w(tag, message, null);
     }
 
-    public static int w(String tag, Throwable tr) {
-        return w(tag, null, tr);
+    public static void w(String tag, Throwable tr) {
+        w(tag, null, tr);
     }
 
     //Log.e

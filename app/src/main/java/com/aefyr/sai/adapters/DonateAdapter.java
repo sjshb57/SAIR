@@ -31,8 +31,6 @@ public class DonateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private final DonationStatusRenderer mDonationStatusRenderer;
     private List<BillingProduct> mProducts;
 
-    private OnProductInteractionListener mProductInteractionListener;
-
     public DonateAdapter(Context context, DonationStatusRenderer donationStatusRenderer) {
         mInflater = LayoutInflater.from(context);
         mDonationStatusRenderer = donationStatusRenderer;
@@ -50,7 +48,6 @@ public class DonateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     public void setOnProductInteractionListener(OnProductInteractionListener listener) {
-        mProductInteractionListener = listener;
     }
 
     private BillingProduct getBillingProductAt(int adapterPosition) {
@@ -130,15 +127,13 @@ public class DonateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public interface OnProductInteractionListener {
     }
 
-    private class ProductViewHolder extends RecyclerView.ViewHolder {
+    private static class ProductViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView mTitle;
         private final TextView mDesc;
         private final TextView mPrice;
 
         private final ImageView mIcon;
-
-        private final ViewGroup mContainer;
 
         public ProductViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -149,7 +144,7 @@ public class DonateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             mIcon = itemView.findViewById(R.id.iv_donate_product_icon);
 
-            mContainer = itemView.findViewById(R.id.container_donate_product);
+            ViewGroup mContainer = itemView.findViewById(R.id.container_donate_product);
 
         }
 

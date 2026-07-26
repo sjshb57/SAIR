@@ -55,7 +55,7 @@ public class LicensesViewModel extends AndroidViewModel {
                     }
                 }
 
-                Collections.sort(licenses, (license1, license2) ->
+                licenses.sort((license1, license2) ->
                         license1.subject.compareToIgnoreCase(license2.subject));
 
                 mLicenses.postValue(licenses);

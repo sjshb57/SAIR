@@ -335,7 +335,7 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
     public void onBackPressed() {
         String currentDirName = dname.getText().toString();
         if (!internalList.isEmpty()) {
-            FileListItem firstItem = internalList.get(0);
+            FileListItem firstItem = internalList.getFirst();
             File currentLocation = new File(firstItem.getLocation());
 
             if (currentDirName.equals(properties.root.getName()) || !currentLocation.canRead()) {

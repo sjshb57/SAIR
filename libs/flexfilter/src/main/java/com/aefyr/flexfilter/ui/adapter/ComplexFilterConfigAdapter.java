@@ -10,6 +10,7 @@ import com.aefyr.flexfilter.config.core.FilterConfig;
 import java.util.HashMap;
 import java.util.List;
 
+@SuppressWarnings("ALL")
 public class ComplexFilterConfigAdapter extends RecyclerView.Adapter<FilterConfigViewHolder> {
 
     private final FilterConfigViewHolderFactory mFactory;
@@ -40,6 +41,7 @@ public class ComplexFilterConfigAdapter extends RecyclerView.Adapter<FilterConfi
         return mFactory.getViewType(mFilters.get(position));
     }
 
+    @SuppressWarnings("rawtypes")
     @NonNull
     @Override
     public FilterConfigViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

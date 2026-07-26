@@ -192,8 +192,8 @@ public class LegacyInstallerFragment extends InstallerFragment implements FilePi
 
     @Override
     public void onFilesSelected(String tag, List<File> files) {
-        if (files.size() == 1 && (files.get(0).getName().endsWith(".zip") || files.get(0).getName().endsWith(".apks"))) {
-            mViewModel.installPackagesFromZip(files.get(0));
+        if (files.size() == 1 && (files.getFirst().getName().endsWith(".zip") || files.getFirst().getName().endsWith(".apks"))) {
+            mViewModel.installPackagesFromZip(files.getFirst());
             return;
         }
 

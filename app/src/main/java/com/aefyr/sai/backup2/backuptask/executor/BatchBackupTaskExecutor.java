@@ -19,8 +19,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class BatchBackupTaskExecutor implements CancellableBackupTaskExecutor {
 
-    private final Context mContext;
-    private final BatchBackupTaskConfig mConfig;
     private final SingleBackupTaskExecutorFactory mSingleBackupTaskExecutorFactory;
 
     private final Stack<SingleBackupTaskConfig> mRemainingConfigs;
@@ -36,12 +34,11 @@ public class BatchBackupTaskExecutor implements CancellableBackupTaskExecutor {
     private final AtomicBoolean mIsCancelled = new AtomicBoolean(false);
 
     public BatchBackupTaskExecutor(Context context, BatchBackupTaskConfig config, SingleBackupTaskExecutorFactory singleBackupTaskExecutorFactory) {
-        mContext = context.getApplicationContext();
-        mConfig = config;
+        Context mContext = context.getApplicationContext();
         mSingleBackupTaskExecutorFactory = singleBackupTaskExecutorFactory;
 
         mRemainingConfigs = new Stack<>();
-        mRemainingConfigs.addAll(mConfig.configs());
+        mRemainingConfigs.addAll(config.configs());
     }
 
     public void setListener(Listener listener, Handler listenerHandler) {

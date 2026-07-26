@@ -25,7 +25,6 @@ import androidx.core.os.BundleCompat;
 public class BackupDialogFragment extends BaseBottomSheetDialogFragment {
     private static final String ARG_PACKAGE = "package";
 
-    private PackageMeta mPackage;
     private BackupDialogViewModel mViewModel;
 
     public static BackupDialogFragment newInstance(PackageMeta packageMeta) {
@@ -46,7 +45,7 @@ public class BackupDialogFragment extends BaseBottomSheetDialogFragment {
         Bundle args = getArguments();
         if (args == null)
             return;
-        mPackage = Objects.requireNonNull(BundleCompat.getParcelable(args, ARG_PACKAGE, PackageMeta.class));
+        PackageMeta mPackage = Objects.requireNonNull(BundleCompat.getParcelable(args, ARG_PACKAGE, PackageMeta.class));
 
         if (savedInstanceState == null)
             mViewModel.setPackage(mPackage);
@@ -106,13 +105,9 @@ public class BackupDialogFragment extends BaseBottomSheetDialogFragment {
         ViewGroup apkExportContainer = view.findViewById(R.id.container_backup_dialog_apk_export);
         Switch apkExportSwitch = view.findViewById(R.id.switch_backup_dialog_apk_export);
 
-        apkExportContainer.setOnClickListener(v -> {
-            mViewModel.setApkExportEnabled(!Boolean.TRUE.equals(mViewModel.getIsApkExportEnabled().getValue()));
-        });
+        apkExportContainer.setOnClickListener(v -> mViewModel.setApkExportEnabled(!Boolean.TRUE.equals(mViewModel.getIsApkExportEnabled().getValue())));
 
-        mViewModel.getIsApkExportOptionAvailable().observe(this, available -> {
-            apkExportContainer.setVisibility(available ? View.VISIBLE : View.GONE);
-        });
+        mViewModel.getIsApkExportOptionAvailable().observe(this, available -> apkExportContainer.setVisibility(available ? View.VISIBLE : View.GONE));
         mViewModel.getIsApkExportEnabled().observe(this, apkExportSwitch::setChecked);
     }
 }

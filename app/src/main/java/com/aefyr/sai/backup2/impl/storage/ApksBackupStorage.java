@@ -60,11 +60,10 @@ public abstract class ApksBackupStorage extends BaseBackupStorage {
     @GuardedBy("mBatchTasks")
     private final Map<String, BatchBackupTaskConfig> mBatchTasks = new HashMap<>();
 
-    private final HandlerThread mTaskProgressHandlerThread;
     private final Handler mTaskProgressHandler;
 
     protected ApksBackupStorage() {
-        mTaskProgressHandlerThread = new HandlerThread("ApksBackupStorage.TaskProgress");
+        HandlerThread mTaskProgressHandlerThread = new HandlerThread("ApksBackupStorage.TaskProgress");
         mTaskProgressHandlerThread.start();
         mTaskProgressHandler = new Handler(mTaskProgressHandlerThread.getLooper());
     }
@@ -121,8 +120,9 @@ public abstract class ApksBackupStorage extends BaseBackupStorage {
 
 
                     List<BackupComponent> backupComponents = new ArrayList<>();
-                    if (appMeta.backupComponents() != null) {
-                        for (SaiExportedAppMeta2.BackupComponent backupComponent : appMeta.backupComponents()) {
+                    List<SaiExportedAppMeta2.BackupComponent> metaComponents = appMeta.backupComponents();
+                    if (metaComponents != null) {
+                        for (SaiExportedAppMeta2.BackupComponent backupComponent : metaComponents) {
                             backupComponents.add(new SimpleBackupComponent(backupComponent.type(), backupComponent.size()));
                         }
                     }

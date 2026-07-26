@@ -23,8 +23,6 @@ public class FlexSaiPackageInstaller implements SaiPackageInstaller, SaiPiSessio
 
     private static FlexSaiPackageInstaller sInstance;
 
-    private final Context mContext;
-
     private SaiPackageInstaller mDefaultInstaller;
     private final HashMap<Integer, SaiPackageInstaller> mInstallers = new HashMap<>();
     private final ConcurrentHashMap<String, SaiPackageInstaller> mSessionIdToInstaller = new ConcurrentHashMap<>();
@@ -38,7 +36,7 @@ public class FlexSaiPackageInstaller implements SaiPackageInstaller, SaiPiSessio
     }
 
     private FlexSaiPackageInstaller(Context c) {
-        mContext = c.getApplicationContext();
+        Context mContext = c.getApplicationContext();
         addInstaller(PreferencesValues.INSTALLER_ROOTLESS, RootlessSaiPackageInstaller.getInstance(mContext));
         addInstaller(PreferencesValues.INSTALLER_ROOTED, RootedSaiPackageInstaller.getInstance(mContext));
         addInstaller(PreferencesValues.INSTALLER_SHIZUKU, ShizukuSaiPackageInstaller.getInstance(mContext));
