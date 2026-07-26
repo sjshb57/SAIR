@@ -14,20 +14,14 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 
 /**
- * A long-lived shell process that commands are fed into one after another, so a shell only has to
- * be spawned once instead of per command. Spawning is the expensive part on both backends: a su
- * cold start goes through the root manager's policy check, and a Shizuku process is a binder round
- * trip plus a fork on the server side.
+ * A long-lived shell that commands are fed into, so a shell is spawned once instead of per command
+ * - a su cold start or a Shizuku process is expensive.
  * <p>
- * Commands that need to pipe data through stdin cannot use this, since stdin carries the command
- * stream - those still get a dedicated process.
+ * Commands that pipe data through stdin cannot use this, since stdin carries the command stream.
  */
 class PersistentShellSession {
 
-    /**
-     * Echoed after every command so the reader knows where the output ends and can pick up the
-     * exit code without waiting for the process to terminate.
-     */
+    /** Echoed after every command to mark where its output ends and carry the exit code. */
     private static final String MARKER = "__SAI_CMD_DONE__";
 
     private final String mTag;
@@ -47,9 +41,7 @@ class PersistentShellSession {
         mProcessFactory = processFactory;
     }
 
-    /**
-     * @param validator run once right after the shell starts; the session is discarded if it fails
-     */
+    /** @param validator run once after the shell starts; the session is discarded if it fails */
     synchronized boolean ensureStarted(@Nullable Validator validator) {
         if (mProcess != null && isAlive())
             return true;
@@ -100,7 +92,7 @@ class PersistentShellSession {
                 }
                 break;
             }
-            if (!out.isEmpty())
+            if (out.length() > 0)
                 out.append('\n');
             out.append(line);
         }
@@ -118,7 +110,7 @@ class PersistentShellSession {
                 String line = mErr.readLine();
                 if (line == null)
                     break;
-                if (!err.isEmpty())
+                if (err.length() > 0)
                     err.append('\n');
                 err.append(line);
             }

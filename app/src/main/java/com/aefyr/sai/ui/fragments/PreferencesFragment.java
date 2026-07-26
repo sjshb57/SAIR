@@ -45,6 +45,7 @@ import java.util.List;
 import java.util.Objects;
 
 import rikka.shizuku.Shizuku;
+import com.aefyr.sai.utils.InsetsUtils;
 
 public class PreferencesFragment extends PreferenceFragmentCompat implements FilePickerDialogFragment.OnFilesSelectedListener, SingleChoiceListDialogFragment.OnItemSelectedListener, BaseBottomSheetDialogFragment.OnDismissListener, SharedPreferences.OnSharedPreferenceChangeListener, DarkLightThemeSelectionDialogFragment.OnDarkLightThemesChosenListener, Shizuku.OnRequestPermissionResultListener {
 
@@ -227,6 +228,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Fil
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        InsetsUtils.applyTopInsetAsPadding(view);
+        InsetsUtils.applyBottomInsetAsPadding(getListView());
         setDividerHeight(0);
     }
 

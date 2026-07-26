@@ -271,7 +271,6 @@ public class Utils {
     private static final int FALLBACK_ICON_SIZE_PX = 192;
 
     public static void saveDrawableAsPng(Drawable drawable, File pngFile) throws Exception {
-        // Drawables without an intrinsic size report -1, which would blow up createBitmap.
         int width = drawable.getIntrinsicWidth();
         int height = drawable.getIntrinsicHeight();
         if (width <= 0 || height <= 0) {

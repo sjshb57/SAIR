@@ -25,15 +25,10 @@ import java.util.zip.CRC32;
 public class IOUtils {
     private static final String TAG = "IOUtils";
 
-    /**
-     * Buffer size for stream wrapping and bulk copies. Sized to keep the number of syscalls low
-     * on FUSE-backed external storage, where each read is a userspace round trip.
-     */
+    /** Sized to keep syscall counts low on FUSE-backed external storage. */
     public static final int BUFFER_SIZE = 256 * 1024;
 
-    /**
-     * @return number of bytes copied
-     */
+    /** @return number of bytes copied */
     public static long copyStream(InputStream from, OutputStream to) throws IOException {
         byte[] buf = new byte[BUFFER_SIZE];
         long total = 0;
@@ -168,9 +163,9 @@ public class IOUtils {
     public static byte[] hashStream(InputStream inputStream, MessageDigest messageDigest) throws IOException {
         try (DigestInputStream digestInputStream = new DigestInputStream(inputStream, messageDigest)) {
             byte[] buffer = new byte[1024 * 64];
-            // Reading is enough; the digest is updated as a side effect.
+            // Reading updates the digest as a side effect.
+            //noinspection StatementWithEmptyBody
             while (digestInputStream.read(buffer) > 0) {
-                // no-op
             }
 
             return messageDigest.digest();

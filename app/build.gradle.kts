@@ -11,10 +11,9 @@ android {
     defaultConfig {
         applicationId = "com.aefyr.sai"
         minSdk = 24
-        //noinspection OldTargetApi
-        targetSdk = 34
-        versionCode = 65
-        versionName = "5.0"
+        targetSdk = 37
+        versionCode = 67
+        versionName = "5.2"
         resourceConfigurations += setOf("zh-rCN", "zh-rTW")
         javaCompileOptions {
             annotationProcessorOptions {

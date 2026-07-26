@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import com.aefyr.sai.R;
 import com.aefyr.sai.ui.fragments.BackupManageAppFragment;
+import com.aefyr.sai.utils.InsetsUtils;
 
 public class BackupManageAppActivity extends ThemedActivity implements BackupManageAppFragment.DismissDelegate {
 
@@ -15,6 +16,8 @@ public class BackupManageAppActivity extends ThemedActivity implements BackupMan
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_backup_manage_app);
+
+        InsetsUtils.applySystemBarInsetsAsPadding(findViewById(android.R.id.content));
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()

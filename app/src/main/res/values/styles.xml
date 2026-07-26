@@ -1,6 +1,12 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="AppTheme.Light" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Edge to edge is mandatory from API 35; opt out of the system's contrast scrims and
+             pick the system bar icon colour to match this theme. -->
+        <item name="android:enforceStatusBarContrast" tools:targetApi="29">false</item>
+        <item name="android:enforceNavigationBarContrast" tools:targetApi="29">false</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
         <item name="colorPrimary">@color/colorPrimarySai</item>
         <item name="colorPrimaryDark">@color/colorPrimarySai</item>
         <item name="colorPrimaryLight">@color/colorPrimaryLightSai</item>
@@ -20,6 +26,12 @@
     </style>
 
     <style name="AppTheme.Dark" parent="Theme.MaterialComponents.NoActionBar">
+        <!-- Edge to edge is mandatory from API 35; opt out of the system's contrast scrims and
+             pick the system bar icon colour to match this theme. -->
+        <item name="android:enforceStatusBarContrast" tools:targetApi="29">false</item>
+        <item name="android:enforceNavigationBarContrast" tools:targetApi="29">false</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">false</item>
         <item name="colorPrimary">@color/colorGreaterGrey</item>
         <item name="colorPrimaryDark">@color/colorGreaterGrey</item>
         <item name="colorPrimaryLight">@color/colorPrimaryLightRuby</item>

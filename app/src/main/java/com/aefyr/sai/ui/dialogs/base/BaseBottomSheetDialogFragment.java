@@ -19,6 +19,7 @@ import com.aefyr.sai.utils.Theme;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.aefyr.sai.utils.InsetsUtils;
 
 public class BaseBottomSheetDialogFragment extends BottomSheetDialogFragment {
 
@@ -36,6 +37,7 @@ public class BaseBottomSheetDialogFragment extends BottomSheetDialogFragment {
         mPositiveButton = dialogView.findViewById(R.id.button_bottom_sheet_dialog_base_ok);
         mNegativeButton = dialogView.findViewById(R.id.button_bottom_sheet_dialog_base_cancel);
         mDialog.setContentView(dialogView);
+        InsetsUtils.applyBottomInsetAndKeyboardAsPadding(dialogView);
 
         FrameLayout container = dialogView.findViewById(R.id.container_bottom_sheet_dialog_base_content);
         View contentView = onCreateContentView(LayoutInflater.from(requireContext()), container, savedInstanceState);

@@ -13,6 +13,7 @@ import com.aefyr.sai.R;
 import com.aefyr.sai.view.coolbar.Coolbar;
 
 import java.lang.reflect.Constructor;
+import com.aefyr.sai.utils.InsetsUtils;
 
 public class PreferencesActivity extends ThemedActivity {
     private static final String TAG = "PreferencesActivity";
@@ -25,6 +26,7 @@ public class PreferencesActivity extends ThemedActivity {
         setContentView(R.layout.activity_preferences);
 
         Coolbar coolbar = findViewById(R.id.coolbar);
+        InsetsUtils.applyTopInsetAsMargin(coolbar);
         CharSequence title = getIntent().getStringExtra(Intent.EXTRA_TITLE);
         if (title != null) {
             coolbar.setTitle(title.toString());

@@ -22,6 +22,7 @@ import com.aefyr.sai.utils.FragmentNavigator;
 import com.aefyr.sai.utils.PreferencesHelper;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.aefyr.sai.utils.InsetsUtils;
 
 public class MainActivity extends ThemedActivity implements NavigationBarView.OnItemSelectedListener, FragmentNavigator.FragmentFactory {
 
@@ -39,6 +40,8 @@ public class MainActivity extends ThemedActivity implements NavigationBarView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        InsetsUtils.applyBottomInsetAsPadding(findViewById(R.id.bottomnav_main));
 
         mBillingManager = DefaultBillingManager.getInstance(this);
 

@@ -44,6 +44,7 @@ import com.aefyr.sai.viewmodels.BackupViewModel;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
+import com.aefyr.sai.utils.InsetsUtils;
 
 public class BackupFragment extends SaiBaseFragment implements BackupPackagesAdapter.OnItemInteractionListener, FilterDialog.OnApplyConfigListener, SharedPreferences.OnSharedPreferenceChangeListener, BatchBackupDialogFragment.OnBatchBackupEnqueuedListener {
 
@@ -64,6 +65,10 @@ public class BackupFragment extends SaiBaseFragment implements BackupPackagesAda
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        // CardView.setPadding is a no-op, so the inset has to go on the margin.
+        InsetsUtils.applyTopInsetAsMargin(findViewById(R.id.card_search));
+        InsetsUtils.applyBottomInsetAsPadding(findViewById(R.id.rv_packages));
 
         mViewModel = new ViewModelProvider(this).get(BackupViewModel.class);
 

@@ -29,6 +29,7 @@ import com.aefyr.sai.utils.Utils;
 import com.aefyr.sai.view.coolbar.Coolbar;
 import com.aefyr.sai.viewmodels.BackupManageAppViewModel;
 import com.aefyr.sai.viewmodels.factory.BackupManageAppViewModelFactory;
+import com.aefyr.sai.utils.InsetsUtils;
 
 public class BackupManageAppFragment extends SaiBaseFragment implements BackupAppDetailsAdapter.ActionDelegate {
     private static final String TAG = "BackupManageAppFragment";
@@ -66,6 +67,8 @@ public class BackupManageAppFragment extends SaiBaseFragment implements BackupAp
         moreOptionsButton.setOnClickListener(this::showMenu);
 
         RecyclerView recycler = findViewById(R.id.rv_backup_app_details);
+        InsetsUtils.applyTopInsetAsMargin(coolbar);
+        InsetsUtils.applyBottomInsetAsPadding(recycler);
         recycler.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         BackupAppDetailsAdapter detailsAdapter = new BackupAppDetailsAdapter(requireContext(), new Selection<>(new SimpleKeyStorage<>()), this, this);

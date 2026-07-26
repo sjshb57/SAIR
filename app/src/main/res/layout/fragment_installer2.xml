@@ -33,6 +33,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_installer_sessions"
+        android:clipToPadding="false"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/coolbar_main"

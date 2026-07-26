@@ -230,11 +230,8 @@ public class BruteAppMetaExtractor implements AppMetaExtractor {
 
 
     /**
-     * Loads the launcher icon of an APK that has been staged on disk.
-     * <p>
-     * In an app bundle the icon bitmaps often live only in a density config split, so resolving
-     * against the base APK alone yields the framework's default icon. When that happens the
-     * density splits are attached via splitSourceDirs and the lookup is retried.
+     * Icon bitmaps often live only in a density config split, so a lookup against the base APK
+     * alone yields the framework default. The splits are attached and the lookup retried.
      */
     private Drawable loadIcon(PackageManager pm, ApplicationInfo applicationInfo,
                               ApkSourceFile apkSourceFile, ApkSourceFile.Entry baseApkEntry) throws Exception {
@@ -291,10 +288,7 @@ public class BruteAppMetaExtractor implements AppMetaExtractor {
         return false;
     }
 
-    /**
-     * ApplicationInfo.loadIcon falls back to the framework's default app icon when the real one
-     * cannot be resolved, and that fallback would otherwise be cached as if it were the app icon.
-     */
+    /** loadIcon falls back to the framework default, which must not be cached as the app icon. */
     private boolean isDefaultIcon(PackageManager pm, @Nullable Drawable icon) {
         if (icon == null)
             return true;

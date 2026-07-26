@@ -11,6 +11,7 @@ import com.aefyr.sai.R;
 import com.aefyr.sai.legal.DefaultLegalStuffProvider;
 import com.aefyr.sai.legal.LegalStuffProvider;
 import com.aefyr.sai.ui.fragments.SuperSecretPreferencesFragment;
+import com.aefyr.sai.utils.InsetsUtils;
 
 public class AboutActivity extends ThemedActivity {
 
@@ -21,6 +22,8 @@ public class AboutActivity extends ThemedActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
+
+        InsetsUtils.applySystemBarInsetsAsPadding(findViewById(android.R.id.content));
 
         mLegalStuffProvider = DefaultLegalStuffProvider.getInstance(this);
 

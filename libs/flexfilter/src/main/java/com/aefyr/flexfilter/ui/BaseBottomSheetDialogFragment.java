@@ -19,6 +19,8 @@ import androidx.annotation.StringRes;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 public class BaseBottomSheetDialogFragment extends BottomSheetDialogFragment {
 
@@ -38,6 +40,7 @@ public class BaseBottomSheetDialogFragment extends BottomSheetDialogFragment {
         mPositiveButton = dialogView.findViewById(R.id.button_bottom_sheet_dialog_base_ok);
         mNegativeButton = dialogView.findViewById(R.id.button_bottom_sheet_dialog_base_cancel);
         mDialog.setContentView(dialogView);
+        applyBottomInsets(dialogView);
 
         FrameLayout container = dialogView.findViewById(R.id.container_bottom_sheet_dialog_base_content);
         View contentView = onCreateContentView(LayoutInflater.from(requireContext()), container, savedInstanceState);
@@ -113,5 +116,20 @@ public class BaseBottomSheetDialogFragment extends BottomSheetDialogFragment {
 
         void onDismiss(@NonNull String tag);
 
+    }
+
+    /**
+     * Apps targeting Android 15 are laid out edge to edge, so the sheet has to inset itself out
+     * from under the navigation bar and the keyboard.
+     */
+    private static void applyBottomInsets(View view) {
+        final int bottom = view.getPaddingBottom();
+        ViewCompat.setOnApplyWindowInsetsListener(view, (v, windowInsets) -> {
+            int bars = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom;
+            int keyboard = windowInsets.getInsets(WindowInsetsCompat.Type.ime()).bottom;
+            v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(),
+                    bottom + Math.max(bars, keyboard));
+            return windowInsets;
+        });
     }
 }

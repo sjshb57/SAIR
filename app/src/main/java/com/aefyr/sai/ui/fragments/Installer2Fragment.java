@@ -53,6 +53,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Locale;
+import com.aefyr.sai.utils.InsetsUtils;
 
 public class Installer2Fragment extends InstallerFragment implements FilePickerDialogFragment.OnFilesSelectedListener, InstallationConfirmationDialogFragment.ConfirmationListener, SaiPiSessionsAdapter.ActionDelegate {
     private static final String TAG = "Installer2Fragment";
@@ -103,6 +104,8 @@ public class Installer2Fragment extends InstallerFragment implements FilePickerD
         mPlaceholderContainer = findViewById(R.id.container_installer_placeholder);
 
         mSessionsRecycler = findViewById(R.id.rv_installer_sessions);
+        InsetsUtils.applyTopInsetAsMargin(findViewById(R.id.coolbar_main));
+        InsetsUtils.applyBottomInsetAsPadding(mSessionsRecycler);
         mSessionsRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         SaiPiSessionsAdapter sessionsAdapter = new SaiPiSessionsAdapter(requireContext());

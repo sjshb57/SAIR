@@ -35,6 +35,7 @@ import com.github.angads25.filepicker.model.DialogProperties;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import com.aefyr.sai.utils.InsetsUtils;
 
 public class LegacyInstallerFragment extends InstallerFragment implements FilePickerDialogFragment.OnFilesSelectedListener, InstallationConfirmationDialogFragment.ConfirmationListener {
 
@@ -77,6 +78,8 @@ public class LegacyInstallerFragment extends InstallerFragment implements FilePi
         mHelper = PreferencesHelper.getInstance(requireContext());
 
         mButton = findViewById(R.id.button_install);
+        InsetsUtils.applyTopInsetAsMargin(findViewById(R.id.coolbar_main));
+        InsetsUtils.applyBottomInsetAsMargin(mButton);
         mButtonSettings = findViewById(R.id.ib_settings);
 
         mViewModel = new ViewModelProvider(this).get(LegacyInstallerViewModel.class);

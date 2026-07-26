@@ -45,6 +45,7 @@ import com.google.android.material.checkbox.MaterialCheckBox;
 
 import java.io.File;
 import java.util.ArrayList;
+import android.annotation.SuppressLint;
 
 /**
  * <p>
@@ -331,6 +332,8 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
         }
     }
 
+    // Dialog.onBackPressed is still dispatched; the lint check targets Activity.
+    @SuppressLint("GestureBackNavigation")
     @Override
     public void onBackPressed() {
         String currentDirName = dname.getText().toString();

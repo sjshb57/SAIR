@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import com.aefyr.sai.R;
 import com.aefyr.sai.backup2.BackupStorageProvider;
 import com.aefyr.sai.backup2.impl.DefaultBackupManager;
+import com.aefyr.sai.utils.InsetsUtils;
 
 public class BackupSettingsActivity extends ThemedActivity {
 
@@ -18,6 +19,8 @@ public class BackupSettingsActivity extends ThemedActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_backup_settings);
+
+        InsetsUtils.applySystemBarInsetsAsPadding(findViewById(android.R.id.content));
 
         mCurrentFragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG);
 

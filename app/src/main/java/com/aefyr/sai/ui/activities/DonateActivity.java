@@ -8,6 +8,7 @@ import com.aefyr.sai.R;
 import com.aefyr.sai.billing.BillingManager;
 import com.aefyr.sai.billing.DefaultBillingManager;
 import com.aefyr.sai.ui.fragments.DonateFragment;
+import com.aefyr.sai.utils.InsetsUtils;
 
 public class DonateActivity extends ThemedActivity {
 
@@ -17,6 +18,8 @@ public class DonateActivity extends ThemedActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_donate);
+
+        InsetsUtils.applySystemBarInsetsAsPadding(findViewById(android.R.id.content));
 
         mBillingManager = DefaultBillingManager.getInstance(this);
 

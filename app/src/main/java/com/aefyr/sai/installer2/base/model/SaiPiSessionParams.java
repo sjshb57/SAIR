@@ -9,13 +9,7 @@ public class SaiPiSessionParams {
 
     private final ApkSource mApkSource;
 
-    /**
-     * Package name resolved while parsing the archive, when it is known upfront.
-     * <p>
-     * Shell based installers drive the installation through pm, which does not report back which
-     * package was installed, so this is what lets a finished session show the app name and icon
-     * instead of the raw file name.
-     */
+    /** Known upfront from the parsed archive; shell installers cannot learn it from pm. */
     @Nullable
     private final String mPackageName;
 

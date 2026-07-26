@@ -59,11 +59,7 @@ public abstract class ShellSaiPackageInstaller extends BaseSaiPackageInstaller {
 
         IntentFilter packageAddedFilter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
         packageAddedFilter.addDataScheme("package");
-        /**
-         * Best-effort source for the installed package name. Success is decided by the exit code of
-         * pm install-commit, never by this broadcast.
-         */
-        // Package visibility may hide the installer info; keep the name anyway.
+        // Best-effort source for the installed package name; never decides success.
         BroadcastReceiver mPackageInstalledBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -80,7 +76,7 @@ public abstract class ShellSaiPackageInstaller extends BaseSaiPackageInstaller {
                     if (!context.getPackageName().equals(installerPackage))
                         return;
                 } catch (Exception e) {
-                    // Package visibility may hide the installer info; keep the name anyway.
+                    // Package visibility can hide the installer info; keep the name anyway.
                     Log.d(tag(), "Unable to verify installer package for " + installedPackage, e);
                 }
 
@@ -125,8 +121,8 @@ public abstract class ShellSaiPackageInstaller extends BaseSaiPackageInstaller {
                 long apkLength = apkSource.getApkLength();
 
                 if (apkLength == -1) {
-                    // Streamed zip entries carry no size in their local header. Materialise the
-                    // split into cache so pm gets a definite -S value instead of failing outright.
+                    // Streamed zip entries carry no size in their local header, and pm needs a
+                    // definite -S value.
                     File stagedApk = stageApkToCache(apkSource);
                     try {
                         ensureCommandSucceeded(getShell().exec(new Shell.Command("pm", "install-write", "-S",
@@ -158,6 +154,8 @@ public abstract class ShellSaiPackageInstaller extends BaseSaiPackageInstaller {
                 return;
             }
 
+            // pm reports neither success details nor the installed package, so the exit code
+            // decides the outcome and the resolved meta supplies the name.
             String installedPackage = mBroadcastPackageName.getAndSet(null);
             if (installedPackage == null)
                 installedPackage = params.packageName();

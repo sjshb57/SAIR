@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.aefyr.sai.R;
 import com.aefyr.sai.adapters.LicensesAdapter;
 import com.aefyr.sai.viewmodels.LicensesViewModel;
+import com.aefyr.sai.utils.InsetsUtils;
 
 public class LicensesActivity extends ThemedActivity {
 
@@ -19,6 +20,7 @@ public class LicensesActivity extends ThemedActivity {
         setContentView(R.layout.activity_licenses);
 
         RecyclerView recyclerView = findViewById(R.id.rv_licenses);
+        InsetsUtils.applySystemBarInsetsAsPadding(recyclerView);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.getRecycledViewPool().setMaxRecycledViews(0, 16);
