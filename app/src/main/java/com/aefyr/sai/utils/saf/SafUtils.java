@@ -53,7 +53,7 @@ public class SafUtils {
      **/
     public static boolean isTreeUri(Uri uri) {
         final List<String> paths = uri.getPathSegments();
-        return (paths.size() >= 2 && PATH_TREE.equals(paths.getFirst()));
+        return (paths.size() >= 2 && PATH_TREE.equals(paths.get(0)));
     }
 
     @Nullable

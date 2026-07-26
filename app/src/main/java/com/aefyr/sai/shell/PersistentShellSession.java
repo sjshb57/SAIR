@@ -100,7 +100,7 @@ class PersistentShellSession {
                 }
                 break;
             }
-            if (out.length() > 0)
+            if (!out.isEmpty())
                 out.append('\n');
             out.append(line);
         }
@@ -118,7 +118,7 @@ class PersistentShellSession {
                 String line = mErr.readLine();
                 if (line == null)
                     break;
-                if (err.length() > 0)
+                if (!err.isEmpty())
                     err.append('\n');
                 err.append(line);
             }

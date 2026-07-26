@@ -97,7 +97,7 @@ public class SingleChoiceFilterConfig implements FilterConfig {
         for (SingleChoiceFilterConfigOption option : mOptions) {
             clone.addOption(option.id(), option.name());
             if (option.isSelected())
-                clone.options().getLast().setSelectedInternal(true);
+                clone.options().get(clone.options().size() - 1).setSelectedInternal(true);
         }
         return clone;
     }

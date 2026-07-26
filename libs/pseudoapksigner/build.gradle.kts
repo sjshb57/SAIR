@@ -18,6 +18,12 @@ android {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
+
+    lint {
+        // NewApi in a library is only caught when the library itself is linted.
+        abortOnError = true
+        checkReleaseBuilds = true
+    }
 }
 
 dependencies {

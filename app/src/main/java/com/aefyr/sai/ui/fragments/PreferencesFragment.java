@@ -284,7 +284,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Fil
     @Override
     public void onFilesSelected(String tag, List<File> files) {
         if ("home".equals(tag) && !files.isEmpty()) {
-            mHelper.setHomeDirectory(files.getFirst().getAbsolutePath());
+            mHelper.setHomeDirectory(files.get(0).getAbsolutePath());
             updateHomeDirPrefSummary();
         }
     }

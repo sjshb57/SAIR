@@ -91,9 +91,7 @@ public class BatchBackupDialogFragment extends DialogFragment {
         Button positiveButton = dialog.getButton(Dialog.BUTTON_POSITIVE);
         Button negativeButton = dialog.getButton(Dialog.BUTTON_NEGATIVE);
 
-        positiveButton.setOnClickListener((v) -> {
-            enqueueBackup();
-        });
+        positiveButton.setOnClickListener((v) -> enqueueBackup());
 
         mViewModel.getIsPreparing().observe(this, (isPreparing) -> {
             positiveButton.setVisibility(isPreparing ? View.GONE : View.VISIBLE);

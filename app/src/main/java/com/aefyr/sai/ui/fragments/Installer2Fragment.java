@@ -278,7 +278,7 @@ public class Installer2Fragment extends InstallerFragment implements FilePickerD
             return;
         }
 
-        String extension = Utils.getExtension(files.getFirst().getName());
+        String extension = Utils.getExtension(files.get(0).getName());
 
         if ("apks".equals(extension) || "zip".equals(extension) || "xapk".equals(extension) || "apkm".equals(extension)) {
             mViewModel.installPackagesFromZip(files);
@@ -291,7 +291,7 @@ public class Installer2Fragment extends InstallerFragment implements FilePickerD
 
     @RequiresApi(api = Build.VERSION_CODES.VANILLA_ICE_CREAM)
     private boolean ensureExtensionsConsistency(List<File> files) {
-        String firstFileExtension = Utils.getExtension(files.getFirst().getName());
+        String firstFileExtension = Utils.getExtension(files.get(0).getName());
         if (firstFileExtension == null)
             return false;
 

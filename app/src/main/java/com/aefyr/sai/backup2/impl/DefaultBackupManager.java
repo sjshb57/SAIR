@@ -384,8 +384,6 @@ public class DefaultBackupManager implements BackupManager, BackupStorage.Observ
                 mApps.put(packageMeta.packageName, new BackupAppImpl(packageMeta, true, BackupStatus.NO_BACKUP));
             }
 
-            mAppsLiveData.postValue(new ArrayList<>(mApps.values()));
-            notifyAppInvalidated(pkg);
         } else {
             Backup backup = mIndex.getLatestBackupForPackage(pkg);
             if (backup != null) {
@@ -394,9 +392,9 @@ public class DefaultBackupManager implements BackupManager, BackupStorage.Observ
                 mApps.remove(pkg);
             }
 
-            mAppsLiveData.postValue(new ArrayList<>(mApps.values()));
-            notifyAppInvalidated(pkg);
         }
+        mAppsLiveData.postValue(new ArrayList<>(mApps.values()));
+        notifyAppInvalidated(pkg);
     }
 
     private void enforceWorkerThread() {

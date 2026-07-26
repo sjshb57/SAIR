@@ -2,8 +2,8 @@ package com.aefyr.sai.installerx.resolver.urimess;
 
 public class UriMessResolutionError {
 
-    String mMessage;
-    boolean mDoesTryingToInstallNonethelessMakeSense;
+    final String mMessage;
+    final boolean mDoesTryingToInstallNonethelessMakeSense;
 
     public UriMessResolutionError(String message, boolean doesTryingToInstallNonethelessMakeSense) {
         mMessage = message;

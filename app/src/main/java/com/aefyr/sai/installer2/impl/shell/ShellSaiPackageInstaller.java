@@ -225,7 +225,7 @@ public abstract class ShellSaiPackageInstaller extends BaseSaiPackageInstaller {
         String customInstallCreateCommand = DbgPreferencesHelper.getInstance(getContext()).getCustomInstallCreateCommand();
         if (customInstallCreateCommand != null) {
             ArrayList<String> args = new ArrayList<>(Arrays.asList(customInstallCreateCommand.split(" ")));
-            String command = args.removeFirst();
+            String command = args.remove(0);
             commandsToAttempt.add(new Shell.Command(command, args.toArray(new String[0])));
             Logs.d(tag(), "Using custom install-create command: " + customInstallCreateCommand);
         } else {

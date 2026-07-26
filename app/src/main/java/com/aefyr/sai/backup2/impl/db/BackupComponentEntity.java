@@ -22,9 +22,11 @@ import com.aefyr.sai.backup2.BackupComponent;
 public class BackupComponentEntity implements BackupComponent {
 
     @ColumnInfo(name = "backup_uri")
+    @NonNull
     String backupUri;
 
     @ColumnInfo(name = "type")
+    @NonNull
     String type;
 
     @ColumnInfo(name = "size")

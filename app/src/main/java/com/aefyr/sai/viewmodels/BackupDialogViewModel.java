@@ -172,7 +172,7 @@ public class BackupDialogViewModel extends AndroidViewModel implements Observer<
                 if (baseApkCategory == null || baseApkCategory.getPartsList().isEmpty())
                     return;
 
-                baseApkCategory.getPartsList().getFirst().setName(parserContext.getAppMeta().appName);
+                baseApkCategory.getPartsList().get(0).setName(parserContext.getAppMeta().appName);
             });
             ApkSourceMetaResolutionResult result = metaResolver.resolveFor(new InstalledAppApkSourceFile(getApplication(), pkg));
 

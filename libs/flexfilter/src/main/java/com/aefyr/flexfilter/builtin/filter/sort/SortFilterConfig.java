@@ -97,7 +97,7 @@ public class SortFilterConfig implements FilterConfig {
         for (SortFilterConfigOption option : mOptions) {
             clone.addOption(option.id(), option.name());
 
-            SortFilterConfigOption cloneOption = clone.options().getLast();
+            SortFilterConfigOption cloneOption = clone.options().get(clone.options().size() - 1);
             if (option.isSelected())
                 cloneOption.setSelectedInternal(true);
 

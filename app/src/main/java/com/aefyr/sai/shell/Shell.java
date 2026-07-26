@@ -69,10 +69,10 @@ public interface Shell {
     }
 
     class Result {
-        Command cmd;
-        public int exitCode;
-        public String out;
-        public String err;
+        final Command cmd;
+        public final int exitCode;
+        public final String out;
+        public final String err;
 
         protected Result(Command cmd, int exitCode, String out, String err) {
             this.cmd = cmd;

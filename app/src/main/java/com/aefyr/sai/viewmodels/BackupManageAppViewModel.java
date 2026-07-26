@@ -40,7 +40,7 @@ public class BackupManageAppViewModel extends ViewModel {
             return null;
 
         if (!details.backups().isEmpty())
-            return details.backups().getFirst();
+            return details.backups().get(0);
 
         return null;
     }

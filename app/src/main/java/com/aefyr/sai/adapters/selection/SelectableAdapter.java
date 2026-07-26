@@ -23,7 +23,7 @@ public abstract class SelectableAdapter<Key, ViewHolder extends RecyclerView.Vie
     @SuppressLint("UseSparseArrays")
     private final HashMap<Integer, Key> mPositionToKey = new HashMap<>();
 
-    private final Selection.Observer<Key> mSelectionObserver = new Selection.Observer<Key>() {
+    private final Selection.Observer<Key> mSelectionObserver = new Selection.Observer<>() {
         @Override
         public void onKeySelectionChanged(Selection<Key> selection, Key key, boolean selected) {
             Integer position = mKeyToPosition.get(key);

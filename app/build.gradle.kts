@@ -57,6 +57,12 @@ android {
         targetCompatibility = JavaVersion.VERSION_21
     }
 
+    lint {
+        // Library modules are not linted by :app:lint unless this is enabled.
+        checkDependencies = true
+        abortOnError = true
+    }
+
     packaging {
         resources {
             excludes += setOf(

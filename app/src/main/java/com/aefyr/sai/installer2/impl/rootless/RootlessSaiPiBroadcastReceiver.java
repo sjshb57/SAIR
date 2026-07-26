@@ -58,7 +58,7 @@ class RootlessSaiPiBroadcastReceiver extends BroadcastReceiver {
                 break;
             default:
                 Log.d(TAG, "Installation failed");
-                dispatchOnInstallationFailed(intent.getIntExtra(PackageInstaller.EXTRA_SESSION_ID, -1), parseError(intent), getRawError(intent), null);
+                dispatchOnInstallationFailed(intent.getIntExtra(PackageInstaller.EXTRA_SESSION_ID, -1), parseError(intent), getRawError(intent));
                 break;
         }
     }
@@ -73,9 +73,9 @@ class RootlessSaiPiBroadcastReceiver extends BroadcastReceiver {
             observer.onInstallationSucceeded(sessionId, packageName);
     }
 
-    private void dispatchOnInstallationFailed(int sessionId, String shortError, @Nullable String fullError, @Nullable Exception exception) {
+    private void dispatchOnInstallationFailed(int sessionId, String shortError, @Nullable String fullError) {
         for (EventObserver observer : mObservers)
-            observer.onInstallationFailed(sessionId, shortError, fullError, exception);
+            observer.onInstallationFailed(sessionId, shortError, fullError, null);
     }
 
     @Nullable

@@ -391,7 +391,7 @@ public class BackupService2 extends Service implements BackupStorage.BackupProgr
     }
 
     private void appendWithNewLine(StringBuilder sb, CharSequence text) {
-        if (!sb.isEmpty())
+        if (sb.length() > 0)
             sb.append("\n");
 
         sb.append(text);

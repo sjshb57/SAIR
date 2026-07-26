@@ -108,7 +108,7 @@ public class UriDirectoryPickerDialogFragment extends SingleChoiceListDialogFrag
         if (BACKUP_DIR_TAG.equals(tag) && !files.isEmpty()) {
             onDirectoryPicked(new Uri.Builder()
                     .scheme("file")
-                    .path(files.getFirst().getAbsolutePath())
+                    .path(files.get(0).getAbsolutePath())
                     .build());
         }
     }

@@ -9,6 +9,7 @@ import androidx.room.Index;
 import com.aefyr.sai.backup2.Backup;
 
 import java.io.File;
+import androidx.annotation.NonNull;
 
 @Entity(
         indices = {@Index(value = {"package", "uri", "content_hash"}), @Index(value = {"icon_file"})},
@@ -19,6 +20,7 @@ public class BackupEntity {
     public static final long FLAG_SPLIT_APK = 0x1;
 
     @ColumnInfo(name = "uri")
+    @NonNull
     public String uri;
 
     @ColumnInfo(name = "package")
@@ -40,9 +42,11 @@ public class BackupEntity {
     public String iconFile;
 
     @ColumnInfo(name = "content_hash")
+    @NonNull
     public String contentHash;
 
     @ColumnInfo(name = "storage_id")
+    @NonNull
     public String storageId;
 
     @ColumnInfo(name = "flags")

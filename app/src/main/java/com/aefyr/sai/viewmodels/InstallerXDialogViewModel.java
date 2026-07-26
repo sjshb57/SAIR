@@ -116,7 +116,7 @@ public class InstallerXDialogViewModel extends ViewModel {
             return;
 
         if (mResolutionResults.size() == 1) {
-            enqueueSingleFiltered(mResolutionResults.getFirst());
+            enqueueSingleFiltered(mResolutionResults.get(0));
             return;
         }
 
@@ -128,7 +128,7 @@ public class InstallerXDialogViewModel extends ViewModel {
 
             if (resolutionResult.sourceType().equals(SourceType.ZIP)) {
                 apkSourceBuilder = new ApkSourceBuilder(mContext)
-                        .fromZipContentUri(resolutionResult.uris().getFirst());
+                        .fromZipContentUri(resolutionResult.uris().get(0));
 
             } else if (resolutionResult.sourceType().equals(SourceType.APK_FILES)) {
                 apkSourceBuilder = new ApkSourceBuilder(mContext)
@@ -150,7 +150,7 @@ public class InstallerXDialogViewModel extends ViewModel {
 
         if (result.sourceType() == SourceType.ZIP) {
             apkSourceBuilder = new ApkSourceBuilder(mContext)
-                    .fromZipContentUri(result.uris().getFirst());
+                    .fromZipContentUri(result.uris().get(0));
 
         } else if (result.sourceType() == SourceType.APK_FILES) {
             apkSourceBuilder = new ApkSourceBuilder(mContext)
@@ -224,7 +224,7 @@ public class InstallerXDialogViewModel extends ViewModel {
                 return new LoadMetaTaskResult(null, null, resolutionResults);
             }
 
-            UriMessResolutionResult resolutionResult = resolutionResults.getFirst();
+            UriMessResolutionResult resolutionResult = resolutionResults.get(0);
             if (resolutionResult.isSuccessful()) {
                 SplitApkSourceMeta meta = resolutionResult.meta();
                 HashSet<String> splitsToSelect = new HashSet<>();
@@ -262,7 +262,7 @@ public class InstallerXDialogViewModel extends ViewModel {
                 mWarning = new Warning(mContext.getString(R.string.installerx_dialog_warn_no_files), false);
                 mState.setValue(State.WARNING);
             } else if (mResolutionResults.size() == 1) {
-                UriMessResolutionResult uriMessResolutionResult = mResolutionResults.getFirst();
+                UriMessResolutionResult uriMessResolutionResult = mResolutionResults.get(0);
                 if (uriMessResolutionResult.isSuccessful()) {
                     mState.setValue(State.LOADED);
                     mMeta.setValue(result.meta);
