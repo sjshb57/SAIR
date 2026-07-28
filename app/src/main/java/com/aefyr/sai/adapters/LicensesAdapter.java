@@ -58,8 +58,8 @@ public class LicensesAdapter extends RecyclerView.Adapter<LicensesAdapter.ViewHo
         }
 
         private void bind(License license) {
-            mSubject.setText(license.subject);
-            mText.setText(license.text);
+            mSubject.setText(license.subject());
+            mText.setText(license.text());
         }
     }
 

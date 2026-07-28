@@ -63,10 +63,9 @@ public class InsetsUtils {
     }
 
     private static void applyInsetAsMargin(@NonNull View view, boolean top) {
-        if (!(view.getLayoutParams() instanceof ViewGroup.MarginLayoutParams))
+        if (!(view.getLayoutParams() instanceof ViewGroup.MarginLayoutParams initial))
             return;
 
-        ViewGroup.MarginLayoutParams initial = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
         final int margin = top ? initial.topMargin : initial.bottomMargin;
 
         ViewCompat.setOnApplyWindowInsetsListener(view, (v, windowInsets) -> {

@@ -187,27 +187,21 @@ public class InstallerXDialogViewModel extends ViewModel {
         NO_DATA, LOADING, LOADED, WARNING, ERROR
     }
 
-    private static class LoadMetaTaskInput {
-        final List<File> apkSourceFiles;
-        final List<Uri> apkSourceContentUris;
-
-        private LoadMetaTaskInput(@Nullable List<File> apkSourceFiles, @Nullable List<Uri> apkSourceContentUris) {
-            this.apkSourceFiles = apkSourceFiles;
-            this.apkSourceContentUris = apkSourceContentUris;
+    private record LoadMetaTaskInput(List<File> apkSourceFiles, List<Uri> apkSourceContentUris) {
+            private LoadMetaTaskInput(@Nullable List<File> apkSourceFiles, @Nullable List<Uri> apkSourceContentUris) {
+                this.apkSourceFiles = apkSourceFiles;
+                this.apkSourceContentUris = apkSourceContentUris;
+            }
         }
-    }
 
-    private static class LoadMetaTaskResult {
-        final SplitApkSourceMeta meta;
-        final Set<String> splitsToSelect;
-        final List<UriMessResolutionResult> resolutionResults;
-
-        private LoadMetaTaskResult(@Nullable SplitApkSourceMeta meta, @Nullable Set<String> splitsToSelect, @NonNull List<UriMessResolutionResult> resolutionResults) {
-            this.meta = meta;
-            this.splitsToSelect = splitsToSelect;
-            this.resolutionResults = resolutionResults;
+    private record LoadMetaTaskResult(SplitApkSourceMeta meta, Set<String> splitsToSelect,
+                                      List<UriMessResolutionResult> resolutionResults) {
+            private LoadMetaTaskResult(@Nullable SplitApkSourceMeta meta, @Nullable Set<String> splitsToSelect, @NonNull List<UriMessResolutionResult> resolutionResults) {
+                this.meta = meta;
+                this.splitsToSelect = splitsToSelect;
+                this.resolutionResults = resolutionResults;
+            }
         }
-    }
 
     private class LoadMetaTask extends SimpleAsyncTask<LoadMetaTaskInput, LoadMetaTaskResult> {
 
