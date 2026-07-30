@@ -1,27 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@color/colorHeader"
-    android:orientation="horizontal"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="?android:listPreferredItemHeight">
+    android:layout_height="wrap_content"
+    android:minHeight="?android:listPreferredItemHeight"
+    android:background="?android:attr/colorPrimary"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/iv_header_icon"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginStart="@dimen/toolbar_image_margin"
-        android:layout_marginLeft="@dimen/toolbar_image_margin"
         android:background="@null"
         android:scaleType="centerInside"
         android:src="@drawable/ic_directory_parent"
+        app:tint="?android:attr/textColorPrimary"
         android:visibility="gone" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_gravity="center_vertical"
         android:background="@null"
-        android:layout_gravity="center_vertical">
+        android:orientation="vertical">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -30,39 +33,36 @@
 
             <TextView
                 android:id="@+id/dname"
-                android:layout_marginLeft="16dp"
-                android:layout_marginStart="16dp"
+                style="?android:attr/textViewStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                style="?android:attr/textViewStyle"
+                android:layout_marginStart="16dp"
                 android:background="@null"
-                android:textColor="@color/textColorPrimary" />
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/title"
-                android:visibility="invisible"
-                android:layout_marginLeft="16dp"
-                android:layout_marginStart="16dp"
+                style="?android:attr/textViewStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:background="@null"
+                android:textColor="?android:attr/textColorPrimary"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                style="?android:attr/textViewStyle"
-                android:background="@null"
-                android:textColor="@color/textColorPrimary" />
+                android:visibility="invisible" />
 
         </RelativeLayout>
 
         <TextView
             android:id="@+id/dir_path"
+            style="?android:attr/textViewStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
-            style="?android:attr/textViewStyle"
             android:background="@null"
-            android:textColor="@color/textColorSecondary" />
+            android:textColor="?android:attr/textColorPrimary" />
     </LinearLayout>
 </LinearLayout>

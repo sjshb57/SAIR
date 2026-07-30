@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="cancel_button_label">キャンセル</string>
-    <string name="choose_button_label">選択</string>
-    <string name="label_parent_directory">親フォルダ</string>
-    <string name="last_edit">最終編集: %s</string>
-    <string name="last_edit_with_size">%1$s, 最終変更: %2$s</string>
-    <string name="error_dir_access">フォルダにアクセスできません</string>
-</resources>

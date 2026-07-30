@@ -31,6 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -245,25 +246,29 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
      * edge to edge from API 35 on, putting the header under the status bar.
      */
     private void applySystemBarInsets() {
-        View header = findViewById(R.id.header);
-        View footer = findViewById(R.id.footer);
-        if (header == null || footer == null)
+        applyInsets(findViewById(R.id.header), true, false);
+        applyInsets(findViewById(R.id.fileList), false, false);
+        applyInsets(findViewById(R.id.footer), false, true);
+    }
+
+    /** Horizontal insets are always applied, for display cutouts and gesture bars in landscape. */
+    private static void applyInsets(@Nullable View view, boolean top, boolean bottom) {
+        if (view == null)
             return;
 
-        final int headerTop = header.getPaddingTop();
-        final int footerBottom = footer.getPaddingBottom();
+        final int paddingLeft = view.getPaddingLeft();
+        final int paddingTop = view.getPaddingTop();
+        final int paddingRight = view.getPaddingRight();
+        final int paddingBottom = view.getPaddingBottom();
 
-        ViewCompat.setOnApplyWindowInsetsListener(header, (v, windowInsets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(view, (v, windowInsets) -> {
             Insets insets = windowInsets.getInsets(
                     WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
-            v.setPadding(v.getPaddingLeft(), headerTop + insets.top, v.getPaddingRight(), v.getPaddingBottom());
-            return windowInsets;
-        });
 
-        ViewCompat.setOnApplyWindowInsetsListener(footer, (v, windowInsets) -> {
-            Insets insets = windowInsets.getInsets(
-                    WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
-            v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(), footerBottom + insets.bottom);
+            v.setPadding(paddingLeft + insets.left,
+                    paddingTop + (top ? insets.top : 0),
+                    paddingRight + insets.right,
+                    paddingBottom + (bottom ? insets.bottom : 0));
             return windowInsets;
         });
     }
