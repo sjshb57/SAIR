@@ -23,7 +23,6 @@ import com.aefyr.sai.shell.SuShell;
 import com.aefyr.sai.ui.activities.AboutActivity;
 import com.aefyr.sai.ui.activities.ApkActionViewProxyActivity;
 import com.aefyr.sai.ui.activities.BackupSettingsActivity;
-import com.aefyr.sai.ui.activities.DonateActivity;
 import com.aefyr.sai.ui.dialogs.DarkLightThemeSelectionDialogFragment;
 import com.aefyr.sai.ui.dialogs.FilePickerDialogFragment;
 import com.aefyr.sai.ui.dialogs.SimpleAlertDialogFragment;
@@ -121,15 +120,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Fil
                 startActivity(new Intent(getContext(), AboutActivity.class));
                 return true;
             });
-        }
-
-        Preference donatePref = findPreference("donate");
-        if (donatePref != null) {
-            donatePref.setOnPreferenceClickListener(p -> {
-                startActivity(new Intent(requireContext(), DonateActivity.class));
-                return true;
-            });
-            donatePref.setVisible(false);
         }
 
         mHomeDirPref = findPreference("home_directory");

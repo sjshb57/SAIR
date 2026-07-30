@@ -98,6 +98,14 @@ public abstract class ShellSaiPackageInstaller extends BaseSaiPackageInstaller {
 
     private void install(String sessionId, SaiPiSessionParams params) {
         lockInstallation();
+        try {
+            installLocked(sessionId, params);
+        } finally {
+            unlockInstallation();
+        }
+    }
+
+    private void installLocked(String sessionId, SaiPiSessionParams params) {
         String appTempName = params.apkSource().getAppName();
         setSessionState(sessionId, new SaiPiSessionState.Builder(sessionId, SaiPiSessionStatus.INSTALLING)
                 .appTempName(appTempName)
@@ -105,11 +113,10 @@ public abstract class ShellSaiPackageInstaller extends BaseSaiPackageInstaller {
 
         Integer androidSessionId = null;
         try (ApkSource apkSource = params.apkSource()) {
-            if (getShell().isAvailable()) {
+            if (!getShell().isAvailable()) {
                 setSessionState(sessionId, new SaiPiSessionState.Builder(sessionId, SaiPiSessionStatus.INSTALLATION_FAILED)
                         .error(getContext().getString(R.string.installer_error_shell, getInstallerName(), getShellUnavailableMessage()), null)
                         .build());
-                unlockInstallation();
                 return;
             }
 
@@ -150,7 +157,6 @@ public abstract class ShellSaiPackageInstaller extends BaseSaiPackageInstaller {
                         .appTempName(appTempName)
                         .error(shortError, shortError + "\n\n" + installationResult.out)
                         .build());
-                unlockInstallation();
                 return;
             }
 
@@ -165,7 +171,6 @@ public abstract class ShellSaiPackageInstaller extends BaseSaiPackageInstaller {
             if (installedPackage != null)
                 success.packageName(installedPackage).resolvePackageMeta(getContext());
             setSessionState(sessionId, success.build());
-            unlockInstallation();
         } catch (Exception e) {
             Log.w(tag(), e);
 
@@ -180,8 +185,6 @@ public abstract class ShellSaiPackageInstaller extends BaseSaiPackageInstaller {
                             getContext().getString(R.string.installer_error_shell, getInstallerName(),
                                     getSessionInfo(params.apkSource()) + "\n\n" + Utils.throwableToString(e)))
                     .build());
-
-            unlockInstallation();
         }
     }
 

@@ -32,7 +32,6 @@ import com.aefyr.sai.backup2.BackupApp;
 import com.aefyr.sai.ui.activities.BackupManageAppActivity;
 import com.aefyr.sai.ui.activities.BackupSettingsActivity;
 import com.aefyr.sai.ui.dialogs.BatchBackupDialogFragment;
-import com.aefyr.sai.ui.dialogs.DonationSuggestionDialogFragment;
 import com.aefyr.sai.ui.dialogs.OneTimeWarningDialogFragment;
 import com.aefyr.sai.ui.dialogs.SimpleAlertDialogFragment;
 import com.aefyr.sai.ui.recycler.RecyclerPaddingDecoration;
@@ -357,6 +356,5 @@ public class BackupFragment extends SaiBaseFragment implements BackupPackagesAda
     @Override
     public void onBatchBackupEnqueued(@Nullable String dialogTag) {
         mViewModel.getSelection().clear();
-        DonationSuggestionDialogFragment.showIfNeeded(requireContext(), getChildFragmentManager());
     }
 }

@@ -18,6 +18,13 @@ import com.aefyr.sai.utils.Logs;
 import com.aefyr.sai.utils.PreferencesHelper;
 import com.aefyr.sai.utils.Utils;
 
+import com.aefyr.sai.utils.IOUtils;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -72,7 +79,7 @@ public abstract class ShellSAIPackageInstaller extends SAIPackageInstaller {
     @Override
     protected void installApkFiles(ApkSource aApkSource) {
         try (ApkSource apkSource = aApkSource) {
-            if (getShell().isAvailable()) {
+            if (!getShell().isAvailable()) {
                 dispatchCurrentSessionUpdate(InstallationStatus.INSTALLATION_FAILED,
                         getContext().getString(R.string.installer_error_shell, getInstallerName(), getShellUnavailableMessage()));
                 installationCompleted();
@@ -83,15 +90,26 @@ public abstract class ShellSAIPackageInstaller extends SAIPackageInstaller {
 
             int currentApkFile = 0;
             while (apkSource.nextApk()) {
-                if (apkSource.getApkLength() == -1) {
-                    dispatchCurrentSessionUpdate(InstallationStatus.INSTALLATION_FAILED,
-                            getContext().getString(R.string.installer_error_unknown_apk_size));
-                    installationCompleted();
-                    return;
+                String splitName = String.format("%d.apk", currentApkFile++);
+                long apkLength = apkSource.getApkLength();
+
+                if (apkLength == -1) {
+                    // Streamed zip entries carry no size in their local header, and pm needs a
+                    // definite -S value.
+                    File stagedApk = stageApkToCache(apkSource);
+                    try {
+                        ensureCommandSucceeded(getShell().exec(new Shell.Command("pm", "install-write", "-S",
+                                String.valueOf(stagedApk.length()), String.valueOf(sessionId), splitName),
+                                IOUtils.buffer(new FileInputStream(stagedApk))));
+                    } finally {
+                        //noinspection ResultOfMethodCallIgnored
+                        stagedApk.delete();
+                    }
+                } else {
+                    ensureCommandSucceeded(getShell().exec(new Shell.Command("pm", "install-write", "-S",
+                            String.valueOf(apkLength), String.valueOf(sessionId), splitName),
+                            apkSource.openApkInputStream()));
                 }
-                ensureCommandSucceeded(getShell().exec(new Shell.Command("pm", "install-write", "-S",
-                        String.valueOf(apkSource.getApkLength()), String.valueOf(sessionId),
-                        String.format("%d.apk", currentApkFile++)), apkSource.openApkInputStream()));
             }
 
             mIsAwaitingBroadcast.set(true);
@@ -111,6 +129,15 @@ public abstract class ShellSAIPackageInstaller extends SAIPackageInstaller {
                             getSessionInfo(aApkSource) + "\n\n" + Utils.throwableToString(e)));
             installationCompleted();
         }
+    }
+
+    private File stageApkToCache(ApkSource apkSource) throws Exception {
+        File staged = Utils.createTempFileInCache(getContext(), "ShellSAIPi", "apk");
+        try (InputStream in = apkSource.openApkInputStream();
+             OutputStream out = IOUtils.buffer(new FileOutputStream(staged))) {
+            IOUtils.copyStream(in, out);
+        }
+        return staged;
     }
 
     private void ensureCommandSucceeded(Shell.Result result) {

@@ -1,5 +1,3 @@
-@file:Suppress("DEPRECATION")
-
 plugins {
     alias(libs.plugins.android.application)
 }
@@ -14,7 +12,6 @@ android {
         targetSdk = 37
         versionCode = 67
         versionName = "5.2"
-        resourceConfigurations += setOf("zh-rCN", "zh-rTW")
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments += mapOf(
@@ -26,12 +23,16 @@ android {
         }
     }
 
+    val releaseKeystore = rootProject.file("keystore.jks")
+
     signingConfigs {
         create("release") {
-            keyAlias = System.getenv("RELEASE_KEY_ALIAS") ?: ""
-            keyPassword = System.getenv("RELEASE_KEY_PWD") ?: ""
-            storeFile = file("../keystore.jks")
-            storePassword = System.getenv("RELEASE_KEY_STORE_PWD") ?: ""
+            if (releaseKeystore.exists()) {
+                keyAlias = System.getenv("RELEASE_KEY_ALIAS") ?: ""
+                keyPassword = System.getenv("RELEASE_KEY_PWD") ?: ""
+                storeFile = releaseKeystore
+                storePassword = System.getenv("RELEASE_KEY_STORE_PWD") ?: ""
+            }
             enableV1Signing = false
             enableV2Signing = true
             enableV3Signing = true
@@ -42,9 +43,16 @@ android {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
-            signingConfig = signingConfigs.getByName("release")
+            // Without the keystore the release build stays unsigned instead of failing,
+            // so a fresh clone can still be built.
+            if (releaseKeystore.exists())
+                signingConfig = signingConfigs.getByName("release")
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
+    }
+
+    androidResources {
+        localeFilters += setOf("zh-rCN", "zh-rTW")
     }
 
     buildFeatures {

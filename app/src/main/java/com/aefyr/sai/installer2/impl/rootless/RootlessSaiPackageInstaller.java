@@ -125,6 +125,10 @@ public class RootlessSaiPackageInstaller extends BaseSaiPackageInstaller impleme
             if (session != null)
                 session.abandon();
 
+            mSessionIdToAppTempName.remove(sessionId);
+            mSessionIdToCommitStartedAt.remove(sessionId);
+            mAndroidPiSessionIdToSaiPiSessionId.values().remove(sessionId);
+
             setSessionState(sessionId, new SaiPiSessionState.Builder(sessionId, SaiPiSessionStatus.INSTALLATION_FAILED).appTempName(appTempName).error(e.getLocalizedMessage(), Utils.throwableToString(e)).build());
         } finally {
             if (session != null)
@@ -134,19 +138,22 @@ public class RootlessSaiPackageInstaller extends BaseSaiPackageInstaller impleme
 
     @Override
     public void onInstallationSucceeded(int androidSessionId, String packageName) {
-        String sessionId = mAndroidPiSessionIdToSaiPiSessionId.get(androidSessionId);
+        String sessionId = mAndroidPiSessionIdToSaiPiSessionId.remove(androidSessionId);
         if (sessionId == null)
             return;
 
+        mSessionIdToAppTempName.remove(sessionId);
         logSystemPhaseDuration(sessionId);
         setSessionState(sessionId, new SaiPiSessionState.Builder(sessionId, SaiPiSessionStatus.INSTALLATION_SUCCEED).packageName(packageName).resolvePackageMeta(getContext()).build());
     }
 
     @Override
     public void onInstallationFailed(int androidSessionId, String shortError, @Nullable String fullError, @Nullable Exception exception) {
-        String sessionId = mAndroidPiSessionIdToSaiPiSessionId.get(androidSessionId);
+        String sessionId = mAndroidPiSessionIdToSaiPiSessionId.remove(androidSessionId);
         if (sessionId == null)
             return;
+
+        mSessionIdToCommitStartedAt.remove(sessionId);
 
         setSessionState(sessionId, new SaiPiSessionState.Builder(sessionId, SaiPiSessionStatus.INSTALLATION_FAILED)
                 .appTempName(mSessionIdToAppTempName.remove(sessionId))

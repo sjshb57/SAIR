@@ -72,12 +72,6 @@
             android:defaultValue="0" />
 
         <SwitchPreference
-            android:icon="@drawable/ic_pref_key"
-            android:key="sign_apks"
-            android:title="@string/settings_main_sign_apks"
-            android:summary="@string/settings_main_sign_apks_summary" />
-
-        <SwitchPreference
             android:icon="@drawable/ic_pref_unarchive"
             android:key="extract_archives"
             android:title="@string/settings_main_extract_archives"
@@ -138,11 +132,6 @@
             android:title="@string/settings_main_enable_apk_action_view"
             android:summary="@string/settings_main_enable_apk_action_view_summary"
             android:defaultValue="true" />
-
-        <Preference
-            android:icon="@drawable/ic_pref_donate"
-            android:key="donate"
-            android:title="@string/settings_main_donate" />
 
         <Preference
             android:icon="@drawable/ic_pref_info"

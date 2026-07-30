@@ -67,7 +67,9 @@ public class PreferencesHelper {
     }
 
     public boolean shouldSignApks() {
-        return mPrefs.getBoolean(PreferencesKeys.SIGN_APKS, false);
+        // PseudoApkSigner only emits a v1 (JAR) signature, which Android 11+ rejects for
+        // anything targeting SDK 30+, so the feature is force-disabled rather than removed.
+        return false;
     }
 
     public void setShouldSignApks(boolean signApks) {

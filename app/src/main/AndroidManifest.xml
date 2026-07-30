@@ -61,7 +61,6 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".ui.activities.BackupSettingsActivity" />
         <activity android:name=".ui.activities.BackupManageAppActivity" />
-        <activity android:name=".ui.activities.DonateActivity" />
         <activity
             android:name=".ui.activities.MainActivity"
             android:launchMode="singleTask"

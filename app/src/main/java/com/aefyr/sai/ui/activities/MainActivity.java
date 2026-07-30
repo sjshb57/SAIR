@@ -11,8 +11,6 @@ import androidx.fragment.app.Fragment;
 
 import com.aefyr.sai.R;
 import com.aefyr.sai.backup2.impl.DefaultBackupManager;
-import com.aefyr.sai.billing.BillingManager;
-import com.aefyr.sai.billing.DefaultBillingManager;
 import com.aefyr.sai.ui.fragments.BackupFragment;
 import com.aefyr.sai.ui.fragments.Installer2Fragment;
 import com.aefyr.sai.ui.fragments.InstallerFragment;
@@ -34,16 +32,12 @@ public class MainActivity extends ThemedActivity implements NavigationBarView.On
 
     private boolean mIsNavigationEnabled = true;
 
-    private BillingManager mBillingManager;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         InsetsUtils.applyBottomInsetAsPadding(findViewById(R.id.bottomnav_main));
-
-        mBillingManager = DefaultBillingManager.getInstance(this);
 
         //TODO is this ok?
         DefaultBackupManager.getInstance(this);
@@ -130,9 +124,4 @@ public class MainActivity extends ThemedActivity implements NavigationBarView.On
         return mInstallerFragment;
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mBillingManager.refresh();
-    }
 }

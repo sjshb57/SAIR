@@ -69,13 +69,6 @@
                         style="@style/SAIMaterialButton"
                         android:layout_margin="8dp"
                         android:text="@string/about_licenses" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/button_about_donate"
-                        style="@style/SAIMaterialButton.Outlined"
-                        android:layout_margin="8dp"
-                        android:text="@string/about_donate"
-                        android:visibility="gone" />
                 </LinearLayout>
 
                 <com.google.android.material.button.MaterialButton

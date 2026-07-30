@@ -26,11 +26,13 @@ class PersistentShellSession {
 
     private final String mTag;
     private final ProcessFactory mProcessFactory;
+    private final StringBuilder mErrBuffer = new StringBuilder();
 
     private Process mProcess;
     private Writer mIn;
     private BufferedReader mOut;
     private BufferedReader mErr;
+    private Thread mErrPump;
 
     interface ProcessFactory {
         Process start() throws Exception;
@@ -53,6 +55,7 @@ class PersistentShellSession {
             mIn = new OutputStreamWriter(mProcess.getOutputStream(), StandardCharsets.UTF_8);
             mOut = new BufferedReader(new InputStreamReader(mProcess.getInputStream(), StandardCharsets.UTF_8));
             mErr = new BufferedReader(new InputStreamReader(mProcess.getErrorStream(), StandardCharsets.UTF_8));
+            startErrPump(mErr);
         } catch (Exception e) {
             Log.w(mTag, "Unable to start shell session", e);
             close();
@@ -76,6 +79,11 @@ class PersistentShellSession {
     }
 
     synchronized Shell.Result exec(Shell.Command command) throws IOException {
+        if (mIn == null || mOut == null)
+            throw new IOException("Shell session is not running");
+
+        takeStderr();
+
         mIn.write(command.toString());
         mIn.write("\n");
         mIn.write("echo " + MARKER + " $?\n");
@@ -83,40 +91,67 @@ class PersistentShellSession {
 
         StringBuilder out = new StringBuilder();
         int exitCode = -1;
+        boolean finished = false;
         String line;
         while ((line = mOut.readLine()) != null) {
-            if (line.startsWith(MARKER)) {
+            // A command whose last line lacks a trailing newline would otherwise glue itself to
+            // the marker, so match anywhere in the line instead of only at its start.
+            int markerIndex = line.indexOf(MARKER);
+            if (markerIndex >= 0) {
+                if (markerIndex > 0)
+                    appendLine(out, line.substring(0, markerIndex));
+
                 try {
-                    exitCode = Integer.parseInt(line.substring(MARKER.length()).trim());
+                    exitCode = Integer.parseInt(line.substring(markerIndex + MARKER.length()).trim());
                 } catch (NumberFormatException ignored) {
                 }
+
+                finished = true;
                 break;
             }
-            if (out.length() > 0)
-                out.append('\n');
-            out.append(line);
+
+            appendLine(out, line);
         }
 
-        if (line == null)
+        if (!finished)
             throw new IOException("Shell session closed unexpectedly");
 
-        return new Shell.Result(command, exitCode, out.toString().trim(), drainStderr());
+        return new Shell.Result(command, exitCode, out.toString().trim(), takeStderr());
     }
 
-    private String drainStderr() {
-        StringBuilder err = new StringBuilder();
-        try {
-            while (mErr.ready()) {
-                String line = mErr.readLine();
-                if (line == null)
-                    break;
-                if (err.length() > 0)
-                    err.append('\n');
-                err.append(line);
+    /**
+     * stderr is drained by a dedicated thread: leaving it unread until the command finishes lets a
+     * chatty command fill the pipe buffer, block the shell and deadlock the session.
+     */
+    private void startErrPump(BufferedReader reader) {
+        Thread pump = new Thread(() -> {
+            try {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    synchronized (mErrBuffer) {
+                        appendLine(mErrBuffer, line);
+                    }
+                }
+            } catch (IOException ignored) {
             }
-        } catch (IOException ignored) {
+        }, mTag + "-stderr");
+        pump.setDaemon(true);
+        mErrPump = pump;
+        pump.start();
+    }
+
+    private String takeStderr() {
+        synchronized (mErrBuffer) {
+            String err = mErrBuffer.toString().trim();
+            mErrBuffer.setLength(0);
+            return err;
         }
-        return err.toString().trim();
+    }
+
+    private static void appendLine(StringBuilder builder, String line) {
+        if (builder.length() > 0)
+            builder.append('\n');
+        builder.append(line);
     }
 
     private boolean isAlive() {
@@ -136,10 +171,16 @@ class PersistentShellSession {
         if (mProcess != null)
             mProcess.destroy();
 
+        if (mErrPump != null)
+            mErrPump.interrupt();
+
         mIn = null;
         mOut = null;
         mErr = null;
+        mErrPump = null;
         mProcess = null;
+
+        takeStderr();
     }
 
     interface Validator {

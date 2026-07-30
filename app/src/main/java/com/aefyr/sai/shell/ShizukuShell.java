@@ -38,9 +38,9 @@ public class ShizukuShell implements Shell {
     @Override
     public boolean isAvailable() {
         if (!Shizuku.pingBinder())
-            return true;
+            return false;
 
-        return !mSession.ensureStarted(session -> session.exec(new Command("echo", "test")).isSuccessful());
+        return mSession.ensureStarted(session -> session.exec(new Command("echo", "test")).isSuccessful());
     }
 
     @Override
@@ -62,7 +62,7 @@ public class ShizukuShell implements Shell {
         if (inputPipe != null)
             return execWithStdin(command, inputPipe);
 
-        if (isAvailable())
+        if (!isAvailable())
             return new Result(command, -1, "", "<!> SAI ShizukuShell: unable to start shell session");
 
         try {

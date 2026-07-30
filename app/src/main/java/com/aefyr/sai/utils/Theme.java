@@ -62,18 +62,18 @@ public class Theme {
                 Utils.apiIsAtLeast(Build.VERSION_CODES.Q) ? Mode.AUTO_LIGHT_DARK.name() : Mode.CONCRETE.name()));
 
         mThemes = new ArrayList<>();
-        mThemes.add(new ThemeDescriptor(0, R.style.AppTheme_Light, false, R.string.theme_sai, false));
-        mThemes.add(new ThemeDescriptor(1, R.style.AppTheme_Dark, true, R.string.theme_ruby, false));
-        mThemes.add(new ThemeDescriptor(2, R.style.AppTheme_Rena, true, R.string.theme_rena, false));
-        mThemes.add(new ThemeDescriptor(3, R.style.AppTheme_Rooter, false, R.string.theme_ukrrooter, false));
-        mThemes.add(new ThemeDescriptor(4, R.style.AppTheme_Omelette, true, R.string.theme_amoled, false));
-        mThemes.add(new ThemeDescriptor(5, R.style.AppTheme_Pixel, false, R.string.theme_pixel, false));
-        mThemes.add(new ThemeDescriptor(6, R.style.AppTheme_FDroid, false, R.string.theme_sai_fdroid, false));
-        mThemes.add(new ThemeDescriptor(7, R.style.AppTheme_Dark2, true, R.string.theme_dark, false));
-        mThemes.add(new ThemeDescriptor(8, R.style.AppTheme_Gold, true, R.string.theme_gold, true));
-        mThemes.add(new ThemeDescriptor(9, R.style.AppTheme_RenaLight, false, R.string.theme_rena_light, false));
-        mThemes.add(new ThemeDescriptor(10, R.style.AppTheme_Mint, true, R.string.theme_mint, false));
-        mThemes.add(new ThemeDescriptor(11, R.style.AppTheme_FDroidDark, true, R.string.theme_fdroid_dark, false));
+        mThemes.add(new ThemeDescriptor(0, R.style.AppTheme_Light, false, R.string.theme_sai));
+        mThemes.add(new ThemeDescriptor(1, R.style.AppTheme_Dark, true, R.string.theme_ruby));
+        mThemes.add(new ThemeDescriptor(2, R.style.AppTheme_Rena, true, R.string.theme_rena));
+        mThemes.add(new ThemeDescriptor(3, R.style.AppTheme_Rooter, false, R.string.theme_ukrrooter));
+        mThemes.add(new ThemeDescriptor(4, R.style.AppTheme_Omelette, true, R.string.theme_amoled));
+        mThemes.add(new ThemeDescriptor(5, R.style.AppTheme_Pixel, false, R.string.theme_pixel));
+        mThemes.add(new ThemeDescriptor(6, R.style.AppTheme_FDroid, false, R.string.theme_sai_fdroid));
+        mThemes.add(new ThemeDescriptor(7, R.style.AppTheme_Dark2, true, R.string.theme_dark));
+        mThemes.add(new ThemeDescriptor(8, R.style.AppTheme_Gold, true, R.string.theme_gold));
+        mThemes.add(new ThemeDescriptor(9, R.style.AppTheme_RenaLight, false, R.string.theme_rena_light));
+        mThemes.add(new ThemeDescriptor(10, R.style.AppTheme_Mint, true, R.string.theme_mint));
+        mThemes.add(new ThemeDescriptor(11, R.style.AppTheme_FDroidDark, true, R.string.theme_fdroid_dark));
 
         invalidateLiveTheme();
         sInstance = this;
@@ -177,14 +177,12 @@ public class Theme {
         private final int mTheme;
         private final boolean mIsDark;
         private final int mNameStringRes;
-        private final boolean mDonationRequired;
 
-        private ThemeDescriptor(int id, @StyleRes int theme, boolean isDark, @StringRes int nameStringRes, boolean donationRequired) {
+        private ThemeDescriptor(int id, @StyleRes int theme, boolean isDark, @StringRes int nameStringRes) {
             mId = id;
             mTheme = theme;
             mIsDark = isDark;
             mNameStringRes = nameStringRes;
-            mDonationRequired = donationRequired;
         }
 
         public int getId() {
@@ -202,10 +200,6 @@ public class Theme {
 
         public String getName(Context c) {
             return c.getString(mNameStringRes);
-        }
-
-        public boolean isDonationRequired() {
-            return mDonationRequired;
         }
 
         @Override
