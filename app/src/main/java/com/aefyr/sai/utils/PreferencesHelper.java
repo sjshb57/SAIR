@@ -7,6 +7,7 @@ import android.os.Environment;
 import androidx.preference.PreferenceManager;
 
 import com.github.angads25.filepicker.model.DialogConfigs;
+import com.aefyr.sai.signing.SigningSchemes;
 
 public class PreferencesHelper {
     private static PreferencesHelper sInstance;
@@ -67,9 +68,16 @@ public class PreferencesHelper {
     }
 
     public boolean shouldSignApks() {
-        // PseudoApkSigner only emits a v1 (JAR) signature, which Android 11+ rejects for
-        // anything targeting SDK 30+, so the feature is force-disabled rather than removed.
-        return false;
+        return mPrefs.getBoolean(PreferencesKeys.SIGN_APKS, false);
+    }
+
+    public SigningSchemes getSigningSchemes() {
+        return new SigningSchemes(mPrefs.getInt(PreferencesKeys.SIGNATURE_SCHEMES,
+                SigningSchemes.DEFAULT_SCHEMES));
+    }
+
+    public void setSigningSchemes(SigningSchemes schemes) {
+        mPrefs.edit().putInt(PreferencesKeys.SIGNATURE_SCHEMES, schemes.flags()).apply();
     }
 
     public void setShouldSignApks(boolean signApks) {
@@ -113,6 +121,9 @@ public class PreferencesHelper {
         }
     }
 
+    public boolean useOldInstaller() {
+        return mPrefs.getBoolean(PreferencesKeys.USE_OLD_INSTALLER, false);
+    }
 
     public boolean showInstallerDialogs() {
         return mPrefs.getBoolean(PreferencesKeys.SHOW_INSTALLER_DIALOGS, true);
@@ -134,6 +145,9 @@ public class PreferencesHelper {
         return mPrefs.getBoolean(PreferencesKeys.USE_INSTALLERX, true);
     }
 
+    public boolean isBruteParserEnabled() {
+        return mPrefs.getBoolean(PreferencesKeys.USE_BRUTE_PARSER, true);
+    }
 
     public boolean isInitialIndexingDone() {
         return mPrefs.getBoolean(PreferencesKeys.INITIAL_INDEXING_RUN, false);

@@ -23,10 +23,30 @@ android {
         }
     }
 
+    val releaseKeystore = rootProject.file("keystore.jks")
+
+    signingConfigs {
+        create("release") {
+            if (releaseKeystore.exists()) {
+                keyAlias = System.getenv("RELEASE_KEY_ALIAS") ?: ""
+                keyPassword = System.getenv("RELEASE_KEY_PWD") ?: ""
+                storeFile = releaseKeystore
+                storePassword = System.getenv("RELEASE_KEY_STORE_PWD") ?: ""
+            }
+            enableV1Signing = false
+            enableV2Signing = true
+            enableV3Signing = true
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
+            // Without the keystore the release build stays unsigned instead of failing,
+            // so a fresh clone can still be built.
+            if (releaseKeystore.exists())
+                signingConfig = signingConfigs.getByName("release")
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
@@ -73,7 +93,6 @@ dependencies {
     implementation(project(":libs:flexfilter"))
     implementation(project(":libs:filepicker"))
     implementation(project(":libs:tooltips"))
-    implementation(project(":libs:pseudoapksigner"))
 
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.documentfile)

@@ -232,7 +232,7 @@
     <string name="settings_main_auto_theme_picker_summary">Current light theme: %s\nCurrent dark theme: %s</string>
     <string name="settings_main_auto_theme_pre_q_warning">Please note that following the system theme may not work correctly on Android versions lower than Q</string>
     <string name="settings_main_use_installerx">Pro mode</string>
-    <string name="settings_main_use_installerx_summary">啟用安裝程式的專業模式，可讓您從 .apks 檔案（或其他含有多個 APK 檔案的壓縮檔）中選擇要安裝的部分</string>
+    <string name="settings_main_use_installerx_summary">Enable installer Pro mode that allows you to select parts to install from a .apks file (or other archives with multiple APK files). Please note that Pro mode is experimental and it may not work properly, feedback is welcome</string>
     <string name="settings_main_backup_settings">Backup settings</string>
     <string name="settings_main_backup_settings_summary">Tap to open backup settings</string>
     <string name="settings_main_enable_apk_action_view">Enable opening .apk files via SAI</string>
@@ -342,4 +342,29 @@
     <string name="storage_permission_denied_message">訪問權限被拒絕，應用可能無法正常運作。</string>
     <string name="install_permission_message">此應用需要安裝未知應用的權限才能安裝APK檔案。請點擊確認前往設定頁面開啟此權限。</string>
     <string name="install_permission_denied_message">安裝未知應用的權限被拒絕，無法安裝APK檔案。</string>
+
+    <string name="settings_main_signature_schemes">簽章方案</string>
+    <string name="settings_main_signature_schemes_summary">簽章時寫入哪些 APK 簽章方案</string>
+    <string name="settings_main_signing_key">簽章金鑰</string>
+    <string name="signing_schemes_v1">v1（JAR 簽章）</string>
+    <string name="signing_schemes_v1_summary">目前裝置不需要 v1。僅當簽章後的 APK 還要安裝到 Android 6 及更早的裝置上時才需要開啟。它會為封包內每個檔案寫入一條摘要，可能讓安裝檔增大約 1MB。</string>
+    <string name="signing_schemes_v2">v2（Android 7+）</string>
+    <string name="signing_schemes_v2_summary">本應用程式支援的所有裝置都能驗證。</string>
+    <string name="signing_schemes_v3">v3（Android 9+）</string>
+    <string name="signing_schemes_v3_summary">在 Android 9 及以上取代 v2。</string>
+    <string name="signing_schemes_v3_unsupported">目前裝置不支援</string>
+    <string name="signing_schemes_note">如果所選組合無法產出可安裝的 APK，SAI 會自動補上缺少的方案。</string>
+    <string name="signing_schemes_reset">恢復預設</string>
+    <string name="signing_key_fingerprint">憑證 SHA-256</string>
+    <string name="signing_key_none">尚未建立金鑰，首次簽章時會自動產生</string>
+    <string name="signing_key_regenerate">重新產生</string>
+    <string name="signing_key_import_keystore">匯入金鑰庫</string>
+    <string name="signing_key_import_pair">匯入金鑰 + 憑證</string>
+    <string name="signing_key_pick_certificate">請接著選擇憑證檔案</string>
+    <string name="signing_key_updated">簽章金鑰已更新</string>
+    <string name="signing_key_formats">金鑰庫：.p12 / .pfx，以及裝置支援時的 .bks 或 .jks。金鑰+憑證：PKCS#8 私鑰（.pk8 或 PEM）配 X.509 憑證（.pem 或 .der）。</string>
+    <string name="signing_key_regenerate_warning">使用新金鑰簽章的 APK 將無法覆蓋安裝以舊金鑰簽過的應用程式。</string>
+    <string name="signing_key_password">密碼（沒有則留空）</string>
+    <string name="signing_key_imported">金鑰已匯入</string>
+    <string name="signing_key_error">無法使用該金鑰：%s</string>
 </resources>

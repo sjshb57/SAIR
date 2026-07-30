@@ -232,7 +232,7 @@
     <string name="settings_main_auto_theme_picker_summary">当前浅色主题: %s\n当前深色主题: %s</string>
     <string name="settings_main_auto_theme_pre_q_warning">请注意，跟随系统主题可能在低于Android 10的版本上无法正常工作</string>
     <string name="settings_main_use_installerx">专业模式</string>
-    <string name="settings_main_use_installerx_summary">启用安装程序的专业模式，可以从 .apks 文件（或其他含有多个 APK 文件的压缩包）中选择要安装的部分</string>
+    <string name="settings_main_use_installerx_summary">启用安装程序的专业模式，该模式允许您从.apks文件（或具有多个APK文件的其他压缩文件）中选择要安装的部分。 请注意，专业模式是实验性的并且可能无法正常工作，欢迎反馈</string>
     <string name="settings_main_backup_settings">备份设置</string>
     <string name="settings_main_backup_settings_summary">点击打开备份设置</string>
     <string name="settings_main_enable_apk_action_view">允许通过 SAI 打开 .apk 文件</string>
@@ -342,4 +342,29 @@
     <string name="storage_permission_denied_message">访问权限被拒绝，应用可能无法正常工作。</string>
     <string name="install_permission_message">此应用需要安装未知应用的权限才能安装APK文件。请点击确认前往设置页面开启此权限。</string>
     <string name="install_permission_denied_message">安装未知应用的权限被拒绝，无法安装APK文件。</string>
+
+    <string name="settings_main_signature_schemes">签名方案</string>
+    <string name="settings_main_signature_schemes_summary">签名时写入哪些 APK 签名方案</string>
+    <string name="settings_main_signing_key">签名密钥</string>
+    <string name="signing_schemes_v1">v1（JAR 签名）</string>
+    <string name="signing_schemes_v1_summary">当前设备不需要 v1。仅当签名后的 APK 还要装到 Android 6 及更早的设备上时才需要开启。它会为包内每个文件写入一条摘要，可能让安装包增大约 1MB。</string>
+    <string name="signing_schemes_v2">v2（Android 7+）</string>
+    <string name="signing_schemes_v2_summary">本应用支持的所有设备都能校验。</string>
+    <string name="signing_schemes_v3">v3（Android 9+）</string>
+    <string name="signing_schemes_v3_summary">在 Android 9 及以上取代 v2。</string>
+    <string name="signing_schemes_v3_unsupported">当前设备不支持</string>
+    <string name="signing_schemes_note">如果所选组合无法产出可安装的 APK，SAI 会自动补上缺少的方案。</string>
+    <string name="signing_schemes_reset">恢复默认</string>
+    <string name="signing_key_fingerprint">证书 SHA-256</string>
+    <string name="signing_key_none">尚未创建密钥，首次签名时会自动生成</string>
+    <string name="signing_key_regenerate">重新生成</string>
+    <string name="signing_key_import_keystore">导入密钥库</string>
+    <string name="signing_key_import_pair">导入密钥 + 证书</string>
+    <string name="signing_key_pick_certificate">请接着选择证书文件</string>
+    <string name="signing_key_updated">签名密钥已更新</string>
+    <string name="signing_key_formats">密钥库：.p12 / .pfx，以及设备支持时的 .bks 或 .jks。密钥+证书：PKCS#8 私钥（.pk8 或 PEM）配 X.509 证书（.pem 或 .der）。</string>
+    <string name="signing_key_regenerate_warning">用新密钥签名的 APK 将无法覆盖安装用旧密钥签过的应用。</string>
+    <string name="signing_key_password">密码（没有则留空）</string>
+    <string name="signing_key_imported">密钥已导入</string>
+    <string name="signing_key_error">无法使用该密钥：%s</string>
 </resources>

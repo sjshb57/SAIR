@@ -240,7 +240,7 @@
     <string name="settings_main_auto_theme_picker_summary">Current light theme: %s\nCurrent dark theme: %s</string>
     <string name="settings_main_auto_theme_pre_q_warning">Please note that following the system theme may not work correctly on Android versions lower than Q</string>
     <string name="settings_main_use_installerx">Pro mode</string>
-    <string name="settings_main_use_installerx_summary">Enable installer Pro mode, which lets you choose which parts to install from a .apks file or any other archive holding multiple APKs</string>
+    <string name="settings_main_use_installerx_summary">Enable installer Pro mode that allows you to select parts to install from a .apks file (or other archives with multiple APK files). Please note that Pro mode is experimental and it may not work properly, feedback is welcome</string>
     <string name="settings_main_backup_settings">Backup settings</string>
     <string name="settings_main_backup_settings_summary">Tap to open backup settings</string>
     <string name="settings_main_enable_apk_action_view">Enable opening .apk files via SAI</string>
@@ -366,4 +366,29 @@
     <string name="storage_permission_denied_message">Access permission denied, the app may not work properly.</string>
     <string name="install_permission_message">This app requires permission to install unknown apps in order to install APK files. Please click confirm to go to the settings page and enable this permission.</string>
     <string name="install_permission_denied_message">Permission to install unknown apps was denied. APK files cannot be installed.</string>
+
+    <string name="settings_main_signature_schemes">Signature schemes</string>
+    <string name="settings_main_signature_schemes_summary">Which APK signature schemes to write when signing</string>
+    <string name="settings_main_signing_key">Signing key</string>
+    <string name="signing_schemes_v1">v1 (JAR signature)</string>
+    <string name="signing_schemes_v1_summary">This device never needs v1. Turn it on only if the signed APK will also be installed on Android 6 or older. It adds a digest for every file in the APK, which can grow it by around a megabyte.</string>
+    <string name="signing_schemes_v2">v2 (Android 7+)</string>
+    <string name="signing_schemes_v2_summary">Verified by every device this app runs on.</string>
+    <string name="signing_schemes_v3">v3 (Android 9+)</string>
+    <string name="signing_schemes_v3_summary">Supersedes v2 on Android 9 and above.</string>
+    <string name="signing_schemes_v3_unsupported">Not supported on this device</string>
+    <string name="signing_schemes_note">If the selection cannot produce an installable APK, SAI adds the missing scheme automatically.</string>
+    <string name="signing_schemes_reset">Reset</string>
+    <string name="signing_key_fingerprint">Certificate SHA-256</string>
+    <string name="signing_key_none">No key yet, one is created the first time you sign something</string>
+    <string name="signing_key_regenerate">Generate new</string>
+    <string name="signing_key_import_keystore">Import a keystore</string>
+    <string name="signing_key_import_pair">Import a key and certificate</string>
+    <string name="signing_key_pick_certificate">Now pick the certificate file</string>
+    <string name="signing_key_updated">Signing key updated</string>
+    <string name="signing_key_formats">Keystore: .p12 / .pfx, and .bks or .jks where the device supports them. Key and certificate: a PKCS#8 key (.pk8 or PEM) next to an X.509 certificate (.pem or .der).</string>
+    <string name="signing_key_regenerate_warning">APKs signed with a new key can no longer replace apps signed with the old one.</string>
+    <string name="signing_key_password">Password (leave empty if there is none)</string>
+    <string name="signing_key_imported">Key imported</string>
+    <string name="signing_key_error">Could not use the key: %s</string>
 </resources>

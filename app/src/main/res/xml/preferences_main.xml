@@ -23,6 +23,11 @@
             android:title="@string/settings_main_auto_theme_picker"
             android:summary="@string/settings_main_auto_theme_picker_summary" />
 
+        <SwitchPreference
+            android:icon="@drawable/ic_pref_old_installer"
+            android:key="use_old_installer"
+            android:title="@string/settings_main_use_old_installer"
+            android:summary="@string/settings_main_use_old_installer_summary" />
 
         <SwitchPreference
             android:icon="@drawable/ic_pref_show_dialogs"
@@ -43,6 +48,25 @@
     <PreferenceCategory
         android:title="@string/settings_category_main_installer"
         app:iconSpaceReserved="false">
+
+        <SwitchPreference
+            android:icon="@drawable/ic_pref_key"
+            android:key="sign_apks"
+            android:title="@string/settings_main_sign_apks"
+            android:summary="@string/settings_main_sign_apks_summary" />
+
+        <Preference
+            android:dependency="sign_apks"
+            android:icon="@drawable/ic_pref_key"
+            android:key="signature_schemes"
+            android:title="@string/settings_main_signature_schemes"
+            android:summary="@string/settings_main_signature_schemes_summary" />
+
+        <Preference
+            android:dependency="sign_apks"
+            android:icon="@drawable/ic_pref_key"
+            android:key="signing_key"
+            android:title="@string/settings_main_signing_key" />
 
         <SwitchPreference
             android:icon="@drawable/ic_pref_pro_mode"
@@ -96,6 +120,12 @@
         android:title="@string/settings_category_main_parser"
         app:iconSpaceReserved="false">
 
+        <SwitchPreference
+            android:icon="@drawable/ic_pref_unarchive"
+            android:key="use_brute_parser"
+            android:title="@string/settings_main_use_brute_parser"
+            android:summary="@string/settings_main_use_brute_parser_summary"
+            android:defaultValue="true" />
 
     </PreferenceCategory>
 

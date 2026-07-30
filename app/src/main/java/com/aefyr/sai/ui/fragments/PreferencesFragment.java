@@ -45,12 +45,17 @@ import java.util.Objects;
 
 import rikka.shizuku.Shizuku;
 import com.aefyr.sai.utils.InsetsUtils;
+import com.aefyr.sai.signing.SigningKey;
+import com.aefyr.sai.signing.SigningKeyManager;
+import com.aefyr.sai.ui.dialogs.SignatureSchemesDialogFragment;
+import com.aefyr.sai.ui.dialogs.SigningKeyDialogFragment;
 
-public class PreferencesFragment extends PreferenceFragmentCompat implements FilePickerDialogFragment.OnFilesSelectedListener, SingleChoiceListDialogFragment.OnItemSelectedListener, BaseBottomSheetDialogFragment.OnDismissListener, SharedPreferences.OnSharedPreferenceChangeListener, DarkLightThemeSelectionDialogFragment.OnDarkLightThemesChosenListener, Shizuku.OnRequestPermissionResultListener {
+public class PreferencesFragment extends PreferenceFragmentCompat implements FilePickerDialogFragment.OnFilesSelectedListener, SingleChoiceListDialogFragment.OnItemSelectedListener, BaseBottomSheetDialogFragment.OnDismissListener, SharedPreferences.OnSharedPreferenceChangeListener, DarkLightThemeSelectionDialogFragment.OnDarkLightThemesChosenListener, Shizuku.OnRequestPermissionResultListener, SigningKeyDialogFragment.OnSigningKeyChangedListener {
 
     private PreferencesHelper mHelper;
     private PackageManager mPm;
     private Preference mHomeDirPref;
+    private Preference mSigningKeyPref;
     private Preference mFilePickerSortPref;
     private Preference mInstallerPref;
     private Preference mThemePref;
@@ -113,6 +118,23 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Fil
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.preferences_main, rootKey);
+
+        Preference schemesPref = findPreference("signature_schemes");
+        if (schemesPref != null) {
+            schemesPref.setOnPreferenceClickListener(p -> {
+                new SignatureSchemesDialogFragment().show(getChildFragmentManager(), "signature_schemes");
+                return true;
+            });
+        }
+
+        mSigningKeyPref = findPreference("signing_key");
+        if (mSigningKeyPref != null) {
+            updateSigningKeySummary();
+            mSigningKeyPref.setOnPreferenceClickListener(p -> {
+                new SigningKeyDialogFragment().show(getChildFragmentManager(), "signing_key");
+                return true;
+            });
+        }
 
         Preference aboutPref = findPreference("about");
         if (aboutPref != null) {
@@ -379,6 +401,10 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Fil
     @SuppressLint("ApplySharedPref")
     @Override
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+        if (PreferencesKeys.USE_OLD_INSTALLER.equals(key)) {
+            prefs.edit().putBoolean(PreferencesKeys.USE_OLD_INSTALLER, prefs.getBoolean(PreferencesKeys.USE_OLD_INSTALLER, false)).commit();
+            Utils.hardRestartApp(requireContext());
+        }
     }
 
     @Override
@@ -399,4 +425,22 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Fil
             }
         }
     }
+    private void updateSigningKeySummary() {
+        if (mSigningKeyPref == null)
+            return;
+
+        try {
+            SigningKey key = SigningKeyManager.getInstance(requireContext()).get();
+            mSigningKeyPref.setSummary(key != null
+                    ? key.certificateSha256() : getString(R.string.signing_key_none));
+        } catch (Exception e) {
+            mSigningKeyPref.setSummary(getString(R.string.signing_key_error, e.getClass().getSimpleName()));
+        }
+    }
+
+    @Override
+    public void onSigningKeyChanged() {
+        updateSigningKeySummary();
+    }
+
 }

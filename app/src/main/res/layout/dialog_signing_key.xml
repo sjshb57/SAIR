@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingStart="24dp"
+    android:paddingEnd="24dp"
+    android:paddingBottom="8dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/signing_key_fingerprint"
+        android:textColor="?android:attr/textColorSecondary"
+        android:textSize="13sp" />
+
+    <TextView
+        android:id="@+id/tv_signing_key_fingerprint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="16dp"
+        android:fontFamily="monospace"
+        android:textIsSelectable="true"
+        android:textSize="12sp" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_signing_key_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:hint="@string/signing_key_password">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_signing_key_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_signing_key_import_keystore"
+        style="@style/SAIMaterialButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="@string/signing_key_import_keystore" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_signing_key_import_pair"
+        style="@style/SAIMaterialButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="@string/signing_key_import_pair" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_signing_key_regenerate"
+        style="@style/SAIMaterialButton.Outlined"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/signing_key_regenerate" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/signing_key_regenerate_warning"
+        android:textColor="?android:attr/textColorSecondary"
+        android:textSize="13sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/signing_key_formats"
+        android:textColor="?android:attr/textColorSecondary"
+        android:textSize="13sp" />
+
+</LinearLayout>
