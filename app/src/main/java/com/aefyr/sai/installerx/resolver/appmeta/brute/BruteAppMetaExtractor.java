@@ -16,7 +16,6 @@ import com.aefyr.sai.installerx.resolver.meta.ApkSourceFile;
 import com.aefyr.sai.model.backup.SaiExportedAppMeta;
 import com.aefyr.sai.model.common.PackageMeta;
 import com.aefyr.sai.utils.IOUtils;
-import com.aefyr.sai.utils.PreferencesHelper;
 import com.aefyr.sai.utils.Utils;
 
 import java.io.File;
@@ -62,8 +61,8 @@ public class BruteAppMetaExtractor implements AppMetaExtractor {
             if (cachedAppMeta != null)
                 return cachedAppMeta;
 
-            if (!PreferencesHelper.getInstance(mContext).isBruteParserEnabled() || baseApkEntry.getSize() >= 100 * 1000 * 1000) {
-                Log.i(TAG, "Brute parser disabled or base apk entry size is more than 100MBs");
+            if (baseApkEntry.getSize() >= 100 * 1000 * 1000) {
+                Log.i(TAG, "Base apk entry size is more than 100MBs, skipping brute extraction");
                 return null;
             }
 

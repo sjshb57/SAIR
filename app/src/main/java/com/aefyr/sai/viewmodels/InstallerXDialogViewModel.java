@@ -13,7 +13,7 @@ import androidx.lifecycle.ViewModel;
 import com.aefyr.sai.R;
 import com.aefyr.sai.adapters.selection.Selection;
 import com.aefyr.sai.adapters.selection.SimpleKeyStorage;
-import com.aefyr.sai.installer.ApkSourceBuilder;
+import com.aefyr.sai.model.apksource.ApkSourceBuilder;
 import com.aefyr.sai.installer2.base.model.SaiPiSessionParams;
 import com.aefyr.sai.installer2.impl.FlexSaiPackageInstaller;
 import com.aefyr.sai.installerx.common.SplitApkSourceMeta;

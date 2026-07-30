@@ -20,6 +20,8 @@ gson = "2.14.0"
 shimmer = "1.0.0"
 shizuku = "13.1.5"
 leakcanary = "2.14"
+apksig = "9.2.1"
+desugar-jdk-libs = "2.1.5"
 
 [libraries]
 
@@ -46,6 +48,8 @@ shimmer-android = { group = "io.github.usefulness", name = "shimmer-android-core
 shizuku-api = { group = "dev.rikka.shizuku", name = "api", version.ref = "shizuku" }
 shizuku-provider = { group = "dev.rikka.shizuku", name = "provider", version.ref = "shizuku" }
 leakcanary-android = { group = "com.squareup.leakcanary", name = "leakcanary-android", version.ref = "leakcanary" }
+apksig = { group = "com.android.tools.build", name = "apksig", version.ref = "apksig" }
+desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugar-jdk-libs" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

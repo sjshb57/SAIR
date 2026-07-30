@@ -14,7 +14,6 @@ import com.aefyr.sai.backup2.impl.DefaultBackupManager;
 import com.aefyr.sai.ui.fragments.BackupFragment;
 import com.aefyr.sai.ui.fragments.Installer2Fragment;
 import com.aefyr.sai.ui.fragments.InstallerFragment;
-import com.aefyr.sai.ui.fragments.LegacyInstallerFragment;
 import com.aefyr.sai.ui.fragments.PreferencesFragment;
 import com.aefyr.sai.utils.FragmentNavigator;
 import com.aefyr.sai.utils.PreferencesHelper;
@@ -120,7 +119,7 @@ public class MainActivity extends ThemedActivity implements NavigationBarView.On
 
     private InstallerFragment getInstallerFragment() {
         if (mInstallerFragment == null)
-            mInstallerFragment = PreferencesHelper.getInstance(this).useOldInstaller() ? new LegacyInstallerFragment() : new Installer2Fragment();
+            mInstallerFragment = new Installer2Fragment();
         return mInstallerFragment;
     }
 

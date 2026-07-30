@@ -232,7 +232,7 @@
     <string name="settings_main_auto_theme_picker_summary">当前浅色主题: %s\n当前深色主题: %s</string>
     <string name="settings_main_auto_theme_pre_q_warning">请注意，跟随系统主题可能在低于Android 10的版本上无法正常工作</string>
     <string name="settings_main_use_installerx">专业模式</string>
-    <string name="settings_main_use_installerx_summary">启用安装程序的专业模式，该模式允许您从.apks文件（或具有多个APK文件的其他压缩文件）中选择要安装的部分。 请注意，专业模式是实验性的并且可能无法正常工作，欢迎反馈</string>
+    <string name="settings_main_use_installerx_summary">启用安装程序的专业模式，可以从 .apks 文件（或其他含有多个 APK 文件的压缩包）中选择要安装的部分</string>
     <string name="settings_main_backup_settings">备份设置</string>
     <string name="settings_main_backup_settings_summary">点击打开备份设置</string>
     <string name="settings_main_enable_apk_action_view">允许通过 SAI 打开 .apk 文件</string>

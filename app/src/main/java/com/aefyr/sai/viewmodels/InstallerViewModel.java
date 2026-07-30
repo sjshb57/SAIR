@@ -8,7 +8,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.aefyr.sai.installer.ApkSourceBuilder;
+import com.aefyr.sai.model.apksource.ApkSourceBuilder;
 import com.aefyr.sai.installer2.base.SaiPiSessionObserver;
 import com.aefyr.sai.installer2.base.model.SaiPiSessionParams;
 import com.aefyr.sai.installer2.base.model.SaiPiSessionState;
