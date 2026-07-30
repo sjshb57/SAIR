@@ -39,6 +39,7 @@ import androidx.core.content.ContextCompat;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import com.aefyr.sai.utils.IOUtils;
@@ -312,6 +313,9 @@ public abstract class ShellSaiPackageInstaller extends BaseSaiPackageInstaller {
 
     private File stageApkToCache(ApkSource apkSource) throws Exception {
         File staged = Utils.createTempFileInCache(getContext(), "ShellSaiPi", "apk");
+        if (staged == null)
+            throw new IOException("Unable to create a staging file in the cache directory");
+
         try (InputStream in = apkSource.openApkInputStream();
              OutputStream out = IOUtils.buffer(new FileOutputStream(staged))) {
             IOUtils.copyStream(in, out);

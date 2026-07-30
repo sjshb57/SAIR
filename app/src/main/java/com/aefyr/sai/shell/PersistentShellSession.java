@@ -155,8 +155,12 @@ class PersistentShellSession {
     }
 
     private boolean isAlive() {
+        Process process = mProcess;
+        if (process == null)
+            return false;
+
         try {
-            mProcess.exitValue();
+            process.exitValue();
             return false;
         } catch (IllegalThreadStateException e) {
             return true;
