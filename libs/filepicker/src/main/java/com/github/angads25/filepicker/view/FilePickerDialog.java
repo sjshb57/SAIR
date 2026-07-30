@@ -31,6 +31,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.github.angads25.filepicker.R;
 import com.github.angads25.filepicker.controller.DialogSelectionListener;
@@ -90,6 +93,7 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_main);
+        applySystemBarInsets();
         listView = findViewById(R.id.fileList);
         select = findViewById(R.id.select);
         int size = MarkedItemList.getFileCount();
@@ -234,6 +238,34 @@ public class FilePickerDialog extends Dialog implements AdapterView.OnItemClickL
         String offsetPath = properties.offset.getAbsolutePath();
         String rootPath = properties.root.getAbsolutePath();
         return !offsetPath.equals(rootPath) && offsetPath.contains(rootPath);
+    }
+
+    /**
+     * The picker is themed with a full app theme, so its window is not floating and gets laid out
+     * edge to edge from API 35 on, putting the header under the status bar.
+     */
+    private void applySystemBarInsets() {
+        View header = findViewById(R.id.header);
+        View footer = findViewById(R.id.footer);
+        if (header == null || footer == null)
+            return;
+
+        final int headerTop = header.getPaddingTop();
+        final int footerBottom = footer.getPaddingBottom();
+
+        ViewCompat.setOnApplyWindowInsetsListener(header, (v, windowInsets) -> {
+            Insets insets = windowInsets.getInsets(
+                    WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
+            v.setPadding(v.getPaddingLeft(), headerTop + insets.top, v.getPaddingRight(), v.getPaddingBottom());
+            return windowInsets;
+        });
+
+        ViewCompat.setOnApplyWindowInsetsListener(footer, (v, windowInsets) -> {
+            Insets insets = windowInsets.getInsets(
+                    WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
+            v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(), footerBottom + insets.bottom);
+            return windowInsets;
+        });
     }
 
     @Override

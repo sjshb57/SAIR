@@ -4,6 +4,7 @@ agp = "9.2.1"
 
 # AndroidX
 androidx-annotation = "1.10.0"
+androidx-core = "1.19.0"
 androidx-appcompat = "1.7.1"
 androidx-documentfile = "1.1.0"
 androidx-fragment = "1.8.9"
@@ -24,6 +25,7 @@ leakcanary = "2.14"
 
 # AndroidX
 androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "androidx-annotation" }
+androidx-core = { group = "androidx.core", name = "core", version.ref = "androidx-core" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx-appcompat" }
 androidx-documentfile = { group = "androidx.documentfile", name = "documentfile", version.ref = "androidx-documentfile" }
 androidx-fragment = { group = "androidx.fragment", name = "fragment", version.ref = "androidx-fragment" }

@@ -28,6 +28,7 @@ android {
 
 dependencies {
     implementation(libs.androidx.annotation)
+    implementation(libs.androidx.core)
     // FilePickerPreference 继承 Preference
     api(libs.androidx.preference)
     implementation(libs.material)
