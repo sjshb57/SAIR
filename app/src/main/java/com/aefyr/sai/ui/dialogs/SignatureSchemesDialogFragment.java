@@ -49,9 +49,6 @@ public class SignatureSchemesDialogFragment extends BaseBottomSheetDialogFragmen
 
         apply(PreferencesHelper.getInstance(requireContext()).getSigningSchemes());
 
-        view.findViewById(R.id.button_schemes_reset)
-                .setOnClickListener(v -> apply(new SigningSchemes(SigningSchemes.DEFAULT_SCHEMES)));
-
         getNegativeButton().setOnClickListener(v -> dismiss());
         getPositiveButton().setOnClickListener(v -> {
             SigningSchemes schemes = collect();

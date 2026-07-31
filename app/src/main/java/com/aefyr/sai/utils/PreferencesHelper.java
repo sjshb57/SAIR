@@ -121,9 +121,6 @@ public class PreferencesHelper {
         }
     }
 
-    public boolean useOldInstaller() {
-        return mPrefs.getBoolean(PreferencesKeys.USE_OLD_INSTALLER, false);
-    }
 
     public boolean showInstallerDialogs() {
         return mPrefs.getBoolean(PreferencesKeys.SHOW_INSTALLER_DIALOGS, true);
@@ -145,9 +142,6 @@ public class PreferencesHelper {
         return mPrefs.getBoolean(PreferencesKeys.USE_INSTALLERX, true);
     }
 
-    public boolean isBruteParserEnabled() {
-        return mPrefs.getBoolean(PreferencesKeys.USE_BRUTE_PARSER, true);
-    }
 
     public boolean isInitialIndexingDone() {
         return mPrefs.getBoolean(PreferencesKeys.INITIAL_INDEXING_RUN, false);

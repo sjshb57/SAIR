@@ -4,9 +4,6 @@
         android:left="@dimen/prefs_icons_padding"
         android:top="@dimen/prefs_icons_padding"
         android:right="@dimen/prefs_icons_padding"
-        android:bottom="@dimen/prefs_icons_padding">
-        <bitmap
-            android:src="@drawable/ic_history"
-            android:tint="?attr/colorAccent" />
-    </item>
+        android:bottom="@dimen/prefs_icons_padding"
+        android:drawable="@drawable/ic_signature_schemes" />
 </layer-list>

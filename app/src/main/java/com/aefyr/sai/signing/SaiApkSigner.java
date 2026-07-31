@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.apksig.ApkSigner;
+import com.android.apksig.KeyConfig;
 import com.android.apksig.apk.MinSdkVersionException;
 
 import java.io.File;
@@ -50,8 +51,14 @@ public class SaiApkSigner {
 
     private void signWith(File input, File output, SigningSchemes schemes,
                           @Nullable Integer minSdkVersion) throws Exception {
+        // The (String, PrivateKey, List) constructor is deprecated in favour of the KeyConfig one,
+        // which also covers keys held by a KMS. The trailing flag is deterministic DSA signing,
+        // which does not apply to an RSA key.
         ApkSigner.SignerConfig signerConfig = new ApkSigner.SignerConfig.Builder(
-                "SAI", mKey.privateKey(), Collections.singletonList(mKey.certificate())).build();
+                "SAI",
+                new KeyConfig.Jca(mKey.privateKey()),
+                Collections.singletonList(mKey.certificate()),
+                false).build();
 
         ApkSigner.Builder builder = new ApkSigner.Builder(Collections.singletonList(signerConfig))
                 .setInputApk(input)

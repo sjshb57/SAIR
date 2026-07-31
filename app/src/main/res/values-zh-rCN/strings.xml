@@ -199,8 +199,6 @@
     <string name="settings_main_extract_archives_summary">在安装之前，将.zip / .apks压缩包中的APK文件，解压缩到临时文件中。 如果禁用，SAI将直接从没有临时文件的压缩包安装APK。 不建议启用</string>
     <string name="settings_main_use_zipfile">使用 ZipFile API</string>
     <string name="settings_main_use_zipfile_summary">使用 ZipFile API 读取ZIP 压缩包(包括.apks 文件)可以解决与某些压缩包兼容性问题。除非安装器的错误消息要求您启用否则建议不要启用，因为这增加了其他不必要的开销。</string>
-    <string name="settings_main_use_brute_parser">APK解析的后备方法</string>
-    <string name="settings_main_use_brute_parser_summary">在Pro模式下，当SAI无法在源（如一个apks文件或一个ZIP压缩包）中找到关于一个应用的元信息（如图标和标题）时，SAI将把基础APK复制到一个临时文件并直接解析它来获取应用的元信息。SAI不会复制和解析大于100MB的APK文件。</string>
     <string name="settings_main_reset_one_time_warnings">重置所有一次性警告(Reset one-time warnings)</string>
     <string name="settings_main_installer">安装模式</string>
     <string name="settings_main_installer_summary">安装APK的安装模式。\n当前: %s</string>
@@ -213,8 +211,6 @@
     <string name="settings_main_backup_backup_dir_dialog">选择...</string>
     <string name="settings_main_install_location">安装位置</string>
     <string name="settings_main_install_location_summary">安装应用的位置\n当前: %s</string>
-    <string name="settings_main_use_old_installer">旧版安装模式</string>
-    <string name="settings_main_use_old_installer_summary">使用旧版安装程序实现。SAI将重新启动以应用此设置（如果正在进行安装或备份，请不要切换，它们可能被损坏）</string>
     <string name="settings_main_installer_show_dialogs">显示前台系统安装界面</string>
     <string name="settings_main_installer_show_dialogs_summary">无论安装成功与否，一律显示安装对话框。您可以通过点击安装会话项手动打开这些对话框。只对新安装生效</string>
     <string name="settings_category_main_installer">安装</string>
@@ -354,15 +350,12 @@
     <string name="signing_schemes_v3_summary">在 Android 9 及以上取代 v2。</string>
     <string name="signing_schemes_v3_unsupported">当前设备不支持</string>
     <string name="signing_schemes_note">如果所选组合无法产出可安装的 APK，SAI 会自动补上缺少的方案。</string>
-    <string name="signing_schemes_reset">恢复默认</string>
     <string name="signing_key_fingerprint">证书 SHA-256</string>
     <string name="signing_key_none">尚未创建密钥，首次签名时会自动生成</string>
     <string name="signing_key_regenerate">重新生成</string>
-    <string name="signing_key_import_keystore">导入密钥库</string>
-    <string name="signing_key_import_pair">导入密钥 + 证书</string>
-    <string name="signing_key_pick_certificate">请接着选择证书文件</string>
+    <string name="signing_key_import">导入密钥</string>
     <string name="signing_key_updated">签名密钥已更新</string>
-    <string name="signing_key_formats">密钥库：.p12 / .pfx，以及设备支持时的 .bks 或 .jks。密钥+证书：PKCS#8 私钥（.pk8 或 PEM）配 X.509 证书（.pem 或 .der）。</string>
+    <string name="signing_key_formats">可以选择一个密钥库（.p12 / .pfx，以及设备支持时的 .bks 或 .jks），也可以一次同时选中 PKCS#8 私钥（.pk8 或 PEM）和 X.509 证书（.pem 或 .der）。装有这两者的 zip 同样可以。</string>
     <string name="signing_key_regenerate_warning">用新密钥签名的 APK 将无法覆盖安装用旧密钥签过的应用。</string>
     <string name="signing_key_password">密码（没有则留空）</string>
     <string name="signing_key_imported">密钥已导入</string>

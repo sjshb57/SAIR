@@ -15,7 +15,6 @@ public class PreferencesKeys {
     public static final String INSTALLER = "installer";
     public static final String BACKUP_FILE_NAME_FORMAT = "backup_file_name_format";
     public static final String INSTALL_LOCATION = "install_location";
-    public static final String USE_OLD_INSTALLER = "use_old_installer";
     public static final String SHOW_INSTALLER_DIALOGS = "show_installer_dialogs";
     public static final String SHOW_APP_FEATURES = "show_app_features";
     public static final String THEME = "theme";
@@ -23,7 +22,6 @@ public class PreferencesKeys {
     public static final String AUTO_THEME = "auto_theme";
     public static final String AUTO_THEME_PICKER = "auto_theme_picker";
     public static final String USE_INSTALLERX = "use_installerx";
-    public static final String USE_BRUTE_PARSER = "use_brute_parser";
     public static final String INITIAL_INDEXING_RUN = "initial_indexing_run";
     public static final String BACKUP_SETTINGS = "backup_settings";
     public static final String BACKUP_APK_EXPORT = "single_apk_export";

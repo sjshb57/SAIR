@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
@@ -18,7 +19,13 @@ import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import javax.security.auth.x500.X500Principal;
 
@@ -112,11 +119,108 @@ public class SigningKeyManager {
     }
 
     /**
+     * Works out what the picked files actually are instead of making the user say. One file is a
+     * keystore, or an archive holding a key and a certificate; two files are a key and a
+     * certificate in either order.
+     */
+    public synchronized void importFrom(@NonNull List<byte[]> files, @NonNull char[] password) throws Exception {
+        if (files.isEmpty())
+            throw new IllegalArgumentException("No file selected");
+
+        if (files.size() == 2) {
+            importPair(files.get(0), files.get(1), password);
+            return;
+        }
+
+        if (files.size() > 2)
+            throw new IllegalArgumentException("Select either a keystore, or a key and a certificate");
+
+        byte[] file = files.get(0);
+        Exception keyStoreError;
+        try {
+            importKeyStore(file, password);
+            return;
+        } catch (Exception e) {
+            keyStoreError = e;
+        }
+
+        List<byte[]> unpacked = unpackArchive(file);
+        if (unpacked.size() == 2) {
+            importPair(unpacked.get(0), unpacked.get(1), password);
+            return;
+        }
+
+        throw new IllegalArgumentException("Could not read this as a keystore, and it holds no key and "
+                + "certificate pair either. Check the password if the file is a keystore.", keyStoreError);
+    }
+
+    /** Whichever of the two parses as a certificate is the certificate; the other is the key. */
+    private void importPair(byte[] first, byte[] second, char[] password) throws Exception {
+        if (isCertificate(first)) {
+            importKeyAndCertificate(second, first, password);
+            return;
+        }
+
+        if (isCertificate(second)) {
+            importKeyAndCertificate(first, second, password);
+            return;
+        }
+
+        throw new IllegalArgumentException("Neither file is an X.509 certificate");
+    }
+
+    /**
+     * Pulls the first key and certificate out of a zip, so a bundle of the two can be picked in one
+     * go rather than in two rounds of the file picker.
+     */
+    private static List<byte[]> unpackArchive(byte[] archive) {
+        List<byte[]> candidates = new ArrayList<>();
+
+        try (ZipInputStream zip = new ZipInputStream(new ByteArrayInputStream(archive))) {
+            ZipEntry entry;
+            while ((entry = zip.getNextEntry()) != null) {
+                if (entry.isDirectory())
+                    continue;
+
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                byte[] buffer = new byte[8192];
+                int read;
+                while ((read = zip.read(buffer)) != -1)
+                    out.write(buffer, 0, read);
+
+                candidates.add(out.toByteArray());
+            }
+        } catch (Exception e) {
+            return Collections.emptyList();
+        }
+
+        byte[] certificate = null;
+        byte[] key = null;
+        for (byte[] candidate : candidates) {
+            if (certificate == null && isCertificate(candidate))
+                certificate = candidate;
+            else if (key == null)
+                key = candidate;
+        }
+
+        return certificate != null && key != null ? Arrays.asList(key, certificate) : Collections.emptyList();
+    }
+
+    private static boolean isCertificate(byte[] bytes) {
+        try {
+            KeyFileParser.parseCertificate(bytes);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
      * Imports a keystore file. Which formats work depends on the security providers the device
      * ships: PKCS#12 is always there, BKS usually is, JKS normally is not. Rather than guessing,
      * every type the platform offers is tried until one parses the file.
      */
-    public synchronized void importKeyStore(@NonNull byte[] bytes, @NonNull char[] password) throws Exception {
+    private synchronized void importKeyStore(@NonNull byte[] bytes, @NonNull char[] password) throws Exception {
         KeyStore source = null;
         Exception lastError = null;
 
@@ -154,7 +258,7 @@ public class SigningKeyManager {
      * Imports the loose key and certificate files apksigner takes, e.g. a key.pk8 next to a
      * cert.x509.pem.
      */
-    public synchronized void importKeyAndCertificate(@NonNull byte[] keyBytes, @NonNull byte[] certBytes,
+    private synchronized void importKeyAndCertificate(@NonNull byte[] keyBytes, @NonNull byte[] certBytes,
                                                      @NonNull char[] password) throws Exception {
         PrivateKey privateKey = KeyFileParser.parsePrivateKey(keyBytes, password);
         X509Certificate certificate = KeyFileParser.parseCertificate(certBytes);

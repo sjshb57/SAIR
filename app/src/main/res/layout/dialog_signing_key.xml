@@ -39,20 +39,13 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/button_signing_key_import_keystore"
+        android:id="@+id/button_signing_key_import"
         style="@style/SAIMaterialButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:text="@string/signing_key_import_keystore" />
+        android:text="@string/signing_key_import" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/button_signing_key_import_pair"
-        style="@style/SAIMaterialButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:text="@string/signing_key_import_pair" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_signing_key_regenerate"

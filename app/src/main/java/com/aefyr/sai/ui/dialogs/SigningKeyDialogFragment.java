@@ -26,6 +26,8 @@ import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -45,46 +47,27 @@ public class SigningKeyDialogFragment extends BaseBottomSheetDialogFragment {
     private TextInputEditText mPassword;
     private View mContent;
 
-    private ActivityResultLauncher<String[]> mPickKeyStore;
-    private ActivityResultLauncher<String[]> mPickPrivateKey;
-    private ActivityResultLauncher<String[]> mPickCertificate;
-
-    private byte[] mPendingPrivateKey;
+    private ActivityResultLauncher<String[]> mPickFiles;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mPickKeyStore = registerForActivityResult(new ActivityResultContracts.OpenDocument(), uri -> {
-            byte[] bytes = read(uri);
-            if (bytes == null)
+        mPickFiles = registerForActivityResult(new ActivityResultContracts.OpenMultipleDocuments(), uris -> {
+            if (uris == null || uris.isEmpty())
                 return;
+
+            List<byte[]> files = new ArrayList<>(uris.size());
+            for (Uri uri : uris) {
+                byte[] bytes = read(uri);
+                if (bytes == null)
+                    return;
+
+                files.add(bytes);
+            }
 
             char[] password = password();
-            runInBackground(() -> SigningKeyManager.getInstance(requireContext())
-                    .importKeyStore(bytes, password));
-        });
-
-        mPickPrivateKey = registerForActivityResult(new ActivityResultContracts.OpenDocument(), uri -> {
-            mPendingPrivateKey = read(uri);
-            if (mPendingPrivateKey == null)
-                return;
-
-            Toast.makeText(requireContext(), R.string.signing_key_pick_certificate, Toast.LENGTH_SHORT).show();
-            mPickCertificate.launch(new String[]{"*/*"});
-        });
-
-        mPickCertificate = registerForActivityResult(new ActivityResultContracts.OpenDocument(), uri -> {
-            byte[] key = mPendingPrivateKey;
-            mPendingPrivateKey = null;
-
-            byte[] cert = read(uri);
-            if (key == null || cert == null)
-                return;
-
-            char[] password = password();
-            runInBackground(() -> SigningKeyManager.getInstance(requireContext())
-                    .importKeyAndCertificate(key, cert, password));
+            runInBackground(() -> SigningKeyManager.getInstance(requireContext()).importFrom(files, password));
         });
     }
 
@@ -106,11 +89,8 @@ public class SigningKeyDialogFragment extends BaseBottomSheetDialogFragment {
 
         updateFingerprint();
 
-        view.findViewById(R.id.button_signing_key_import_keystore)
-                .setOnClickListener(v -> mPickKeyStore.launch(new String[]{"*/*"}));
-
-        view.findViewById(R.id.button_signing_key_import_pair)
-                .setOnClickListener(v -> mPickPrivateKey.launch(new String[]{"*/*"}));
+        view.findViewById(R.id.button_signing_key_import)
+                .setOnClickListener(v -> mPickFiles.launch(new String[]{"*/*"}));
 
         view.findViewById(R.id.button_signing_key_regenerate).setOnClickListener(v ->
                 runInBackground(() -> SigningKeyManager.getInstance(requireContext()).generate()));
@@ -159,8 +139,7 @@ public class SigningKeyDialogFragment extends BaseBottomSheetDialogFragment {
         if (mContent == null)
             return;
 
-        mContent.findViewById(R.id.button_signing_key_import_keystore).setEnabled(!busy);
-        mContent.findViewById(R.id.button_signing_key_import_pair).setEnabled(!busy);
+        mContent.findViewById(R.id.button_signing_key_import).setEnabled(!busy);
         mContent.findViewById(R.id.button_signing_key_regenerate).setEnabled(!busy);
     }
 

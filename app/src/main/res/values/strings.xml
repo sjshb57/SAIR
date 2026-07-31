@@ -207,8 +207,6 @@
     <string name="settings_main_extract_archives_summary">Extract APK files from .zip/.apks archives into temporary files before installing them. If disabled, SAI will install APKs directly from archives without temp files. Not recommended to enable</string>
     <string name="settings_main_use_zipfile">Use ZipFile API</string>
     <string name="settings_main_use_zipfile_summary">Use ZipFile API to read ZIP archives (including .apks files), solves compatibility issues with some archives. Not recommended to enable unless an installer error message asks you to because this adds otherwise unnecessary overhead</string>
-    <string name="settings_main_use_brute_parser">Fallback to parsing APK</string>
-    <string name="settings_main_use_brute_parser_summary">In Pro mode, when SAI is unable to find meta information (such as icon and title) about an app in the source (such as a .apks file or a ZIP archive), it will copy the base APK to a temp file and parse it directly to obtain meta information about the app. SAI will not copy and parse APKs larger than 100MBs</string>
     <string name="settings_main_reset_one_time_warnings">Reset one-time warnings</string>
     <string name="settings_main_installer">Installer</string>
     <string name="settings_main_installer_summary">Installer to use for APKs installation.\nCurrently: %s</string>
@@ -221,8 +219,6 @@
     <string name="settings_main_backup_backup_dir_dialog">Select directory with</string>
     <string name="settings_main_install_location">Install location</string>
     <string name="settings_main_install_location_summary">Where to install apps.\nCurrently: %s</string>
-    <string name="settings_main_use_old_installer">Legacy installer</string>
-    <string name="settings_main_use_old_installer_summary">Use legacy installer implementation. SAI will be restarted to apply this setting (Don\'t switch if there are ongoing installations or backups, they may be corrupted)</string>
     <string name="settings_main_installer_show_dialogs">Show installer dialogs</string>
     <string name="settings_main_installer_show_dialogs_summary">Show dialogs when installation fails or succeeds. You can always open those dialogs manually by tapping installation session entry. Only affects new installer</string>
     <string name="settings_category_main_installer">Installer</string>
@@ -378,15 +374,12 @@
     <string name="signing_schemes_v3_summary">Supersedes v2 on Android 9 and above.</string>
     <string name="signing_schemes_v3_unsupported">Not supported on this device</string>
     <string name="signing_schemes_note">If the selection cannot produce an installable APK, SAI adds the missing scheme automatically.</string>
-    <string name="signing_schemes_reset">Reset</string>
     <string name="signing_key_fingerprint">Certificate SHA-256</string>
     <string name="signing_key_none">No key yet, one is created the first time you sign something</string>
     <string name="signing_key_regenerate">Generate new</string>
-    <string name="signing_key_import_keystore">Import a keystore</string>
-    <string name="signing_key_import_pair">Import a key and certificate</string>
-    <string name="signing_key_pick_certificate">Now pick the certificate file</string>
+    <string name="signing_key_import">Import a key</string>
     <string name="signing_key_updated">Signing key updated</string>
-    <string name="signing_key_formats">Keystore: .p12 / .pfx, and .bks or .jks where the device supports them. Key and certificate: a PKCS#8 key (.pk8 or PEM) next to an X.509 certificate (.pem or .der).</string>
+    <string name="signing_key_formats">Pick a keystore (.p12 / .pfx, and .bks or .jks where the device supports them), or select a PKCS#8 key (.pk8 or PEM) and an X.509 certificate (.pem or .der) together. A zip holding both works too.</string>
     <string name="signing_key_regenerate_warning">APKs signed with a new key can no longer replace apps signed with the old one.</string>
     <string name="signing_key_password">Password (leave empty if there is none)</string>
     <string name="signing_key_imported">Key imported</string>

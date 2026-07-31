@@ -199,8 +199,6 @@
     <string name="settings_main_extract_archives_summary">在安裝之前，將 .zip/.apks 壓縮包中的 APK文件 解壓縮到臨時文件中。如果禁用，SAI將直接從沒有臨時文件的壓縮包中安裝APK。不建議啟用</string>
     <string name="settings_main_use_zipfile">使用 ZipFile API</string>
     <string name="settings_main_use_zipfile_summary">Use ZipFile API to read ZIP archives (including .apks files), solves compatibility issues with some archives. Not recommended to enable unless an installer error message asks you to because this adds otherwise unnecessary overhead</string>
-    <string name="settings_main_use_brute_parser">Fallback to parsing APK</string>
-    <string name="settings_main_use_brute_parser_summary">In Pro mode, when SAI is unable to find meta information (such as icon and title) about an app in the source (such as a .apks file or a ZIP archive), it will copy the base APK to a temp file and parse it directly to obtain meta information about the app. SAI will not copy and parse APKs larger than 100MBs</string>
     <string name="settings_main_reset_one_time_warnings">重置一次性警告</string>
     <string name="settings_main_installer">Installer</string>
     <string name="settings_main_installer_summary">Installer to use for APKs installation.\nCurrently: %s</string>
@@ -213,8 +211,6 @@
     <string name="settings_main_backup_backup_dir_dialog">選擇目錄</string>
     <string name="settings_main_install_location">安裝位置</string>
     <string name="settings_main_install_location_summary">選擇安裝應用的位置\n當前: %s</string>
-    <string name="settings_main_use_old_installer">使用舊版安裝方式</string>
-    <string name="settings_main_use_old_installer_summary">Use legacy installer implementation. SAI will be restarted to apply this setting (Don\'t switch if there are ongoing installations or backups, they may be corrupted)</string>
     <string name="settings_main_installer_show_dialogs">展示安裝界面</string>
     <string name="settings_main_installer_show_dialogs_summary">無論安裝成功與否，一律展示（作業系統的）安裝界面。你也可以輕觸安裝隊列中的應用程式來手動打開安裝界面。（立即生效）</string>
     <string name="settings_category_main_installer">安裝</string>
@@ -354,15 +350,12 @@
     <string name="signing_schemes_v3_summary">在 Android 9 及以上取代 v2。</string>
     <string name="signing_schemes_v3_unsupported">目前裝置不支援</string>
     <string name="signing_schemes_note">如果所選組合無法產出可安裝的 APK，SAI 會自動補上缺少的方案。</string>
-    <string name="signing_schemes_reset">恢復預設</string>
     <string name="signing_key_fingerprint">憑證 SHA-256</string>
     <string name="signing_key_none">尚未建立金鑰，首次簽章時會自動產生</string>
     <string name="signing_key_regenerate">重新產生</string>
-    <string name="signing_key_import_keystore">匯入金鑰庫</string>
-    <string name="signing_key_import_pair">匯入金鑰 + 憑證</string>
-    <string name="signing_key_pick_certificate">請接著選擇憑證檔案</string>
+    <string name="signing_key_import">匯入金鑰</string>
     <string name="signing_key_updated">簽章金鑰已更新</string>
-    <string name="signing_key_formats">金鑰庫：.p12 / .pfx，以及裝置支援時的 .bks 或 .jks。金鑰+憑證：PKCS#8 私鑰（.pk8 或 PEM）配 X.509 憑證（.pem 或 .der）。</string>
+    <string name="signing_key_formats">可以選擇一個金鑰庫（.p12 / .pfx，以及裝置支援時的 .bks 或 .jks），也可以一次同時選取 PKCS#8 私鑰（.pk8 或 PEM）和 X.509 憑證（.pem 或 .der）。裝有這兩者的 zip 同樣可以。</string>
     <string name="signing_key_regenerate_warning">使用新金鑰簽章的 APK 將無法覆蓋安裝以舊金鑰簽過的應用程式。</string>
     <string name="signing_key_password">密碼（沒有則留空）</string>
     <string name="signing_key_imported">金鑰已匯入</string>
