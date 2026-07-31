@@ -13,6 +13,7 @@
         android:layout_height="wrap_content">
 
         <ImageButton
+            android:importantForAccessibility="no"
             android:id="@+id/ib_close"
             style="@style/SAICoolbarImageButton"
             app:coolbar_gravity="start"
@@ -20,6 +21,7 @@
             tools:ignore="MissingPrefix" />
 
         <ImageButton
+            android:importantForAccessibility="no"
             android:id="@+id/ib_app_details_menu"
             style="@style/SAICoolbarImageButton"
             app:coolbar_gravity="end"

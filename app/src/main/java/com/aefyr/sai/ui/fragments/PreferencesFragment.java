@@ -426,7 +426,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Fil
             return;
 
         try {
-            SigningKey key = SigningKeyManager.getInstance(requireContext()).get();
+            SigningKey key = SigningKeyManager.getInstance().get();
             mSigningKeyPref.setSummary(key != null
                     ? key.certificateSha256() : getString(R.string.signing_key_none));
         } catch (Exception e) {

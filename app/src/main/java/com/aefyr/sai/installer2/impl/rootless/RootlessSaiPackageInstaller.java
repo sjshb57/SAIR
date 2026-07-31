@@ -112,7 +112,7 @@ public class RootlessSaiPackageInstaller extends BaseSaiPackageInstaller impleme
             long bytesWritten = 0;
             int currentApkFile = 0;
             while (apkSource.nextApk()) {
-                OutputStream sessionStream = session.openWrite(String.format("%d.apk", currentApkFile++), 0, apkSource.getApkLength());
+                OutputStream sessionStream = session.openWrite(String.format(Locale.US, "%d.apk", currentApkFile++), 0, apkSource.getApkLength());
                 try (InputStream inputStream = apkSource.openApkInputStream();
                      OutputStream outputStream = IOUtils.buffer(sessionStream)) {
                     bytesWritten += IOUtils.copyStream(inputStream, outputStream);

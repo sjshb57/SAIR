@@ -1,6 +1,5 @@
 package com.aefyr.sai.signing;
 
-import android.content.Context;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import android.security.keystore.KeyProtection;
@@ -49,19 +48,16 @@ public class SigningKeyManager {
 
     private static SigningKeyManager sInstance;
 
-    private final Context mContext;
-
-    public static SigningKeyManager getInstance(Context context) {
+    public static SigningKeyManager getInstance() {
         synchronized (SigningKeyManager.class) {
             if (sInstance == null)
-                sInstance = new SigningKeyManager(context.getApplicationContext());
+                sInstance = new SigningKeyManager();
 
             return sInstance;
         }
     }
 
-    private SigningKeyManager(Context context) {
-        mContext = context;
+    private SigningKeyManager() {
     }
 
     @NonNull

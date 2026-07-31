@@ -6,6 +6,7 @@
     android:orientation="vertical">
 
     <ImageView
+        android:importantForAccessibility="no"
         android:id="@+id/iv_installerx_header_app_icon"
         android:layout_width="72dp"
         android:layout_height="72dp"

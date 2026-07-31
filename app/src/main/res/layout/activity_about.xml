@@ -23,6 +23,7 @@
                 tools:ignore="UselessParent"> <!-- It's not useless, it centers this RelativeLayout-->
 
                 <ImageView
+                    android:importantForAccessibility="no"
                     android:id="@+id/iv_about_logo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

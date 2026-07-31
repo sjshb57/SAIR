@@ -44,7 +44,7 @@ public class SignerApkSource implements ApkSource {
             return false;
 
         if (mSigner == null) {
-            mSigner = new SaiApkSigner(SigningKeyManager.getInstance(mContext).getOrCreate());
+            mSigner = new SaiApkSigner(SigningKeyManager.getInstance().getOrCreate());
             mSchemes = PreferencesHelper.getInstance(mContext).getSigningSchemes();
             createTempDir();
         }

@@ -105,6 +105,7 @@
         android:visibility="gone">
 
         <ImageView
+            android:importantForAccessibility="no"
             android:id="@+id/iv_backup_dialog_error"
             android:layout_width="72dp"
             android:layout_height="72dp"

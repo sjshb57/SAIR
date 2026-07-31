@@ -9,6 +9,7 @@
     android:orientation="horizontal">
 
     <ImageView
+        android:importantForAccessibility="no"
         android:id="@+id/iv_header_icon"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

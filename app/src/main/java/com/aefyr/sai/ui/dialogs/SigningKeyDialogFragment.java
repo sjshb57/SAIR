@@ -67,7 +67,7 @@ public class SigningKeyDialogFragment extends BaseBottomSheetDialogFragment {
             }
 
             char[] password = password();
-            runInBackground(() -> SigningKeyManager.getInstance(requireContext()).importFrom(files, password));
+            runInBackground(() -> SigningKeyManager.getInstance().importFrom(files, password));
         });
     }
 
@@ -93,7 +93,7 @@ public class SigningKeyDialogFragment extends BaseBottomSheetDialogFragment {
                 .setOnClickListener(v -> mPickFiles.launch(new String[]{"*/*"}));
 
         view.findViewById(R.id.button_signing_key_regenerate).setOnClickListener(v ->
-                runInBackground(() -> SigningKeyManager.getInstance(requireContext()).generate()));
+                runInBackground(() -> SigningKeyManager.getInstance().generate()));
 
         getPositiveButton().setVisibility(View.GONE);
         getNegativeButton().setOnClickListener(v -> dismiss());
@@ -168,7 +168,7 @@ public class SigningKeyDialogFragment extends BaseBottomSheetDialogFragment {
 
     private void updateFingerprint() {
         try {
-            SigningKey key = SigningKeyManager.getInstance(requireContext()).get();
+            SigningKey key = SigningKeyManager.getInstance().get();
             mFingerprint.setText(key != null ? key.certificateSha256() : getString(R.string.signing_key_none));
         } catch (Exception e) {
             showError(e);

@@ -41,6 +41,8 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import java.util.Locale;
+
 public class DefaultSplitApkSourceMetaResolver implements SplitApkSourceMetaResolver {
     private static final String TAG = "DSASMetaResolver";
 
@@ -83,10 +85,10 @@ public class DefaultSplitApkSourceMetaResolver implements SplitApkSourceMetaReso
 
             ApkSourceFile.Entry baseApkEntry = null;
             for (ApkSourceFile.Entry entry : apkSourceFile.listEntries()) {
-                if (!entry.getName().toLowerCase().endsWith(".apk")) {
+                if (!entry.getName().toLowerCase(Locale.ROOT).endsWith(".apk")) {
 
                     if ("xapk".equals(Utils.getExtension(apkSourceFile.getName()))
-                            && entry.getName().toLowerCase().endsWith(".obb")
+                            && entry.getName().toLowerCase(Locale.ROOT).endsWith(".obb")
                             && !seenObb) {
 
                         seenObb = true;
