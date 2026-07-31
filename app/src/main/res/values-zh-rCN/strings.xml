@@ -214,7 +214,6 @@
     <string name="settings_main_installer_show_dialogs">显示前台系统安装界面</string>
     <string name="settings_main_installer_show_dialogs_summary">无论安装成功与否，一律显示安装对话框。您可以通过点击安装会话项手动打开这些对话框。只对新安装生效</string>
     <string name="settings_category_main_installer">安装</string>
-    <string name="settings_category_main_parser">解析器</string>
     <string name="settings_category_main_export">备份</string>
     <string name="settings_category_main_other">其他</string>
     <string name="settings_category_main_ui">外观</string>

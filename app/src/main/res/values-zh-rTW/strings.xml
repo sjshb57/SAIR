@@ -214,7 +214,6 @@
     <string name="settings_main_installer_show_dialogs">展示安裝界面</string>
     <string name="settings_main_installer_show_dialogs_summary">無論安裝成功與否，一律展示（作業系統的）安裝界面。你也可以輕觸安裝隊列中的應用程式來手動打開安裝界面。（立即生效）</string>
     <string name="settings_category_main_installer">安裝</string>
-    <string name="settings_category_main_parser">Parser</string>
     <string name="settings_category_main_export">Backup</string>
     <string name="settings_category_main_other">雜項</string>
     <string name="settings_category_main_ui">應用程式界面</string>

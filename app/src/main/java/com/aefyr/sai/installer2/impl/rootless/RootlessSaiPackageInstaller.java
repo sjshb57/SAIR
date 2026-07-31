@@ -71,7 +71,22 @@ public class RootlessSaiPackageInstaller extends BaseSaiPackageInstaller impleme
     public void enqueueSession(String sessionId) {
         SaiPiSessionParams params = takeCreatedSession(sessionId);
         setSessionState(sessionId, new SaiPiSessionState.Builder(sessionId, SaiPiSessionStatus.QUEUED).appTempName(params.apkSource().getAppName()).build());
-        mExecutor.submit(() -> install(sessionId, params));
+        mExecutor.submit(() -> runInstallation(sessionId, params));
+    }
+
+    /**
+     * Anything escaping here would be swallowed by the executor and leave the session stuck on
+     * INSTALLING with nothing in the log.
+     */
+    private void runInstallation(String sessionId, SaiPiSessionParams params) {
+        try {
+            install(sessionId, params);
+        } catch (Throwable t) {
+            Log.e(TAG, "Installation task crashed", t);
+            setSessionState(sessionId, new SaiPiSessionState.Builder(sessionId, SaiPiSessionStatus.INSTALLATION_FAILED)
+                    .error(t.getLocalizedMessage(), Utils.throwableToString(t))
+                    .build());
+        }
     }
 
     private void install(String sessionId, SaiPiSessionParams params) {

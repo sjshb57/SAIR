@@ -46,7 +46,11 @@ import com.aefyr.sai.utils.IOUtils;
 
 public abstract class ShellSaiPackageInstaller extends BaseSaiPackageInstaller {
 
-    private final Semaphore mSharedSemaphore = new Semaphore(1);
+    /**
+     * Static on purpose: completion is detected through a broadcast with no session id in it, so
+     * only one shell installation may be in flight across every subclass, not one per subclass.
+     */
+    private static final Semaphore sInstallationSemaphore = new Semaphore(1);
     private final AtomicBoolean mAwaitingBroadcast = new AtomicBoolean(false);
     private final AtomicReference<String> mBroadcastPackageName = new AtomicReference<>();
     private final ExecutorService mExecutor = Executors.newFixedThreadPool(4);
@@ -94,7 +98,22 @@ public abstract class ShellSaiPackageInstaller extends BaseSaiPackageInstaller {
         setSessionState(sessionId, new SaiPiSessionState.Builder(sessionId, SaiPiSessionStatus.QUEUED)
                 .appTempName(params.apkSource().getAppName())
                 .build());
-        mExecutor.submit(() -> install(sessionId, params));
+        mExecutor.submit(() -> runInstallation(sessionId, params));
+    }
+
+    /**
+     * Anything escaping here would be swallowed by the executor and leave the session stuck on
+     * INSTALLING with nothing in the log.
+     */
+    private void runInstallation(String sessionId, SaiPiSessionParams params) {
+        try {
+            install(sessionId, params);
+        } catch (Throwable t) {
+            Log.e(tag(), "Installation task crashed", t);
+            setSessionState(sessionId, new SaiPiSessionState.Builder(sessionId, SaiPiSessionStatus.INSTALLATION_FAILED)
+                    .error(t.getLocalizedMessage(), Utils.throwableToString(t))
+                    .build());
+        }
     }
 
     private void install(String sessionId, SaiPiSessionParams params) {
@@ -191,7 +210,7 @@ public abstract class ShellSaiPackageInstaller extends BaseSaiPackageInstaller {
 
     private void lockInstallation() {
         try {
-            mSharedSemaphore.acquire();
+            sInstallationSemaphore.acquire();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new IllegalStateException("Interrupted while waiting for the installation lock", e);
@@ -199,7 +218,7 @@ public abstract class ShellSaiPackageInstaller extends BaseSaiPackageInstaller {
     }
 
     private void unlockInstallation() {
-        mSharedSemaphore.release();
+        sInstallationSemaphore.release();
     }
 
     private void ensureCommandSucceeded(Shell.Result result) {

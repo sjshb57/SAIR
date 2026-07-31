@@ -94,7 +94,7 @@ public class ApkSourceBuilder {
             if (mReadZipViaZipFileEnabled)
                 zipBackedApkSource = new ZipFileApkSource(mContext, new NormalFileDescriptor(mZipFile));
             else
-                zipBackedApkSource = new ZipApkSource(mContext, new NormalFileDescriptor(mZipFile));
+                zipBackedApkSource = new FallbackZipApkSource(mContext, new NormalFileDescriptor(mZipFile));
 
             apkSource = zipBackedApkSource;
             sourceIsZip = true;
@@ -103,7 +103,7 @@ public class ApkSourceBuilder {
             if (mReadZipViaZipFileEnabled)
                 zipBackedApkSource = new ZipFileApkSource(mContext, new ContentUriFileDescriptor(mContext, mZipUri));
             else
-                zipBackedApkSource = new ZipApkSource(mContext, new ContentUriFileDescriptor(mContext, mZipUri));
+                zipBackedApkSource = new FallbackZipApkSource(mContext, new ContentUriFileDescriptor(mContext, mZipUri));
 
             apkSource = zipBackedApkSource;
             sourceIsZip = true;

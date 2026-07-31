@@ -118,13 +118,6 @@ public final class KeyFileParser {
         return new PemBlock(type, Base64.decode(body.replaceAll("\\s", ""), Base64.DEFAULT));
     }
 
-    private static final class PemBlock {
-        final String type;
-        final byte[] data;
-
-        PemBlock(String type, byte[] data) {
-            this.type = type;
-            this.data = data;
-        }
+    private record PemBlock(String type, byte[] data) {
     }
 }
