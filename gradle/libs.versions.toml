@@ -1,6 +1,6 @@
 [versions]
 
-agp = "9.2.1"
+agp = "9.4.1"
 
 # AndroidX
 androidx-annotation = "1.10.0"
