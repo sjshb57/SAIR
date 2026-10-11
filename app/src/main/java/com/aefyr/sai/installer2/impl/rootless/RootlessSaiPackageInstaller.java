@@ -60,15 +60,9 @@ public class RootlessSaiPackageInstaller extends BaseSaiPackageInstaller impleme
         RootlessSaiPiBroadcastReceiver mBroadcastReceiver = new RootlessSaiPiBroadcastReceiver(getContext());
         mBroadcastReceiver.addEventObserver(this);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            getContext().registerReceiver(mBroadcastReceiver,
-                    new IntentFilter(RootlessSaiPiBroadcastReceiver.ACTION_DELIVER_PI_EVENT),
-                    null, mWorkerHandler, Context.RECEIVER_NOT_EXPORTED);
-        } else {
-            getContext().registerReceiver(mBroadcastReceiver,
-                    new IntentFilter(RootlessSaiPiBroadcastReceiver.ACTION_DELIVER_PI_EVENT),
-                    null, mWorkerHandler);
-        }
+        ContextCompat.registerReceiver(getContext(), mBroadcastReceiver,
+                new IntentFilter(RootlessSaiPiBroadcastReceiver.ACTION_DELIVER_PI_EVENT),
+                null, mWorkerHandler, ContextCompat.RECEIVER_NOT_EXPORTED);
 
         sInstance = this;
     }
