@@ -25,8 +25,8 @@
                 <ImageView
                     android:importantForAccessibility="no"
                     android:id="@+id/iv_about_logo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="128dp"
+                    android:layout_height="128dp"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
                     app:tint="?attr/colorAccent"
