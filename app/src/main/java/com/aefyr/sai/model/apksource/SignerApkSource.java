@@ -110,6 +110,11 @@ public class SignerApkSource implements ApkSource {
         if (mCurrentSignedApkFile != null) {
             //noinspection ResultOfMethodCallIgnored
             mCurrentSignedApkFile.delete();
+            File idsig = new File(mCurrentSignedApkFile.getAbsolutePath() + ".idsig");
+            if (idsig.exists()) {
+                //noinspection ResultOfMethodCallIgnored
+                idsig.delete();
+            }
             mCurrentSignedApkFile = null;
         }
     }

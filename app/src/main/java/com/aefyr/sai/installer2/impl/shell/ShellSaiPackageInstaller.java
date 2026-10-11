@@ -88,8 +88,13 @@ public abstract class ShellSaiPackageInstaller extends BaseSaiPackageInstaller {
                 mBroadcastPackageName.set(installedPackage);
             }
         };
-        ContextCompat.registerReceiver(getContext(), mPackageInstalledBroadcastReceiver, packageAddedFilter,
-                null, mWorkerHandler, ContextCompat.RECEIVER_NOT_EXPORTED);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            getContext().registerReceiver(mPackageInstalledBroadcastReceiver, packageAddedFilter,
+                    null, mWorkerHandler, Context.RECEIVER_EXPORTED);
+        } else {
+            getContext().registerReceiver(mPackageInstalledBroadcastReceiver, packageAddedFilter,
+                    null, mWorkerHandler);
+        }
     }
 
     @Override

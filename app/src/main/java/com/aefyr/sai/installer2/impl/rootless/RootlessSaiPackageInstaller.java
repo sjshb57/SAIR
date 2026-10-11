@@ -60,9 +60,15 @@ public class RootlessSaiPackageInstaller extends BaseSaiPackageInstaller impleme
         RootlessSaiPiBroadcastReceiver mBroadcastReceiver = new RootlessSaiPiBroadcastReceiver(getContext());
         mBroadcastReceiver.addEventObserver(this);
 
-        ContextCompat.registerReceiver(getContext(), mBroadcastReceiver,
-                new IntentFilter(RootlessSaiPiBroadcastReceiver.ACTION_DELIVER_PI_EVENT),
-                null, mWorkerHandler, ContextCompat.RECEIVER_NOT_EXPORTED);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            getContext().registerReceiver(mBroadcastReceiver,
+                    new IntentFilter(RootlessSaiPiBroadcastReceiver.ACTION_DELIVER_PI_EVENT),
+                    null, mWorkerHandler, Context.RECEIVER_NOT_EXPORTED);
+        } else {
+            getContext().registerReceiver(mBroadcastReceiver,
+                    new IntentFilter(RootlessSaiPiBroadcastReceiver.ACTION_DELIVER_PI_EVENT),
+                    null, mWorkerHandler);
+        }
 
         sInstance = this;
     }
@@ -131,7 +137,7 @@ public class RootlessSaiPackageInstaller extends BaseSaiPackageInstaller impleme
 
             int flags = PendingIntent.FLAG_UPDATE_CURRENT;
             if (Build.VERSION.SDK_INT >= 31) {
-                flags |= PendingIntent.FLAG_IMMUTABLE;
+                flags |= PendingIntent.FLAG_MUTABLE;
             }
             PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0, callbackIntent, flags);
             session.commit(pendingIntent.getIntentSender());

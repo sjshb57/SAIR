@@ -372,6 +372,9 @@
     <string name="signing_schemes_v3">v3 (Android 9+)</string>
     <string name="signing_schemes_v3_summary">Supersedes v2 on Android 9 and above.</string>
     <string name="signing_schemes_v3_unsupported">Not supported on this device</string>
+    <string name="signing_schemes_v4">v4 (Android 11+)</string>
+    <string name="signing_schemes_v4_summary">Enables streaming installation and generates a separate .idsig file (Android 11+). Requires v2 or v3.</string>
+    <string name="signing_schemes_v4_unsupported">Not supported on this device</string>
     <string name="signing_schemes_note">If the selection cannot produce an installable APK, SAI adds the missing scheme automatically.</string>
     <string name="signing_key_fingerprint">Certificate SHA-256</string>
     <string name="signing_key_none">No key yet, one is created the first time you sign something</string>

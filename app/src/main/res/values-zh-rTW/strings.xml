@@ -348,6 +348,9 @@
     <string name="signing_schemes_v3">v3（Android 9+）</string>
     <string name="signing_schemes_v3_summary">在 Android 9 及以上取代 v2。</string>
     <string name="signing_schemes_v3_unsupported">目前裝置不支援</string>
+    <string name="signing_schemes_v4">v4（Android 11+）</string>
+    <string name="signing_schemes_v4_summary">支援串流安裝並產生獨立的 .idsig 簽章檔案（Android 11+）。需要啟用 v2 或 v3。</string>
+    <string name="signing_schemes_v4_unsupported">目前裝置不支援</string>
     <string name="signing_schemes_note">如果所選組合無法產出可安裝的 APK，SAI 會自動補上缺少的方案。</string>
     <string name="signing_key_fingerprint">憑證 SHA-256</string>
     <string name="signing_key_none">尚未建立金鑰，首次簽章時會自動產生</string>

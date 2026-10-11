@@ -60,14 +60,19 @@ public class SaiApkSigner {
                 Collections.singletonList(mKey.certificate()),
                 false).build();
 
+        boolean v4Enabled = schemes.has(SigningSchemes.SCHEME_V4);
         ApkSigner.Builder builder = new ApkSigner.Builder(Collections.singletonList(signerConfig))
                 .setInputApk(input)
                 .setOutputApk(output)
                 .setV1SigningEnabled(schemes.has(SigningSchemes.SCHEME_V1))
                 .setV2SigningEnabled(schemes.has(SigningSchemes.SCHEME_V2))
                 .setV3SigningEnabled(schemes.has(SigningSchemes.SCHEME_V3))
-                .setV4SigningEnabled(false)
+                .setV4SigningEnabled(v4Enabled)
                 .setAlignmentPreserved(PRESERVE_ALIGNMENT);
+
+        if (v4Enabled) {
+            builder.setV4SignatureOutputFile(new File(output.getAbsolutePath() + ".idsig"));
+        }
 
         if (minSdkVersion != null)
             builder.setMinSdkVersion(minSdkVersion);
