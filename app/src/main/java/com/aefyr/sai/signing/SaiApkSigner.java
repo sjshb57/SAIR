@@ -43,10 +43,41 @@ public class SaiApkSigner {
             // digest algorithms. The APK is being installed onto this device, so this device's API
             // level is the one that has to verify it.
             Log.i(TAG, "Unable to read the APK's minSdkVersion, using this device's", e);
-            signWith(input, output, resolved, Build.VERSION.SDK_INT);
+            try {
+                signWith(input, output, resolved, Build.VERSION.SDK_INT);
+            } catch (Exception ex) {
+                if (isSha1IncompatibleException(ex) && resolved.has(SigningSchemes.SCHEME_V1)
+                        && (resolved.has(SigningSchemes.SCHEME_V2) || resolved.has(SigningSchemes.SCHEME_V3) || resolved.has(SigningSchemes.SCHEME_V4))) {
+                    Log.w(TAG, "Key does not support SHA-1 digest required for APK Signature Scheme v1, retrying without v1", ex);
+                    SigningSchemes withoutV1 = resolved.with(SigningSchemes.SCHEME_V1, false);
+                    signWith(input, output, withoutV1, Build.VERSION.SDK_INT);
+                    return withoutV1;
+                }
+                throw ex;
+            }
+        } catch (Exception e) {
+            if (isSha1IncompatibleException(e) && resolved.has(SigningSchemes.SCHEME_V1)
+                    && (resolved.has(SigningSchemes.SCHEME_V2) || resolved.has(SigningSchemes.SCHEME_V3) || resolved.has(SigningSchemes.SCHEME_V4))) {
+                Log.w(TAG, "Key does not support SHA-1 digest required for APK Signature Scheme v1, retrying without v1", e);
+                SigningSchemes withoutV1 = resolved.with(SigningSchemes.SCHEME_V1, false);
+                signWith(input, output, withoutV1, null);
+                return withoutV1;
+            }
+            throw e;
         }
 
         return resolved;
+    }
+
+    private static boolean isSha1IncompatibleException(Throwable t) {
+        while (t != null) {
+            String msg = t.getMessage();
+            if (msg != null && (msg.contains("SHA1withRSA") || msg.contains("INCOMPATIBLE_DIGEST") || msg.contains("Incompatible digest"))) {
+                return true;
+            }
+            t = t.getCause();
+        }
+        return false;
     }
 
     private void signWith(File input, File output, SigningSchemes schemes,
@@ -60,14 +91,19 @@ public class SaiApkSigner {
                 Collections.singletonList(mKey.certificate()),
                 false).build();
 
+        boolean v4Enabled = schemes.has(SigningSchemes.SCHEME_V4);
         ApkSigner.Builder builder = new ApkSigner.Builder(Collections.singletonList(signerConfig))
                 .setInputApk(input)
                 .setOutputApk(output)
                 .setV1SigningEnabled(schemes.has(SigningSchemes.SCHEME_V1))
                 .setV2SigningEnabled(schemes.has(SigningSchemes.SCHEME_V2))
                 .setV3SigningEnabled(schemes.has(SigningSchemes.SCHEME_V3))
-                .setV4SigningEnabled(false)
+                .setV4SigningEnabled(v4Enabled)
                 .setAlignmentPreserved(PRESERVE_ALIGNMENT);
+
+        if (v4Enabled) {
+            builder.setV4SignatureOutputFile(new File(output.getAbsolutePath() + ".idsig"));
+        }
 
         if (minSdkVersion != null)
             builder.setMinSdkVersion(minSdkVersion);

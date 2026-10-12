@@ -39,9 +39,17 @@ public class ConfirmationIntentWrapperActivity2 extends AppCompatActivity {
         mConfirmationIntent = IntentCompat.getParcelableExtra(intent, EXTRA_CONFIRMATION_INTENT, Intent.class);
 
         if (savedInstanceState == null) {
+            if (mConfirmationIntent == null) {
+                mFinishedProperly = true;
+                sendErrorBroadcast(mSessionId);
+                finish();
+                return;
+            }
+
             try {
                 mConfirmationLauncher.launch(mConfirmationIntent);
             } catch (Exception e) {
+                mFinishedProperly = true;
                 Logs.logException(e);
                 sendErrorBroadcast(mSessionId);
                 finish();

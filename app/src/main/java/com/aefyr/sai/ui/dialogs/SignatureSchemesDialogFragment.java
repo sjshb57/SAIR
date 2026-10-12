@@ -24,6 +24,7 @@ public class SignatureSchemesDialogFragment extends BaseBottomSheetDialogFragmen
     private CheckBox mV1;
     private CheckBox mV2;
     private CheckBox mV3;
+    private CheckBox mV4;
 
     @Nullable
     @Override
@@ -40,11 +41,18 @@ public class SignatureSchemesDialogFragment extends BaseBottomSheetDialogFragmen
         mV1 = view.findViewById(R.id.cb_scheme_v1);
         mV2 = view.findViewById(R.id.cb_scheme_v2);
         mV3 = view.findViewById(R.id.cb_scheme_v3);
+        mV4 = view.findViewById(R.id.cb_scheme_v4);
 
         if (!SigningSchemes.isSupportedByThisDevice(SigningSchemes.SCHEME_V3)) {
             mV3.setEnabled(false);
             ((TextView) view.findViewById(R.id.tv_scheme_v3_summary))
                     .setText(R.string.signing_schemes_v3_unsupported);
+        }
+
+        if (!SigningSchemes.isSupportedByThisDevice(SigningSchemes.SCHEME_V4)) {
+            mV4.setEnabled(false);
+            ((TextView) view.findViewById(R.id.tv_scheme_v4_summary))
+                    .setText(R.string.signing_schemes_v4_unsupported);
         }
 
         apply(PreferencesHelper.getInstance(requireContext()).getSigningSchemes());
@@ -68,6 +76,7 @@ public class SignatureSchemesDialogFragment extends BaseBottomSheetDialogFragmen
         mV1.setChecked(schemes.has(SigningSchemes.SCHEME_V1));
         mV2.setChecked(schemes.has(SigningSchemes.SCHEME_V2));
         mV3.setChecked(mV3.isEnabled() && schemes.has(SigningSchemes.SCHEME_V3));
+        mV4.setChecked(mV4.isEnabled() && schemes.has(SigningSchemes.SCHEME_V4));
     }
 
     private SigningSchemes collect() {
@@ -78,6 +87,8 @@ public class SignatureSchemesDialogFragment extends BaseBottomSheetDialogFragmen
             flags |= SigningSchemes.SCHEME_V2;
         if (mV3.isChecked())
             flags |= SigningSchemes.SCHEME_V3;
+        if (mV4.isChecked())
+            flags |= SigningSchemes.SCHEME_V4;
 
         return new SigningSchemes(flags);
     }

@@ -224,7 +224,7 @@
     <string name="settings_main_auto_theme">自动主题</string>
     <string name="settings_main_auto_theme_summary">根据系统主题，在选定的浅色和深色主题之间自动切换</string>
     <string name="settings_main_auto_theme_picker">选择主题</string>
-    <string name="settings_main_auto_theme_picker_summary">当前浅色主题: %s\n当前深色主题: %s</string>
+    <string name="settings_main_auto_theme_picker_summary">当前浅色主题: %1$s\n当前深色主题: %2$s</string>
     <string name="settings_main_auto_theme_pre_q_warning">请注意，跟随系统主题可能在低于Android 10的版本上无法正常工作</string>
     <string name="settings_main_use_installerx">专业模式</string>
     <string name="settings_main_use_installerx_summary">启用安装程序的专业模式，该模式允许您从.apks文件（或具有多个APK文件的其他压缩文件）中选择要安装的部分。 请注意，专业模式是实验性的并且可能无法正常工作，欢迎反馈</string>
@@ -348,6 +348,9 @@
     <string name="signing_schemes_v3">v3（Android 9+）</string>
     <string name="signing_schemes_v3_summary">在 Android 9 及以上取代 v2。</string>
     <string name="signing_schemes_v3_unsupported">当前设备不支持</string>
+    <string name="signing_schemes_v4">v4（Android 11+）</string>
+    <string name="signing_schemes_v4_summary">支持流式安装并生成独立的 .idsig 签名文件（Android 11+）。需要启用 v2 或 v3。</string>
+    <string name="signing_schemes_v4_unsupported">当前设备不支持</string>
     <string name="signing_schemes_note">如果所选组合无法产出可安装的 APK，SAI 会自动补上缺少的方案。</string>
     <string name="signing_key_fingerprint">证书 SHA-256</string>
     <string name="signing_key_none">尚未创建密钥，首次签名时会自动生成</string>

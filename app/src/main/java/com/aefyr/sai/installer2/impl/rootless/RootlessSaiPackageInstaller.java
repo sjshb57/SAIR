@@ -131,7 +131,7 @@ public class RootlessSaiPackageInstaller extends BaseSaiPackageInstaller impleme
 
             int flags = PendingIntent.FLAG_UPDATE_CURRENT;
             if (Build.VERSION.SDK_INT >= 31) {
-                flags |= PendingIntent.FLAG_IMMUTABLE;
+                flags |= PendingIntent.FLAG_MUTABLE;
             }
             PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0, callbackIntent, flags);
             session.commit(pendingIntent.getIntentSender());
