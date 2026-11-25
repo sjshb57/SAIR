@@ -1,26 +1,26 @@
 [versions]
 
-agp = "9.4.1"
+agp = "9.5.2"
 
 # AndroidX
-androidx-annotation = "1.10.0"
-androidx-core = "1.19.0"
-androidx-appcompat = "1.7.1"
+androidx-annotation = "1.11.0"
+androidx-core = "1.19.1"
+androidx-appcompat = "1.8.0"
 androidx-documentfile = "1.1.0"
-androidx-fragment = "1.8.9"
-androidx-lifecycle = "2.11.0"
+androidx-fragment = "1.9.1"
+androidx-lifecycle = "2.11.1"
 androidx-preference = "1.2.1"
 androidx-recyclerview = "1.4.0"
-androidxRoom = "2.8.4"
+androidxRoom = "2.8.5"
 
 material = "1.14.0"
-glide = "5.0.9"
+glide = "5.0.10"
 flexbox = "3.0.0"
-gson = "2.14.0"
+gson = "2.15.0"
 shimmer = "1.0.0"
 shizuku = "13.1.5"
 leakcanary = "2.14"
-apksig = "9.2.1"
+apksig = "9.5.2"
 desugar-jdk-libs = "2.1.5"
 
 [libraries]
