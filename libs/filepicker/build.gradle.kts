@@ -20,7 +20,6 @@ android {
     }
 
     lint {
-        // NewApi in a library is only caught when the library itself is linted.
         abortOnError = true
         checkReleaseBuilds = true
     }
@@ -29,7 +28,6 @@ android {
 dependencies {
     implementation(libs.androidx.annotation)
     implementation(libs.androidx.core)
-    // FilePickerPreference 继承 Preference
     api(libs.androidx.preference)
     implementation(libs.material)
 }

@@ -43,8 +43,6 @@ android {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
-            // Without the keystore the release build stays unsigned instead of failing,
-            // so a fresh clone can still be built.
             if (releaseKeystore.exists())
                 signingConfig = signingConfigs.getByName("release")
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
@@ -60,14 +58,12 @@ android {
     }
 
     compileOptions {
-        // apksig's v1 signer and certificate parser use java.util.Base64, which is API 26+.
         isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
 
     lint {
-        // Library modules are not linted by :app:lint unless this is enabled.
         checkDependencies = true
         abortOnError = true
     }

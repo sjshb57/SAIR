@@ -20,7 +20,6 @@ android {
     }
 
     lint {
-        // NewApi in a library is only caught when the library itself is linted.
         abortOnError = true
         checkReleaseBuilds = true
     }
@@ -32,6 +31,5 @@ dependencies {
     implementation(libs.androidx.lifecycle.livedata)
     implementation(libs.androidx.recyclerview)
     implementation(libs.flexbox)
-    // BaseBottomSheetDialogFragment 继承 BottomSheetDialogFragment,类型暴露在公开 API 上
     api(libs.material)
 }

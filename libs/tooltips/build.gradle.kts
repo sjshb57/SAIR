@@ -20,7 +20,6 @@ android {
     }
 
     lint {
-        // NewApi in a library is only caught when the library itself is linted.
         abortOnError = true
         checkReleaseBuilds = true
     }
