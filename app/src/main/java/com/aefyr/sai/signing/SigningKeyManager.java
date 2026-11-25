@@ -3,6 +3,7 @@ package com.aefyr.sai.signing;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import android.security.keystore.KeyProtection;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,6 +15,7 @@ import java.security.KeyPairGenerator;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.SecureRandom;
+import java.security.Signature;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.Calendar;
@@ -63,8 +65,15 @@ public class SigningKeyManager {
     @NonNull
     public synchronized SigningKey getOrCreate() throws Exception {
         SigningKey existing = get();
-        if (existing != null)
-            return existing;
+        if (existing != null) {
+            if (isDefaultGeneratedKey(existing) && !canSignWithSha1(existing.privateKey())) {
+                Log.i("SigningKeyManager", "Existing generated key lacks SHA-1 digest required for APK v1 signing; regenerating");
+                generate();
+                existing = get();
+            }
+            if (existing != null)
+                return existing;
+        }
 
         generate();
 
@@ -73,6 +82,27 @@ public class SigningKeyManager {
             throw new IllegalStateException("Key generation reported success but nothing was stored");
 
         return created;
+    }
+
+    private static boolean isDefaultGeneratedKey(@NonNull SigningKey key) {
+        try {
+            X500Principal subject = key.certificate().getSubjectX500Principal();
+            return subject != null && "CN=SAI".equalsIgnoreCase(subject.getName());
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private static boolean canSignWithSha1(@NonNull PrivateKey privateKey) {
+        try {
+            String algorithm = privateKey.getAlgorithm();
+            String sigAlgorithm = "RSA".equalsIgnoreCase(algorithm) ? "SHA1withRSA" : "SHA1with" + algorithm;
+            Signature signature = Signature.getInstance(sigAlgorithm);
+            signature.initSign(privateKey);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Nullable
@@ -100,7 +130,12 @@ public class SigningKeyManager {
 
         KeyGenParameterSpec spec = new KeyGenParameterSpec.Builder(KEY_ALIAS, KeyProperties.PURPOSE_SIGN)
                 .setKeySize(KEY_SIZE)
-                .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA512)
+                .setDigests(
+                        KeyProperties.DIGEST_NONE,
+                        KeyProperties.DIGEST_SHA1,
+                        KeyProperties.DIGEST_SHA256,
+                        KeyProperties.DIGEST_SHA384,
+                        KeyProperties.DIGEST_SHA512)
                 .setSignaturePaddings(KeyProperties.SIGNATURE_PADDING_RSA_PKCS1)
                 .setCertificateSubject(new X500Principal("CN=SAI"))
                 .setCertificateSerialNumber(new BigInteger(64, new SecureRandom()).abs())
@@ -268,7 +303,12 @@ public class SigningKeyManager {
         keyStore.setEntry(KEY_ALIAS,
                 new KeyStore.PrivateKeyEntry(privateKey, chain),
                 new KeyProtection.Builder(KeyProperties.PURPOSE_SIGN)
-                        .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA512)
+                        .setDigests(
+                                KeyProperties.DIGEST_NONE,
+                                KeyProperties.DIGEST_SHA1,
+                                KeyProperties.DIGEST_SHA256,
+                                KeyProperties.DIGEST_SHA384,
+                                KeyProperties.DIGEST_SHA512)
                         .setSignaturePaddings(KeyProperties.SIGNATURE_PADDING_RSA_PKCS1)
                         .build());
     }

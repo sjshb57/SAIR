@@ -45,8 +45,12 @@ class PersistentShellSession {
 
     /** @param validator run once after the shell starts; the session is discarded if it fails */
     synchronized boolean ensureStarted(@Nullable Validator validator) {
-        if (mProcess != null && isAlive())
-            return true;
+        try {
+            if (mProcess != null && isAlive())
+                return true;
+        } catch (Exception e) {
+            Log.w(mTag, "Failed to check if shell process is alive", e);
+        }
 
         close();
 
@@ -162,7 +166,7 @@ class PersistentShellSession {
         try {
             process.exitValue();
             return false;
-        } catch (IllegalThreadStateException e) {
+        } catch (IllegalArgumentException | IllegalStateException e) {
             return true;
         }
     }

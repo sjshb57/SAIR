@@ -89,7 +89,7 @@ public abstract class ShellSaiPackageInstaller extends BaseSaiPackageInstaller {
             }
         };
         ContextCompat.registerReceiver(getContext(), mPackageInstalledBroadcastReceiver, packageAddedFilter,
-                null, mWorkerHandler, ContextCompat.RECEIVER_NOT_EXPORTED);
+                null, mWorkerHandler, ContextCompat.RECEIVER_EXPORTED);
     }
 
     @Override

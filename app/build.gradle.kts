@@ -33,9 +33,10 @@ android {
                 storeFile = releaseKeystore
                 storePassword = System.getenv("RELEASE_KEY_STORE_PWD") ?: ""
             }
-            enableV1Signing = false
+            enableV1Signing = true
             enableV2Signing = true
             enableV3Signing = true
+            enableV4Signing = true
         }
     }
 

@@ -232,7 +232,7 @@
     <string name="settings_main_auto_theme">Auto theme</string>
     <string name="settings_main_auto_theme_summary">Automatically switch between selected light and dark themes depending on system theme</string>
     <string name="settings_main_auto_theme_picker">Choose themes</string>
-    <string name="settings_main_auto_theme_picker_summary">Current light theme: %s\nCurrent dark theme: %s</string>
+    <string name="settings_main_auto_theme_picker_summary">Current light theme: %1$s\nCurrent dark theme: %2$s</string>
     <string name="settings_main_auto_theme_pre_q_warning">Please note that following the system theme may not work correctly on Android versions lower than Q</string>
     <string name="settings_main_use_installerx">Pro mode</string>
     <string name="settings_main_use_installerx_summary">Enable installer Pro mode that allows you to select parts to install from a .apks file (or other archives with multiple APK files). Please note that Pro mode is experimental and it may not work properly, feedback is welcome</string>
@@ -372,6 +372,9 @@
     <string name="signing_schemes_v3">v3 (Android 9+)</string>
     <string name="signing_schemes_v3_summary">Supersedes v2 on Android 9 and above.</string>
     <string name="signing_schemes_v3_unsupported">Not supported on this device</string>
+    <string name="signing_schemes_v4">v4 (Android 11+)</string>
+    <string name="signing_schemes_v4_summary">Enables streaming installation and generates a separate .idsig file (Android 11+). Requires v2 or v3.</string>
+    <string name="signing_schemes_v4_unsupported">Not supported on this device</string>
     <string name="signing_schemes_note">If the selection cannot produce an installable APK, SAI adds the missing scheme automatically.</string>
     <string name="signing_key_fingerprint">Certificate SHA-256</string>
     <string name="signing_key_none">No key yet, one is created the first time you sign something</string>

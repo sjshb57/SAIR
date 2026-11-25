@@ -26,7 +26,7 @@ public class Theme {
     private static final String THEME_TAG_DARK = "dark";
 
     private static final int DEFAULT_LIGHT_THEME_ID = 0;
-    private static final int DEFAULT_DARK_THEME_ID = 1;
+    private static final int DEFAULT_DARK_THEME_ID = 7;
 
     public enum Mode {
         /**
